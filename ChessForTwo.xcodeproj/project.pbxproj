@@ -26,7 +26,6 @@
 		439C2F752AB0CB5B003DF649 /* RookTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F742AB0CB5B003DF649 /* RookTestCase.swift */; };
 		439C2F772AB0CB7B003DF649 /* QueenTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */; };
 		439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F782AB0CB88003DF649 /* KingTestCase.swift */; };
-		439C2F7B2AB0D3E2003DF649 /* ChessBoardTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F7A2AB0D3E2003DF649 /* ChessBoardTestCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,7 +62,6 @@
 		439C2F742AB0CB5B003DF649 /* RookTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RookTestCase.swift; sourceTree = "<group>"; };
 		439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueenTestCase.swift; sourceTree = "<group>"; };
 		439C2F782AB0CB88003DF649 /* KingTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KingTestCase.swift; sourceTree = "<group>"; };
-		439C2F7A2AB0D3E2003DF649 /* ChessBoardTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBoardTestCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,7 +157,6 @@
 		438F66542AB058A80032D71F /* ChessForTwoTests */ = {
 			isa = PBXGroup;
 			children = (
-				439C2F7A2AB0D3E2003DF649 /* ChessBoardTestCase.swift */,
 				438F665C2AB058CC0032D71F /* PawnTestCase.swift */,
 				439C2F702AB0C7EB003DF649 /* KnightTestCase.swift */,
 				439C2F722AB0CB33003DF649 /* BishopTestCase.swift */,
@@ -313,7 +310,6 @@
 				439C2F772AB0CB7B003DF649 /* QueenTestCase.swift in Sources */,
 				439C2F752AB0CB5B003DF649 /* RookTestCase.swift in Sources */,
 				439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */,
-				439C2F7B2AB0D3E2003DF649 /* ChessBoardTestCase.swift in Sources */,
 				439C2F712AB0C7EB003DF649 /* KnightTestCase.swift in Sources */,
 				439C2F732AB0CB33003DF649 /* BishopTestCase.swift in Sources */,
 				438F665D2AB058CC0032D71F /* PawnTestCase.swift in Sources */,

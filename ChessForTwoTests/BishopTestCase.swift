@@ -10,6 +10,26 @@ import XCTest
 
 final class BishopTestCase: XCTestCase {
 
+    // MARK: - Same position
+
+    func testGivenBishopIsAt1x2_WhenMoveTo1x2_ThenIsNotValidMove() {
+        let bishop = Bishop(initialFile: 1, initialRank: 2, color: .white)
+
+        let valid = bishop.setNewPosition(atFile: 1, andRank: 2)
+
+        XCTAssertFalse(valid)
+    }
+
+    // MARK: - Out of chess board
+
+    func testGivenBishopIsAt1x2_WhenMoveTo1x9_ThenIsNotValidMove() {
+        let bishop = Bishop(initialFile: 1, initialRank: 2, color: .white)
+
+        let valid = bishop.setNewPosition(atFile: 1, andRank: 9)
+
+        XCTAssertFalse(valid)
+    }
+
     // MARK: - Valid move
 
     func testGivenBishopIsAt2x1_WhenMovingAt7x6_ThenPosIs7x6AndIsValidMove() {
@@ -30,24 +50,21 @@ final class BishopTestCase: XCTestCase {
         XCTAssertTrue(valid)
     }
 
-/*
     // MARK: - Not valid move
 
-    func testGivenBishopIsAt2x1_WhenMovingAt4x4_ThenIsNotValidMove() {
-        let bishop = Bishop(initialFile: 2, initialRank: 1, color: .white)
+    func testGivenBishopIsAt7x6_WhenMovingAt2x2_ThenIsNotValidMove() {
+        let bishop = Bishop(initialFile: 7, initialRank: 6, color: .white)
 
-        let valid = bishop.setNewPosition(atFile: 4, andRank: 4)
+        let valid = bishop.setNewPosition(atFile: 2, andRank: 2)
 
         XCTAssertFalse(valid)
     }
 
-    // MARK: - Out of chess board
+    func testGivenBishopIsAt7x6_WhenMovingAt2x6_ThenIsNotValidMove() {
+        let bishop = Bishop(initialFile: 7, initialRank: 6, color: .white)
 
-    func testGivenBishopIsAt8x8_WhenMovingAt9x8_ThenIsNotValidMove() {
-        let bishop = Bishop(initialFile: 8, initialRank: 8, color: .white)
-
-        let valid = bishop.setNewPosition(atFile: 9, andRank: 8)
+        let valid = bishop.setNewPosition(atFile: 2, andRank: 6)
 
         XCTAssertFalse(valid)
-    }*/
+    }
 }

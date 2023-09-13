@@ -9,16 +9,57 @@ import Foundation
 
 final class Rook {
 
+    // MARK: - Public properties
+
+    var currentFile: Int {
+        return file
+    }
+
+    var currentRank: Int {
+        return rank
+    }
+
+    // MARK: - Private properties
+
+    private var file: Int
+    private var rank: Int
+    private let color: PieceColor
+
+    // MARK: - Init
+
+    init(initialFile: Int, initialRank: Int, color: PieceColor) {
+        self.file = initialFile
+        self.rank = initialRank
+        self.color = color
+    }
 }
 
 // MARK: - Public methods
 
 extension Rook {
 
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+        // same position
+        if newFile == file && newRank == rank { return false }
+
+        // out of chessboard
+        if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
+
+        // check move validity
+        if !validMove(newFile: newFile, newRank: newRank) { return false }
+
+        // valid move
+        file = newFile
+        rank = newRank
+        return true
+    }
 }
 
 // MARK: - Private methods
 
 extension Rook {
 
+    private func validMove(newFile: Int, newRank: Int) -> Bool {
+        return newFile == file || newRank == rank
+    }
 }

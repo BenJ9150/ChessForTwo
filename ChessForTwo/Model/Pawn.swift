@@ -47,16 +47,14 @@ final class Pawn {
 extension Pawn {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int, withCapture capture: Bool) -> Bool {
-        // if out of chessboard, return false
+        // same position
+        if newFile == file && newRank == rank { return false }
+
+        // out of chessboard
         if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
 
-        if capture {
-            // capture, just diagonal move
-            if !validDiagonalMove(newFile: newFile, newRank: newRank) { return false }
-        } else {
-            // no capture, just vertical move
-            if !validVerticalMove(newFile: newFile, newRank: newRank) { return false }
-        }
+        // check move validity
+        if !validMove(newFile: newFile, newRank: newRank, capture: capture) { return false }
 
         // valid move
         file = newFile
@@ -68,6 +66,17 @@ extension Pawn {
 // MARK: - Private methods
 
 extension Pawn {
+
+    private func validMove(newFile: Int, newRank: Int, capture: Bool) -> Bool {
+        if capture {
+            // capture, just diagonal move
+            if !validDiagonalMove(newFile: newFile, newRank: newRank) { return false }
+        } else {
+            // no capture, just vertical move
+            if !validVerticalMove(newFile: newFile, newRank: newRank) { return false }
+        }
+        return true
+    }
 
     private func validVerticalMove(newFile: Int, newRank: Int) -> Bool {
         if newFile != file { return false }

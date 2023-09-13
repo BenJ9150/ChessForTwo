@@ -46,7 +46,10 @@ final class Knight {
 extension Knight {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
-        // if out of chessboard, return false
+        // same position
+        if newFile == file && newRank == rank { return false }
+
+        // out of chessboard
         if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
 
         // check move validity

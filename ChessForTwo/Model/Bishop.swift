@@ -39,7 +39,10 @@ final class Bishop {
 extension Bishop {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
-        // if out of chessboard, return false
+        // same position
+        if newFile == file && newRank == rank { return false }
+
+        // out of chessboard
         if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
 
         // check move validity
@@ -77,6 +80,6 @@ extension Bishop {
         if fileDiff == 0 || rankDiff == 0 { return false }
 
         // check diagonal
-        return fileDiff/rankDiff == 1
+        return fileDiff == rankDiff
     }
 }
