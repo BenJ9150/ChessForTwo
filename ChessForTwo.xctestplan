@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "C3B56E7A-0183-4C35-AFBA-A072161D207B",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:ChessForTwo.xcodeproj",
+      "identifier" : "438F66272AB055D00032D71F",
+      "name" : "ChessForTwo"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:ChessForTwo.xcodeproj",
+        "identifier" : "438F66522AB058A80032D71F",
+        "name" : "ChessForTwoTests"
+      }
+    }
+  ],
+  "version" : 1
+}
