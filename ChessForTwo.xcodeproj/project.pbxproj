@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		433AE0692AB1B47800E523BD /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433AE0682AB1B47800E523BD /* Game.swift */; };
+		433AE06B2AB1B50100E523BD /* GameTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433AE06A2AB1B50100E523BD /* GameTestCase.swift */; };
+		433AE06D2AB1DE6C00E523BD /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433AE06C2AB1DE6C00E523BD /* Piece.swift */; };
 		438F662C2AB055D00032D71F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438F662B2AB055D00032D71F /* AppDelegate.swift */; };
 		438F662E2AB055D00032D71F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438F662D2AB055D00032D71F /* SceneDelegate.swift */; };
 		438F66302AB055D00032D71F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 438F662F2AB055D00032D71F /* ViewController.swift */; };
@@ -39,6 +42,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		433AE0682AB1B47800E523BD /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		433AE06A2AB1B50100E523BD /* GameTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTestCase.swift; sourceTree = "<group>"; };
+		433AE06C2AB1DE6C00E523BD /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
 		438F66282AB055D00032D71F /* ChessForTwo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChessForTwo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		438F662B2AB055D00032D71F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		438F662D2AB055D00032D71F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -135,12 +141,14 @@
 			isa = PBXGroup;
 			children = (
 				438F665E2AB05D070032D71F /* ChessBoard.swift */,
+				433AE06C2AB1DE6C00E523BD /* Piece.swift */,
 				438F66432AB056D30032D71F /* Pawn.swift */,
+				438F66492AB057960032D71F /* Rook.swift */,
 				438F66452AB0577E0032D71F /* Knight.swift */,
 				438F66472AB0578B0032D71F /* Bishop.swift */,
-				438F66492AB057960032D71F /* Rook.swift */,
 				438F664B2AB057A10032D71F /* Queen.swift */,
 				438F664D2AB057AD0032D71F /* King.swift */,
+				433AE0682AB1B47800E523BD /* Game.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -158,11 +166,12 @@
 			isa = PBXGroup;
 			children = (
 				438F665C2AB058CC0032D71F /* PawnTestCase.swift */,
+				439C2F742AB0CB5B003DF649 /* RookTestCase.swift */,
 				439C2F702AB0C7EB003DF649 /* KnightTestCase.swift */,
 				439C2F722AB0CB33003DF649 /* BishopTestCase.swift */,
-				439C2F742AB0CB5B003DF649 /* RookTestCase.swift */,
 				439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */,
 				439C2F782AB0CB88003DF649 /* KingTestCase.swift */,
+				433AE06A2AB1B50100E523BD /* GameTestCase.swift */,
 			);
 			path = ChessForTwoTests;
 			sourceTree = "<group>";
@@ -296,7 +305,9 @@
 				438F662C2AB055D00032D71F /* AppDelegate.swift in Sources */,
 				438F66482AB0578B0032D71F /* Bishop.swift in Sources */,
 				438F664C2AB057A10032D71F /* Queen.swift in Sources */,
+				433AE0692AB1B47800E523BD /* Game.swift in Sources */,
 				438F662E2AB055D00032D71F /* SceneDelegate.swift in Sources */,
+				433AE06D2AB1DE6C00E523BD /* Piece.swift in Sources */,
 				438F66442AB056D30032D71F /* Pawn.swift in Sources */,
 				438F66462AB0577E0032D71F /* Knight.swift in Sources */,
 				438F665F2AB05D070032D71F /* ChessBoard.swift in Sources */,
@@ -310,6 +321,7 @@
 				439C2F772AB0CB7B003DF649 /* QueenTestCase.swift in Sources */,
 				439C2F752AB0CB5B003DF649 /* RookTestCase.swift in Sources */,
 				439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */,
+				433AE06B2AB1B50100E523BD /* GameTestCase.swift in Sources */,
 				439C2F712AB0C7EB003DF649 /* KnightTestCase.swift in Sources */,
 				439C2F732AB0CB33003DF649 /* BishopTestCase.swift in Sources */,
 				438F665D2AB058CC0032D71F /* PawnTestCase.swift in Sources */,

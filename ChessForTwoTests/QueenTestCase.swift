@@ -15,7 +15,7 @@ final class QueenTestCase: XCTestCase {
     func testGivenQueenIsAt1x2_WhenMoveTo1x2_ThenIsNotValidMove() {
         let queen = Queen(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = queen.setNewPosition(atFile: 1, andRank: 2)
+        let valid = queen.setNewPosition(atFile: 1, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -25,7 +25,7 @@ final class QueenTestCase: XCTestCase {
     func testGivenQueenIsAt1x2_WhenMoveToMinus1x2_ThenIsNotValidMove() {
         let queen = Queen(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = queen.setNewPosition(atFile: -1, andRank: 2)
+        let valid = queen.setNewPosition(atFile: -1, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -35,7 +35,7 @@ final class QueenTestCase: XCTestCase {
     func testGivenQueenIsAt3x4_WhenMovingAt5x6_ThenPosIs5x6AndIsValidMove() {
         let queen = Queen(initialFile: 3, initialRank: 4, color: .white)
 
-        let valid = queen.setNewPosition(atFile: 5, andRank: 6)
+        let valid = queen.setNewPosition(atFile: 5, andRank: 6, capture: false)
 
         XCTAssertEqual(queen.currentFile, 5)
         XCTAssertEqual(queen.currentRank, 6)
@@ -45,7 +45,7 @@ final class QueenTestCase: XCTestCase {
     func testGivenQueenIsAt7x6_WhenMovingAt2x1_ThenIsValidMove() {
         let queen = Queen(initialFile: 7, initialRank: 6, color: .white)
 
-        let valid = queen.setNewPosition(atFile: 2, andRank: 1)
+        let valid = queen.setNewPosition(atFile: 2, andRank: 1, capture: false)
 
         XCTAssertTrue(valid)
     }
@@ -53,7 +53,7 @@ final class QueenTestCase: XCTestCase {
     func testGivenQueenIsAt7x6_WhenMovingAt2x6_ThenIsValidMove() {
         let queen = Queen(initialFile: 7, initialRank: 6, color: .white)
 
-        let valid = queen.setNewPosition(atFile: 2, andRank: 6)
+        let valid = queen.setNewPosition(atFile: 2, andRank: 6, capture: false)
 
         XCTAssertTrue(valid)
     }
@@ -63,7 +63,7 @@ final class QueenTestCase: XCTestCase {
     func testGivenQueenIsAt7x6_WhenMovingAt2x2_ThenIsNotValidMove() {
         let queen = Queen(initialFile: 7, initialRank: 6, color: .white)
 
-        let valid = queen.setNewPosition(atFile: 2, andRank: 2)
+        let valid = queen.setNewPosition(atFile: 2, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }

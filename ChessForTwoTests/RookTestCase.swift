@@ -15,7 +15,7 @@ final class RookTestCase: XCTestCase {
     func testGivenRookIsAt1x2_WhenMoveTo1x2_ThenIsNotValidMove() {
         let rook = Rook(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = rook.setNewPosition(atFile: 1, andRank: 2)
+        let valid = rook.setNewPosition(atFile: 1, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -25,7 +25,7 @@ final class RookTestCase: XCTestCase {
     func testGivenRookIsAt1x2_WhenMoveTo9x2_ThenIsNotValidMove() {
         let rook = Rook(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = rook.setNewPosition(atFile: 9, andRank: 2)
+        let valid = rook.setNewPosition(atFile: 9, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -35,7 +35,7 @@ final class RookTestCase: XCTestCase {
     func testGivenRookIsAt1x1_WhenMovingAt7x1_ThenPosIs7x1AndIsValidMove() {
         let rook = Rook(initialFile: 1, initialRank: 1, color: .white)
 
-        let valid = rook.setNewPosition(atFile: 7, andRank: 1)
+        let valid = rook.setNewPosition(atFile: 7, andRank: 1, capture: false)
 
         XCTAssertEqual(rook.currentFile, 7)
         XCTAssertEqual(rook.currentRank, 1)
@@ -47,7 +47,7 @@ final class RookTestCase: XCTestCase {
     func testGivenRookIsAt1x1_WhenMovingAt7x2_ThenIsNotValidMove() {
         let rook = Rook(initialFile: 1, initialRank: 1, color: .white)
 
-        let valid = rook.setNewPosition(atFile: 7, andRank: 2)
+        let valid = rook.setNewPosition(atFile: 7, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }

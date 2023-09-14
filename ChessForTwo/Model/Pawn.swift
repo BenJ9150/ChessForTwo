@@ -7,9 +7,11 @@
 
 import Foundation
 
-final class Pawn {
+final class Pawn: Piece {
 
     // MARK: - Public properties
+
+    let color: PieceColor
 
     var currentFile: Int {
         return file
@@ -19,13 +21,16 @@ final class Pawn {
         return rank
     }
 
+    // initial positions : file, white rank, black rank
+    static let initialPos = [(1, 2, 7), (2, 2, 7), (3, 2, 7), (4, 2, 7),
+                             (5, 2, 7), (6, 2, 7), (7, 2, 7), (8, 2, 7)]
+
     // MARK: - Private properties
 
     private let initialFile: Int
     private let initialRank: Int
     private var file: Int
     private var rank: Int
-    private let color: PieceColor
 
     private var isAtInitialPosition: Bool {
         return initialFile == file && initialRank == rank
@@ -46,7 +51,7 @@ final class Pawn {
 
 extension Pawn {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, withCapture capture: Bool) -> Bool {
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
         // same position
         if newFile == file && newRank == rank { return false }
 

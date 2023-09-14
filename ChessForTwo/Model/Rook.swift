@@ -7,9 +7,11 @@
 
 import Foundation
 
-final class Rook {
+final class Rook: Piece {
 
     // MARK: - Public properties
+
+    let color: PieceColor
 
     var currentFile: Int {
         return file
@@ -19,11 +21,13 @@ final class Rook {
         return rank
     }
 
+    // initial positions : file, white rank, black rank
+    static let initialPos = [(1, 1, 8), (8, 1, 8)]
+
     // MARK: - Private properties
 
     private var file: Int
     private var rank: Int
-    private let color: PieceColor
 
     // MARK: - Init
 
@@ -38,7 +42,7 @@ final class Rook {
 
 extension Rook {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
         // same position
         if newFile == file && newRank == rank { return false }
 

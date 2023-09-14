@@ -7,9 +7,11 @@
 
 import Foundation
 
-final class Knight {
+final class Knight: Piece {
 
     // MARK: - Public properties
+
+    let color: PieceColor
 
     var currentFile: Int {
         return file
@@ -19,11 +21,13 @@ final class Knight {
         return rank
     }
 
+    // initial positions : file, white rank, black rank
+    static let initialPos = [(2, 1, 8), (7, 1, 8)]
+
     // MARK: - Private properties
 
     private var file: Int
     private var rank: Int
-    private let color: PieceColor
 
     private var possibleMoves: [(file: Int, rank: Int)] {
         return [(currentFile - 2, currentRank - 1), (currentFile - 2, currentRank + 1),
@@ -45,7 +49,7 @@ final class Knight {
 
 extension Knight {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
         // same position
         if newFile == file && newRank == rank { return false }
 

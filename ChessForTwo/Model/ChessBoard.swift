@@ -7,16 +7,12 @@
 
 import Foundation
 
-enum PieceColor {
-    case white
-    case black
-}
-
-struct ChessBoard {
+struct ChessBoard: Hashable {
 
     // MARK: - Public properties
 
-    // static let columnName = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    var file: Int
+    var rank: Int
 
     // MARK: - Private properties
 

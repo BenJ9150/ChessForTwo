@@ -15,7 +15,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenPawnIsAt1x2_WhenMoveTo1x2_ThenIsNotValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 2, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -25,7 +25,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenPawnIsAt1x2_WhenMoveTo1x9_ThenIsNotValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 9, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 9, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -35,7 +35,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenWhitePawnJustInitAt1x2_WhenMoveTo1x4_ThenPosIs1x4AndIsValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 4, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 4, capture: false)
 
         XCTAssertEqual(pawn.currentFile, 1)
         XCTAssertEqual(pawn.currentRank, 4)
@@ -45,7 +45,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenBlackPawnJustInitAt1x7_WhenMoveTo1x5_ThenIsValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 7, color: .black)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 5, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 5, capture: false)
 
         XCTAssertTrue(valid)
     }
@@ -53,7 +53,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenBlackPawnJustInitAt1x7_WhenMoveTo1x6_ThenIsValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 7, color: .black)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 6, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 6, capture: false)
 
         XCTAssertTrue(valid)
     }
@@ -63,7 +63,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenWhitePawnJustInitAt1x2_WhenMoveTo2x2_ThenIsNotValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 2, andRank: 2, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 2, andRank: 2, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -71,7 +71,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenWhitePawnJustInitAt1x2_WhenMoveTo1x5_ThenIsNotValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 5, withCapture: false)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 5, capture: false)
 
         XCTAssertFalse(valid)
     }
@@ -81,7 +81,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenWhitePawnIsAt1x2_WhenMoveTo2x3WithCapture_ThenIsValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 2, andRank: 3, withCapture: true)
+        let valid = pawn.setNewPosition(atFile: 2, andRank: 3, capture: true)
 
         XCTAssertTrue(valid)
     }
@@ -89,7 +89,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenBlackPawnIsAt2x7_WhenMoveTo1x6WithCapture_ThenIsValidMove() {
         let pawn = Pawn(initialFile: 2, initialRank: 7, color: .black)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 6, withCapture: true)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 6, capture: true)
 
         XCTAssertTrue(valid)
     }
@@ -99,7 +99,7 @@ final class PawnTestCase: XCTestCase {
     func testGivenWhitePawnIsAt1x2_WhenMoveTo1x3WithCapture_ThenIsNotValidMove() {
         let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
 
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 3, withCapture: true)
+        let valid = pawn.setNewPosition(atFile: 1, andRank: 3, capture: true)
 
         XCTAssertFalse(valid)
     }
