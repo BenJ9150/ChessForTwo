@@ -27,4 +27,8 @@ extension ChessBoard {
     static func isOutOfChessBoard(file: Int, rank: Int) -> Bool {
         return file < minPosition || file > maxPosition || rank < minPosition || rank > maxPosition
     }
+
+    static func posToInt(file: Int, rank: Int) -> Int {
+        return file - 1 + (rank - 1) * maxPosition
+    }
 }

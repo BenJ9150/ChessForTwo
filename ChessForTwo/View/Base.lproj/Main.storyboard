@@ -1,24 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="IiC-fk-2RB">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--Navigation Controller-->
+        <scene sceneID="q6r-wi-7Pq">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <navigationController id="IiC-fk-2RB" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="S7F-Rz-cvB">
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Vyv-rm-olH" kind="relationship" relationship="rootViewController" id="UDE-W7-Avf"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KKP-9X-f9O" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-862" y="-199"/>
+        </scene>
+        <!--Main View Controller-->
+        <scene sceneID="FQa-Ks-AdD">
+            <objects>
+                <viewController id="Vyv-rm-olH" customClass="MainViewController" customModule="ChessForTwo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ucY-HG-1Wq">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="iCi-K1-8ig">
+                                <rect key="frame" x="0.0" y="72" width="320" height="488"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G5n-jh-xJP">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="224"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="z5n-0m-wv7">
+                                                <rect key="frame" x="0.0" y="0.0" width="48" height="224"/>
+                                                <color key="backgroundColor" systemColor="systemMintColor"/>
+                                            </stackView>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xMw-qF-ZFi">
+                                                <rect key="frame" x="48" y="0.0" width="224" height="224"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="xMw-qF-ZFi" secondAttribute="height" multiplier="1:1" id="AOF-FQ-RQA"/>
+                                                </constraints>
+                                            </containerView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="hT9-UH-4Zd">
+                                                <rect key="frame" x="272" y="0.0" width="48" height="224"/>
+                                                <color key="backgroundColor" systemColor="systemMintColor"/>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="hT9-UH-4Zd" firstAttribute="width" secondItem="z5n-0m-wv7" secondAttribute="width" id="MrY-iX-5bq"/>
+                                        </constraints>
+                                    </stackView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Io8-QC-mLp">
+                                        <rect key="frame" x="0.0" y="224" width="320" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="HIM-Rr-fft"/>
+                                        </constraints>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MGl-xR-xJc">
+                                        <rect key="frame" x="0.0" y="264" width="320" height="224"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="v07-tq-GTq">
+                                                <rect key="frame" x="0.0" y="0.0" width="48" height="224"/>
+                                                <color key="backgroundColor" systemColor="systemMintColor"/>
+                                            </stackView>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YsF-1R-4KL">
+                                                <rect key="frame" x="48" y="0.0" width="224" height="224"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="YsF-1R-4KL" secondAttribute="height" multiplier="1:1" id="o7Z-Ro-ytD"/>
+                                                </constraints>
+                                            </containerView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="HlO-V2-guC">
+                                                <rect key="frame" x="272" y="0.0" width="48" height="224"/>
+                                                <color key="backgroundColor" systemColor="systemMintColor"/>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="HlO-V2-guC" firstAttribute="width" secondItem="v07-tq-GTq" secondAttribute="width" id="ABt-PR-h66"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="YsF-1R-4KL" firstAttribute="width" secondItem="xMw-qF-ZFi" secondAttribute="width" id="5dw-Pp-Nu1"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Dib-TA-0KL"/>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="iCi-K1-8ig" firstAttribute="top" secondItem="Dib-TA-0KL" secondAttribute="top" constant="8" id="FVe-sy-URr"/>
+                            <constraint firstItem="Dib-TA-0KL" firstAttribute="trailing" secondItem="iCi-K1-8ig" secondAttribute="trailing" id="Uia-dd-LCX"/>
+                            <constraint firstItem="iCi-K1-8ig" firstAttribute="leading" secondItem="Dib-TA-0KL" secondAttribute="leading" id="Wxw-Sa-PAE"/>
+                            <constraint firstItem="Dib-TA-0KL" firstAttribute="bottom" secondItem="iCi-K1-8ig" secondAttribute="bottom" constant="8" id="hbV-a8-fC0"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="ucS-ad-XiU"/>
+                    <connections>
+                        <outlet property="playerOneContainer" destination="YsF-1R-4KL" id="GbC-M3-ARY"/>
+                        <outlet property="playerTwoContainer" destination="xMw-qF-ZFi" id="oO3-ke-DTb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Niq-Xy-dKb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="232.82442748091603" y="-199.29577464788733"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemMintColor">
+            <color red="0.0" green="0.7803921568627451" blue="0.74509803921568629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

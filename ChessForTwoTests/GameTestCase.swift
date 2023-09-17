@@ -119,8 +119,8 @@ final class GameTestCase: XCTestCase {
 
         XCTAssertTrue(piece is Pawn)
         XCTAssertEqual(piece?.color, .white)
-        XCTAssertEqual(game.boardCount, 31)
-        XCTAssertEqual(game.capturedPiecesCount, 1)
+        XCTAssertEqual(game.board.count, 31)
+        XCTAssertEqual(game.capturedPieces.count, 1)
     }
 
     func testGivenE4E5Kc3Kf6_WhenKe4_ThenIsNotValidMove() {

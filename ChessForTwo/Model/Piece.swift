@@ -17,6 +17,8 @@ protocol Piece {
     // MARK: - Public properties
 
     var color: PieceColor { get }
+    var currentFile: Int { get }
+    var currentRank: Int { get }
 
     // MARK: - Public methods
 

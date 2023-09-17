@@ -16,7 +16,9 @@ final class Game {
     // MARK: - Public properties
 
     let names: [Player: String]
-
+    var board: [ChessBoard: Piece] = [:]
+    var capturedPieces: [Piece] = []
+/*
     var boardCount: Int {
         return board.count
     }
@@ -24,12 +26,10 @@ final class Game {
     var capturedPiecesCount: Int {
         return capturedPieces.count
     }
-
+*/
     // MARK: - Private properties
 
     private var scores = [Player.one: 0, Player.two: 0]
-    private var board: [ChessBoard: Piece] = [:]
-    private var capturedPieces: [Piece] = []
 
     // MARK: - Init
 
