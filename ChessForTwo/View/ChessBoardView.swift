@@ -15,6 +15,7 @@ class ChessBoardView: UIView {
     private var oldPoint = CGPoint()
     private var dragging = false
     private var currentPiece: UIView?
+    private var movement: (start: Int?, end: Int?)
 
     // MARK: - IBOutlet
 
@@ -61,6 +62,7 @@ extension ChessBoardView {
             currentPiece = pieceImage
             addSubview(currentPiece!)
             // drag is on
+            movement.start = squaresView.firstIndex(of: currentSquare)
             oldPoint = currentPoint
             dragging = true
             return
@@ -90,9 +92,12 @@ extension ChessBoardView {
         // get piece image and current square
         guard let pieceImage = currentPiece else {return}
         guard let currentSquare = currentSquare(forPoint: currentPoint) else { return }
+        movement.end = squaresView.firstIndex(of: currentSquare)
         // add image to current square
         pieceImage.frame = currentSquare.bounds
         currentSquare.addSubview(pieceImage)
+        // notify controller
+        NotificationCenter.default.post(name: .pieceMoved, object: movement)
         // reinit current piece
         currentPiece = nil
     }

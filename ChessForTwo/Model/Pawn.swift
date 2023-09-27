@@ -21,9 +21,8 @@ final class Pawn: Piece {
         return rank
     }
 
-    // initial positions : file, white rank, black rank
-    static let initialPos = [(1, 2, 7), (2, 2, 7), (3, 2, 7), (4, 2, 7),
-                             (5, 2, 7), (6, 2, 7), (7, 2, 7), (8, 2, 7)]
+    // initial positions : file, white rank
+    static let initialWhitePos = [(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (8, 2)]
 
     // MARK: - Private properties
 
@@ -44,6 +43,10 @@ final class Pawn: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
+    }
+
+    convenience init() {
+        self.init(initialFile: 0, initialRank: 0, color: .white)
     }
 }
 

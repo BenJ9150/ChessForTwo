@@ -152,4 +152,30 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(move2)
         XCTAssertFalse(move3)
     }
+
+    // MARK: Move piece with Int
+
+    func testGivenStartNewGame_WhenMove0To16_ThenIsValidMove() {
+        let game = Game(playerOne: player1, playerTwo: player2)
+
+        let move = game.movePiece(fromInt: 0, toInt: 16)
+
+        XCTAssertTrue(move)
+    }
+
+    func testGivenStartNewGame_WhenMove7To63_ThenIsValidMove() {
+        let game = Game(playerOne: player1, playerTwo: player2)
+
+        let move = game.movePiece(fromInt: 7, toInt: 63)
+
+        XCTAssertTrue(move)
+    }
+
+    func testGivenStartNewGame_WhenMoveLess1To16_ThenIsNotValidMove() {
+        let game = Game(playerOne: player1, playerTwo: player2)
+
+        let move = game.movePiece(fromInt: -1, toInt: 16)
+
+        XCTAssertFalse(move)
+    }
 }

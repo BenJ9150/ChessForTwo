@@ -19,6 +19,11 @@ protocol Piece {
     var color: PieceColor { get }
     var currentFile: Int { get }
     var currentRank: Int { get }
+    static var initialWhitePos: [(Int, Int)] { get }
+
+    // MARK: - Init
+
+    init(initialFile: Int, initialRank: Int, color: PieceColor)
 
     // MARK: - Public methods
 

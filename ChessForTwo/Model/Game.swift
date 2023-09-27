@@ -60,6 +60,13 @@ extension Game {
         return board[ChessBoard(file: file, rank: rank)]
     }
 
+    func movePiece(fromInt start: Int, toInt end: Int) -> Bool {
+        // coordinates
+        let startingPos = ChessBoard.intToPos(start)
+        let endingPos = ChessBoard.intToPos(end)
+        return movePiece(from: startingPos, toPos: endingPos)
+    }
+
     func movePiece(from: (file: Int, rank: Int), toPos: (file: Int, rank: Int)) -> Bool {
         // coordinates
         let startingPos = ChessBoard(file: from.file, rank: from.rank)
@@ -93,76 +100,23 @@ extension Game {
 
     private func initPieces() {
         board.removeAll()
-        initPawns()
-        initRooks()
-        initKnights()
-        initBishops()
-        initQueens()
-        initKings()
+        initPiecesType(Pawn())
+        initPiecesType(Rook())
+        initPiecesType(Knight())
+        initPiecesType(Bishop())
+        initPiecesType(Queen())
+        initPiecesType(King())
     }
 
-    private func initPawns() {
-        for (file, whiteRank, blackRank) in Pawn.initialPos {
+    func initPiecesType<T: Piece>(_: T) {
+        for (file, whiteRank) in T.initialWhitePos {
+            // get black rank
+            let blackRank = ChessBoard.maxPosition + 1 - whiteRank
             // white
-            let white = Pawn(initialFile: file, initialRank: whiteRank, color: .white)
+            let white = T(initialFile: file, initialRank: whiteRank, color: .white)
             board[ChessBoard(file: file, rank: whiteRank)] = white
             // black
-            let black = Pawn(initialFile: file, initialRank: blackRank, color: .black)
-            board[ChessBoard(file: file, rank: blackRank)] = black
-        }
-    }
-
-    private func initRooks() {
-        for (file, whiteRank, blackRank) in Rook.initialPos {
-            // white
-            let white = Rook(initialFile: file, initialRank: whiteRank, color: .white)
-            board[ChessBoard(file: file, rank: whiteRank)] = white
-            // black
-            let black = Rook(initialFile: file, initialRank: blackRank, color: .black)
-            board[ChessBoard(file: file, rank: blackRank)] = black
-        }
-    }
-
-    private func initKnights() {
-        for (file, whiteRank, blackRank) in Knight.initialPos {
-            // white
-            let white = Knight(initialFile: file, initialRank: whiteRank, color: .white)
-            board[ChessBoard(file: file, rank: whiteRank)] = white
-            // black
-            let black = Knight(initialFile: file, initialRank: blackRank, color: .black)
-            board[ChessBoard(file: file, rank: blackRank)] = black
-        }
-    }
-
-    private func initBishops() {
-        for (file, whiteRank, blackRank) in Bishop.initialPos {
-            // white
-            let white = Bishop(initialFile: file, initialRank: whiteRank, color: .white)
-            board[ChessBoard(file: file, rank: whiteRank)] = white
-            // black
-            let black = Bishop(initialFile: file, initialRank: blackRank, color: .black)
-            board[ChessBoard(file: file, rank: blackRank)] = black
-        }
-    }
-
-    private func initQueens() {
-        for (file, whiteRank, blackRank) in Queen.initialPos {
-            // white
-            let white = Queen(initialFile: file, initialRank: whiteRank, color: .white)
-            board[ChessBoard(file: file, rank: whiteRank)] = white
-            // black
-            let black = Queen(initialFile: file, initialRank: blackRank, color: .black)
-            board[ChessBoard(file: file, rank: blackRank)] = black
-        }
-    }
-
-    private func initKings() {
-        for (file, whiteRank, blackRank) in King.initialPos {
-            // white
-            let white = King(initialFile: file, initialRank: whiteRank, color: .white)
-            board[ChessBoard(file: file, rank: whiteRank)] = white
-            // black
-            let black = King(initialFile: file, initialRank: blackRank, color: .black)
+            let black = T(initialFile: file, initialRank: blackRank, color: .black)
             board[ChessBoard(file: file, rank: blackRank)] = black
         }
     }

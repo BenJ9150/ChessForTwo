@@ -21,8 +21,8 @@ final class Queen: Piece {
         return rank
     }
 
-    // initial positions : file, white rank, black rank
-    static let initialPos = [(4, 1, 8)]
+    // initial positions : file, white rank
+    static let initialWhitePos = [(4, 1)]
 
     // MARK: - Private properties
 
@@ -35,6 +35,10 @@ final class Queen: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
+    }
+
+    convenience init() {
+        self.init(initialFile: 0, initialRank: 0, color: .white)
     }
 }
 

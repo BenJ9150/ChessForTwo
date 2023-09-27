@@ -16,6 +16,8 @@ class MainViewController: UIViewController {
 
     // MARK: - Private properties
 
+    let game = Game(playerOne: "", playerTwo: "")
+
     private lazy var chessBoardVC: ChessBoardViewController = {
         return instantiateAndAddToContainer(playerOneContainer)
     }()
@@ -29,6 +31,9 @@ extension MainViewController {
         super.viewDidLoad()
         // reload board view to get good frame dimensions
         chessBoardVC.chessBoardView.reloadInputViews()
+        // notification piece moved
+        NotificationCenter.default.addObserver(self, selector: #selector(pieceMoved(_:)),
+                                               name: .pieceMoved, object: nil)
     }
 }
 
@@ -65,8 +70,6 @@ extension MainViewController {
 extension MainViewController {
 
     private func initBoard() {
-        let game = Game(playerOne: "Ben", playerTwo: "Bob")
-
         for (_, piece) in game.board {
             load(piece: piece, atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank))
         }
@@ -94,5 +97,31 @@ extension MainViewController {
         image.frame = chessBoardVC.chessBoardView.squaresView[0].bounds
         // add piece to view
         chessBoardVC.chessBoardView.squaresView[square].addSubview(image)
+    }
+}
+
+// MARK: - Piece moved
+
+extension MainViewController {
+
+    @objc private func pieceMoved(_ notif: NSNotification) {
+        guard let movement = notif.object as? (start: Int?, end: Int?) else { return }
+        // get start and end movement
+        guard let start = movement.start else { return }
+        guard let end = movement.end else { return }
+        // check validity
+        if !game.movePiece(fromInt: start, toInt: end) {
+            cancelMove(fromEnd: end, toStart: start)
+        }
+    }
+
+    private func cancelMove(fromEnd end: Int, toStart start: Int) {
+        guard let image = chessBoardVC.chessBoardView.squaresView[end].subviews.last else { return }
+        // check image
+        if image is UIImageView {
+            // replace image
+            image.removeFromSuperview()
+            chessBoardVC.chessBoardView.squaresView[start].addSubview(image)
+        }
     }
 }
