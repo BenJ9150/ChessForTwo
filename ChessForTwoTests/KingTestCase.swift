@@ -32,7 +32,7 @@ final class KingTestCase: XCTestCase {
 
     // MARK: - Valid move
 
-    func testGivenKingIsAt3x4_WhenMovingAt4x5_ThenPosIs4x5AndIsValidMove() {
+    func testGivenKingIsAt3x4_WhenMovingAt4x5_ThenPosIs4x5AndIsValidMoveAndCastlingIsNotPossible() {
         let king = King(initialFile: 3, initialRank: 4, color: .white)
 
         let valid = king.setNewPosition(atFile: 4, andRank: 5, capture: false)
@@ -40,6 +40,7 @@ final class KingTestCase: XCTestCase {
         XCTAssertEqual(king.currentFile, 4)
         XCTAssertEqual(king.currentRank, 5)
         XCTAssertTrue(valid)
+        XCTAssertFalse(king.canCastling)
     }
 
     func testGivenKingIsAt7x6_WhenMovingAt6x5_ThenIsValidMove() {
@@ -58,5 +59,16 @@ final class KingTestCase: XCTestCase {
         let valid = king.setNewPosition(atFile: 7, andRank: 8, capture: false)
 
         XCTAssertFalse(valid)
+    }
+
+    // MARK: Castling
+
+    func testGivenKingIsAt5x1_WhenMovingAt7x1_ThenIsValidMoveAndCastlingIsNotPossible() {
+        let king = King(initialFile: 5, initialRank: 1, color: .white)
+
+        let valid = king.setNewPosition(atFile: 7, andRank: 1, capture: false)
+
+        XCTAssertTrue(valid)
+        XCTAssertFalse(king.canCastling)
     }
 }

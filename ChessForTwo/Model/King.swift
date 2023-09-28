@@ -21,6 +21,8 @@ final class King: Piece {
         return rank
     }
 
+    var canCastling = true
+
     // initial positions : file, white rank
     static let initialWhitePos = [(5, 1)]
 
@@ -59,6 +61,7 @@ extension King {
         // valid move
         file = newFile
         rank = newRank
+        canCastling = false
         return true
     }
 }
@@ -82,6 +85,11 @@ extension King {
             rankDiff = newRank - rank
         } else {
             rankDiff = rank - newRank
+        }
+
+        // castling
+        if canCastling && rankDiff == 0 && fileDiff <= 2 {
+            return true
         }
 
         // check validity

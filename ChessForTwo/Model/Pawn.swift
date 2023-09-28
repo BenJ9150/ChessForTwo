@@ -26,20 +26,13 @@ final class Pawn: Piece {
 
     // MARK: - Private properties
 
-    private let initialFile: Int
-    private let initialRank: Int
     private var file: Int
     private var rank: Int
-
-    private var isAtInitialPosition: Bool {
-        return initialFile == file && initialRank == rank
-    }
+    private var canMoveTwoSquares = true
 
     // MARK: - Init
 
     init(initialFile: Int, initialRank: Int, color: PieceColor) {
-        self.initialFile = initialFile
-        self.initialRank = initialRank
         self.file = initialFile
         self.rank = initialRank
         self.color = color
@@ -67,6 +60,7 @@ extension Pawn {
         // valid move
         file = newFile
         rank = newRank
+        canMoveTwoSquares = false
         return true
     }
 }
@@ -91,10 +85,10 @@ extension Pawn {
 
         switch color {
         case .white:
-            if isAtInitialPosition && newRank == rank + 2 { return true }
+            if canMoveTwoSquares && newRank == rank + 2 { return true }
             return newRank == rank + 1
         case .black:
-            if isAtInitialPosition && newRank == rank - 2 { return true }
+            if canMoveTwoSquares && newRank == rank - 2 { return true }
             return newRank == rank - 1
         }
     }
