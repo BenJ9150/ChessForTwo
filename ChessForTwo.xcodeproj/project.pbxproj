@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		430F6C792AB591BF00A2176D /* ChessBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */; };
-		430F6C7A2AB591BF00A2176D /* ChessBoardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 430F6C782AB591BF00A2176D /* ChessBoardViewController.xib */; };
+		430F6C7A2AB591BF00A2176D /* ChessBoardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 430F6C782AB591BF00A2176D /* ChessBoardView.xib */; };
 		430F6C7C2AB5997300A2176D /* ChessBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F6C7B2AB5997300A2176D /* ChessBoardView.swift */; };
 		4325101C2AB6F53100EEF9FF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4325101B2AB6F53100EEF9FF /* Extensions.swift */; };
 		43297C962AB6293A00720C60 /* ChessBoardTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43297C952AB6293A00720C60 /* ChessBoardTestCase.swift */; };
@@ -48,7 +48,7 @@
 
 /* Begin PBXFileReference section */
 		430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBoardViewController.swift; sourceTree = "<group>"; };
-		430F6C782AB591BF00A2176D /* ChessBoardViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChessBoardViewController.xib; sourceTree = "<group>"; };
+		430F6C782AB591BF00A2176D /* ChessBoardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChessBoardView.xib; sourceTree = "<group>"; };
 		430F6C7B2AB5997300A2176D /* ChessBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBoardView.swift; sourceTree = "<group>"; };
 		4325101B2AB6F53100EEF9FF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		43297C952AB6293A00720C60 /* ChessBoardTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBoardTestCase.swift; sourceTree = "<group>"; };
@@ -144,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				438F662F2AB055D00032D71F /* MainViewController.swift */,
+				430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -169,8 +170,7 @@
 			children = (
 				438F66312AB055D00032D71F /* Main.storyboard */,
 				438F66362AB055D10032D71F /* LaunchScreen.storyboard */,
-				430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */,
-				430F6C782AB591BF00A2176D /* ChessBoardViewController.xib */,
+				430F6C782AB591BF00A2176D /* ChessBoardView.xib */,
 				430F6C7B2AB5997300A2176D /* ChessBoardView.swift */,
 			);
 			path = View;
@@ -276,7 +276,7 @@
 			files = (
 				438F66382AB055D10032D71F /* LaunchScreen.storyboard in Resources */,
 				438F66352AB055D10032D71F /* Assets.xcassets in Resources */,
-				430F6C7A2AB591BF00A2176D /* ChessBoardViewController.xib in Resources */,
+				430F6C7A2AB591BF00A2176D /* ChessBoardView.xib in Resources */,
 				438F66332AB055D00032D71F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -505,8 +505,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -533,8 +532,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

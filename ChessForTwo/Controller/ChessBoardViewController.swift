@@ -11,7 +11,7 @@ class ChessBoardViewController: UIViewController {
 
     // MARK: - Public properties
 
-    static let nibName = "ChessBoardViewController"
+    static let nibName = "ChessBoardView"
 
     // MARK: - IBOutlet
 
