@@ -68,11 +68,12 @@ extension MainViewController {
     private func instantiateChessBoardVC(container: UIView, withColor color: PieceColor) -> ChessBoardViewController {
         // Instantiate View Controller
         let childVC = ChessBoardViewController(nibName: ChessBoardViewController.nibName, bundle: .main)
+        childVC.board = game.board
+        childVC.viewOfColor = color
         // Add Child View Controller
         addChild(childVC)
         // Add Child View as Subview
         childVC.view.frame = container.bounds
-        childVC.chessBoardView.viewOfColor = color
         container.addSubview(childVC.view)
         // Notify Child View Controller
         childVC.didMove(toParent: self)
@@ -85,7 +86,6 @@ extension MainViewController {
 extension MainViewController {
 
     private func startNewGame() {
-        initBoard()
         game.start()
         updateWhoIsPlaying()
     }
@@ -93,59 +93,6 @@ extension MainViewController {
     private func updateWhoIsPlaying() {
         whiteChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
         blackChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
-    }
-}
-
-// MARK: - Init board
-
-extension MainViewController {
-
-    private func initBoard() {
-        for (_, piece) in game.board {
-
-            load(piece: piece,
-                 atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank),
-                 forPlayer: .one)
-
-            load(piece: piece,
-                 atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank),
-                 forPlayer: .two)
-        }
-        // hide or hidden coordinates
-        whiteChessBoardVC.chessBoardView.whiteCoordinates.isHidden = false
-        whiteChessBoardVC.chessBoardView.blackCoordinates.isHidden = true
-        blackChessBoardVC.chessBoardView.blackCoordinates.isHidden = false
-        blackChessBoardVC.chessBoardView.whiteCoordinates.isHidden = true
-    }
-
-    private func load(piece: Piece, atSquare square: Int, forPlayer player: Player) {
-        let image: UIImageView
-        switch piece {
-        case is Pawn:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Pawn"))
-        case is Rook:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Rook"))
-        case is Knight:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Knight"))
-        case is Bishop:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Bishop"))
-        case is Queen:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Queen"))
-        case is King:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)King"))
-        default:
-            image = UIImageView()
-        }
-        // change dimension
-        image.frame = whiteChessBoardVC.chessBoardView.squaresView[0].bounds
-        // add piece to view
-        switch player {
-        case .one:
-            whiteChessBoardVC.chessBoardView.squaresView[square].addSubview(image)
-        case .two:
-            image.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
-            blackChessBoardVC.chessBoardView.squaresView[square].addSubview(image)
-        }
     }
 }
 

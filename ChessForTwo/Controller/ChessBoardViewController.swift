@@ -12,17 +12,74 @@ class ChessBoardViewController: UIViewController {
     // MARK: - Public properties
 
     static let nibName = "ChessBoardView"
+    var board: [ChessBoard: Piece]?
+    var viewOfColor: PieceColor?
 
     // MARK: - IBOutlet
 
     @IBOutlet var chessBoardView: ChessBoardView!
 }
 
-// MARK: - View did load
+// MARK: - View did appear
 
 extension ChessBoardViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        initBoard() // in view did appear to have correct frames dimensions
+    }
+}
+
+// MARK: - Init board
+
+extension ChessBoardViewController {
+
+    private func initBoard() {
+        guard let board = board, let viewOfColor = viewOfColor else { return }
+        chessBoardView.viewOfColor = viewOfColor // for notification of move
+
+        // load piece
+        for (_, piece) in board {
+            load(piece: piece,
+                 atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank),
+                 viewOfColor: viewOfColor)
+        }
+
+        // hide or hidden coordinates
+        switch viewOfColor {
+        case .white:
+            chessBoardView.whiteCoordinates.isHidden = false
+            chessBoardView.blackCoordinates.isHidden = true
+        case .black:
+            chessBoardView.blackCoordinates.isHidden = false
+            chessBoardView.whiteCoordinates.isHidden = true
+        }
+    }
+
+    private func load(piece: Piece, atSquare square: Int, viewOfColor: PieceColor) {
+        let image: UIImageView
+        switch piece {
+        case is Pawn:
+            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Pawn"))
+        case is Rook:
+            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Rook"))
+        case is Knight:
+            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Knight"))
+        case is Bishop:
+            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Bishop"))
+        case is Queen:
+            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Queen"))
+        case is King:
+            image = UIImageView(image: UIImage(named: "ic_\(piece.color)King"))
+        default:
+            image = UIImageView()
+        }
+        // change dimension
+        image.frame = chessBoardView.squaresView[0].bounds
+        // add piece to view
+        if viewOfColor == .black {
+            image.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        }
+        chessBoardView.squaresView[square].addSubview(image)
     }
 }
