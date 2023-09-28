@@ -111,6 +111,11 @@ extension MainViewController {
                  atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank),
                  forPlayer: .two)
         }
+        // hide or hidden coordinates
+        whiteChessBoardVC.chessBoardView.whiteCoordinates.isHidden = false
+        whiteChessBoardVC.chessBoardView.blackCoordinates.isHidden = true
+        blackChessBoardVC.chessBoardView.blackCoordinates.isHidden = false
+        blackChessBoardVC.chessBoardView.whiteCoordinates.isHidden = true
     }
 
     private func load(piece: Piece, atSquare square: Int, forPlayer player: Player) {

@@ -25,6 +25,8 @@ class ChessBoardView: UIView {
     // MARK: - IBOutlet
 
     @IBOutlet var squaresView: [UIView]!
+    @IBOutlet weak var whiteCoordinates: UIStackView!
+    @IBOutlet weak var blackCoordinates: UIStackView!
 }
 
 // MARK: - Touches
@@ -58,12 +60,21 @@ extension ChessBoardView {
         guard let currentSquare = currentSquare(forPoint: currentPoint) else { return }
 
         if let pieceImage = currentSquare.subviews.last {
-            // change origin for put image in view
+            // new frame of moved piece
             var frame = pieceImage.frame
-            frame.origin.x = currentPoint.x - pieceImage.bounds.width/2
-            frame.origin.y = currentPoint.y - pieceImage.bounds.height/2
+            // zoom to see the piece under the user's finger
+            let zoom = 2.75
+            frame.size.width = pieceImage.bounds.width * zoom
+            frame.size.height = pieceImage.bounds.height * zoom
+            // change origin to center piece on the tap
+            frame.origin.x = currentPoint.x - pieceImage.bounds.width * zoom/2
+            if viewOfColor == .white {
+                frame.origin.y = currentPoint.y - pieceImage.bounds.height * zoom * 2/3
+            } else {
+                frame.origin.y = currentPoint.y - pieceImage.bounds.height * zoom * 1/3
+            }
+            // add piece to view
             pieceImage.frame = frame
-            // add piece image to view
             currentPiece = pieceImage
             addSubview(currentPiece!)
             // drag is on

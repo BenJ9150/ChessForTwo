@@ -18,22 +18,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="iCi-K1-8ig">
-                                <rect key="frame" x="0.0" y="28" width="320" height="532"/>
+                                <rect key="frame" x="0.0" y="25" width="320" height="538"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G5n-jh-xJP">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="247"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="250"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="z5n-0m-wv7">
-                                                <rect key="frame" x="0.0" y="0.0" width="36.5" height="247"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="35" height="250"/>
                                             </stackView>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xMw-qF-ZFi">
-                                                <rect key="frame" x="36.5" y="0.0" width="247" height="247"/>
+                                                <rect key="frame" x="35" y="0.0" width="250" height="250"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="xMw-qF-ZFi" secondAttribute="height" multiplier="1:1" id="AOF-FQ-RQA"/>
                                                 </constraints>
                                             </containerView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="hT9-UH-4Zd">
-                                                <rect key="frame" x="283.5" y="0.0" width="36.5" height="247"/>
+                                                <rect key="frame" x="285" y="0.0" width="35" height="250"/>
                                             </stackView>
                                         </subviews>
                                         <constraints>
@@ -41,25 +41,25 @@
                                         </constraints>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Io8-QC-mLp">
-                                        <rect key="frame" x="0.0" y="247" width="320" height="38"/>
+                                        <rect key="frame" x="0.0" y="250" width="320" height="38"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="38" id="HIM-Rr-fft"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MGl-xR-xJc">
-                                        <rect key="frame" x="0.0" y="285" width="320" height="247"/>
+                                        <rect key="frame" x="0.0" y="288" width="320" height="250"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="v07-tq-GTq">
-                                                <rect key="frame" x="0.0" y="0.0" width="36.5" height="247"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="35" height="250"/>
                                             </stackView>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YsF-1R-4KL">
-                                                <rect key="frame" x="36.5" y="0.0" width="247" height="247"/>
+                                                <rect key="frame" x="35" y="0.0" width="250" height="250"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="YsF-1R-4KL" secondAttribute="height" multiplier="1:1" id="o7Z-Ro-ytD"/>
                                                 </constraints>
                                             </containerView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="HlO-V2-guC">
-                                                <rect key="frame" x="283.5" y="0.0" width="36.5" height="247"/>
+                                                <rect key="frame" x="285" y="0.0" width="35" height="250"/>
                                             </stackView>
                                         </subviews>
                                         <constraints>
@@ -75,10 +75,10 @@
                         <viewLayoutGuide key="safeArea" id="Dib-TA-0KL"/>
                         <color key="backgroundColor" name="color_mainBackground"/>
                         <constraints>
-                            <constraint firstItem="iCi-K1-8ig" firstAttribute="top" secondItem="Dib-TA-0KL" secondAttribute="top" constant="8" id="FVe-sy-URr"/>
+                            <constraint firstItem="iCi-K1-8ig" firstAttribute="top" secondItem="Dib-TA-0KL" secondAttribute="top" constant="5" id="FVe-sy-URr"/>
                             <constraint firstItem="Dib-TA-0KL" firstAttribute="trailing" secondItem="iCi-K1-8ig" secondAttribute="trailing" id="Uia-dd-LCX"/>
                             <constraint firstItem="iCi-K1-8ig" firstAttribute="leading" secondItem="Dib-TA-0KL" secondAttribute="leading" id="Wxw-Sa-PAE"/>
-                            <constraint firstItem="Dib-TA-0KL" firstAttribute="bottom" secondItem="iCi-K1-8ig" secondAttribute="bottom" constant="8" id="hbV-a8-fC0"/>
+                            <constraint firstItem="Dib-TA-0KL" firstAttribute="bottom" secondItem="iCi-K1-8ig" secondAttribute="bottom" constant="5" id="hbV-a8-fC0"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ucS-ad-XiU"/>
@@ -98,7 +98,7 @@
     </scenes>
     <resources>
         <namedColor name="color_mainBackground">
-            <color red="0.1294117719" green="0.12549020350000001" blue="0.1176470518" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.1289999932050705" green="0.125" blue="0.11800000071525574" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
 </document>
