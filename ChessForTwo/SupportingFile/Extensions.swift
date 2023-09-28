@@ -11,5 +11,6 @@ import Foundation
 
 extension Notification.Name {
     // piece moved
-    static let pieceMoved = Notification.Name("PieceMoved")
+    static let whiteMoved = Notification.Name("WhiteMoved")
+    static let blackMoved = Notification.Name("BlackMoved")
 }

@@ -9,6 +9,11 @@ import UIKit
 
 class ChessBoardView: UIView {
 
+    // MARK: Public properties
+
+    var viewOfColor: PieceColor? // for notification of move
+    var whoIsPlaying: PieceColor? // to compare if can play
+
     // MARK: Private properties
 
     private var touch: UITouch!
@@ -20,7 +25,6 @@ class ChessBoardView: UIView {
     // MARK: - IBOutlet
 
     @IBOutlet var squaresView: [UIView]!
-
 }
 
 // MARK: - Touches
@@ -48,11 +52,12 @@ extension ChessBoardView {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if viewOfColor != whoIsPlaying { return }
         // get touch
         let currentPoint = touchLocation(touches)
         guard let currentSquare = currentSquare(forPoint: currentPoint) else { return }
 
-        if let pieceImage = currentSquare.subviews.last, pieceImage is UIImageView {
+        if let pieceImage = currentSquare.subviews.last {
             // change origin for put image in view
             var frame = pieceImage.frame
             frame.origin.x = currentPoint.x - pieceImage.bounds.width/2
@@ -91,14 +96,26 @@ extension ChessBoardView {
         dragging = false
         // get piece image and current square
         guard let pieceImage = currentPiece else {return}
-        guard let currentSquare = currentSquare(forPoint: currentPoint) else { return }
+        guard let currentSquare = currentSquare(forPoint: currentPoint) else {
+            // out of boardn replace the piece
+            guard let start = movement.start else {return}
+            pieceImage.frame = squaresView[start].bounds
+            squaresView[start].addSubview(pieceImage)
+            return
+        }
         movement.end = squaresView.firstIndex(of: currentSquare)
         // add image to current square
         pieceImage.frame = currentSquare.bounds
         currentSquare.addSubview(pieceImage)
-        // notify controller
-        NotificationCenter.default.post(name: .pieceMoved, object: movement)
         // reinit current piece
         currentPiece = nil
+        // notify controller
+        guard let color = viewOfColor else { return }
+        switch color {
+        case .white:
+            NotificationCenter.default.post(name: .whiteMoved, object: movement)
+        case .black:
+            NotificationCenter.default.post(name: .blackMoved, object: movement)
+        }
     }
 }

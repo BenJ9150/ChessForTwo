@@ -10,172 +10,163 @@ import XCTest
 
 final class GameTestCase: XCTestCase {
 
-    private let player1 = "player1"
-    private let player2 = "player2"
+    // MARK: - Private properties
 
-    // MARK: - Scores
+    private let game = Game(playerOne: "player1", playerTwo: "player2")
 
-    func testGivenStartNewGame_WhenPlayerOneHasWon_ThenScoresAre1To0() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+    private let sqA7 = (1, 7)
+    private let sqA6 = (1, 6)
 
-        game.incrementScore(forPlayer: .one)
+    private let sqD2 = (4, 2)
+    private let sqD4 = (4, 4)
+    private let sqD5 = (4, 5)
 
-        XCTAssertEqual(game.score(ofPlayer: .one), 1)
-        XCTAssertEqual(game.score(ofPlayer: .two), 0)
+    private let sqE2 = (5, 2)
+    private let sqE4 = (5, 4)
+    private let sqE5 = (5, 5)
+    private let sqE7 = (5, 7)
+
+    private let sqKg1 = (7, 1)
+    private let sqKf3 = (6, 3)
+    private let sqKb8 = (2, 8)
+    private let sqKc6 = (3, 6)
+
+    private let sqQd1 = (4, 1)
+    private let sqQd3 = (4, 3)
+    private let sqQd6 = (4, 6)
+    private let sqQh3 = (8, 3)
+    private let sqQh5 = (8, 5)
+
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        game.start()
     }
 
-    // MARK: - Restart
+    // MARK: - Private methods
 
-    func testGivenGameIsLaunched_WhenRestart_ThenScoresAre0To0AndNamesDontChange() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-        game.incrementScore(forPlayer: .one)
-        game.incrementScore(forPlayer: .two)
+    private func movePiece(from: (file: Int, rank: Int),
+                           to end: (file: Int, rank: Int)) -> (isValid: Bool, capture: Bool) {
+        // coordinates
+        let startingPos = ChessBoard.posToInt(file: from.file, rank: from.rank)
+        let endingPos = ChessBoard.posToInt(file: end.file, rank: end.rank)
 
-        game.restart()
+        return game.movePiece(fromInt: startingPos, toInt: endingPos)
+    }
 
+    private func scottishOpening() -> (isValid: Bool, capture: Bool) {
+        _ = movePiece(from: sqE2, to: sqE4) // e4
+        _ = movePiece(from: sqE7, to: sqE5) // e5
+        _ = movePiece(from: sqKg1, to: sqKf3) // Kf3
+        _ = movePiece(from: sqKb8, to: sqKc6) // Kf6
+        _ = movePiece(from: sqD2, to: sqD4) // d4
+        return movePiece(from: sqE5, to: sqD4) // exd4
+    }
+
+    // MARK: - Start and pause
+
+    func testGivenStartNewGame_WhenCheckingState_ThenIsStartedAndScoreIs0To0AndWhiteToPlay() {
         XCTAssertEqual(game.score(ofPlayer: .one), 0)
         XCTAssertEqual(game.score(ofPlayer: .two), 0)
-        XCTAssertEqual(game.names[.one], player1)
-        XCTAssertEqual(game.names[.two], player2)
+        XCTAssertEqual(game.state, .isStarted)
+        XCTAssertEqual(game.currentColor, .white)
     }
 
-    // MARK: - Pieces on chess board
+    func testGivenGameIsInPause_WhenMoveE4_ThenIsNotValidMoveAndGameIsInPauseAndCurrentColorIsNil() {
+        game.pause()
 
-    func testGivenStartNewGame_WhenCheckingAt1x2_ThenThereIsPawn() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+        let move = movePiece(from: sqE2, to: sqE4)
 
-        let piece = game.piece(atFile: 1, andRank: 2)
-
-        XCTAssertTrue(piece is Pawn)
+        XCTAssertFalse(move.isValid)
+        XCTAssertEqual(game.state, .inPause)
+        XCTAssertNil(game.currentColor)
     }
 
-    func testGivenStartNewGame_WhenCheckingAt1x1_ThenThereIsRook() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+    func testGivenGameIsInPause_WhenUnpause_ThenGameIsStartedAndWhiteToPlay() {
+        game.pause()
 
-        let piece = game.piece(atFile: 1, andRank: 1)
+        game.unpause()
 
-        XCTAssertTrue(piece is Rook)
+        XCTAssertEqual(game.state, .isStarted)
+        XCTAssertEqual(game.currentColor, .white)
     }
 
-    func testGivenStartNewGame_WhenCheckingAt2x1_ThenThereIsKnight() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+    // MARK: - Scores and is over
 
-        let piece = game.piece(atFile: 2, andRank: 1)
+    func testGivenPlayerOneHasWon_WhenMoveE4_ThenScoresAre1To0AndGameIsOverAndCurrentColorIsNil() {
+        game.incrementScore(forPlayer: .one)
 
-        XCTAssertTrue(piece is Knight)
-    }
+        let move = movePiece(from: sqE2, to: sqE4)
 
-    func testGivenStartNewGame_WhenCheckingAt3x1_ThenThereIsBishop() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-
-        let piece = game.piece(atFile: 3, andRank: 1)
-
-        XCTAssertTrue(piece is Bishop)
-    }
-
-    func testGivenStartNewGame_WhenCheckingAt4x1_ThenThereIsQueen() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-
-        let piece = game.piece(atFile: 4, andRank: 1)
-
-        XCTAssertTrue(piece is Queen)
-    }
-
-    func testGivenStartNewGame_WhenCheckingAt5x1_ThenThereIsKing() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-
-        let piece = game.piece(atFile: 5, andRank: 1)
-
-        XCTAssertTrue(piece is King)
+        XCTAssertFalse(move.isValid)
+        XCTAssertEqual(game.score(ofPlayer: .one), 1)
+        XCTAssertEqual(game.score(ofPlayer: .two), 0)
+        XCTAssertEqual(game.state, .isOver)
+        XCTAssertNil(game.currentColor)
     }
 
     // MARK: - Not valid move
 
-    func testGivenStartNewGame_WhenMove1x2To1x5_ThenIsNotValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+    func testGivenStartNewGame_WhenMoveD2toD5_ThenIsNotValidMoveAndWhiteToPlay() {
+        let move = movePiece(from: sqD2, to: sqD5)
 
-        let move = game.movePiece(from: (1, 2), toPos: (1, 5))
-
-        XCTAssertFalse(move)
+        XCTAssertFalse(move.isValid)
+        XCTAssertEqual(game.currentColor, .white)
     }
 
-    func testGivenStartNewGame_WhenMove1x3To1x4_ThenIsNotValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+    func testGivenStartNewGame_WhenMoveD5_ThenIsNotValidMove() {
+        let move = movePiece(from: sqD4, to: sqD5)
 
-        let move = game.movePiece(from: (1, 3), toPos: (1, 4))
-
-        XCTAssertFalse(move)
+        XCTAssertFalse(move.isValid)
     }
 
-    // MARK: - Capture
+    func testGivenStartNewGame_WhenMoveBlackPawn_ThenIsNotValidMove() {
+        let move = movePiece(from: sqE7, to: sqE5)
 
-    func testGivenE4D5_WhenCaptureE5_ThenThereIsWhitePawnAtE5AndOneCapturedPiece() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-        _ = game.movePiece(from: (5, 2), toPos: (5, 4))
-        _ = game.movePiece(from: (4, 7), toPos: (4, 5))
-        _ = game.movePiece(from: (5, 4), toPos: (4, 5))
-
-        let piece = game.piece(atFile: 4, andRank: 5)
-
-        XCTAssertTrue(piece is Pawn)
-        XCTAssertEqual(piece?.color, .white)
-        XCTAssertEqual(game.board.count, 31)
-        XCTAssertEqual(game.capturedPieces.count, 1)
+        XCTAssertFalse(move.isValid)
     }
 
-    func testGivenE4E5Kc3Kf6_WhenKe4_ThenIsNotValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-        let move1 = game.movePiece(from: (5, 2), toPos: (5, 4))
-        let move2 = game.movePiece(from: (5, 7), toPos: (5, 5))
-        let move3 = game.movePiece(from: (2, 1), toPos: (3, 3))
-        let move4 = game.movePiece(from: (7, 8), toPos: (6, 6))
+    // MARK: - Go over a piece, not valid
 
-        let move5 = game.movePiece(from: (3, 3), toPos: (5, 4))
+    func testGivenScottishOpeningIsDone_WhenMoveQd6_ThenOpeningIsValidWithCaptureButIsNotValidMove() {
+        let opening = scottishOpening()
 
-        XCTAssertTrue(move1)
-        XCTAssertTrue(move2)
-        XCTAssertTrue(move3)
-        XCTAssertTrue(move4)
-        XCTAssertFalse(move5)
+        let move = movePiece(from: sqQd1, to: sqQd6)
+
+        XCTAssertTrue(opening.isValid)
+        XCTAssertTrue(opening.capture)
+        XCTAssertFalse(move.isValid)
     }
 
-    // MARK: - Capture with not valid move
+    func testGivenScottishOpeningIsDone_WhenMoveQh5_ThenIsNotValidMove() {
+        _ = scottishOpening()
 
-    func testGivenE4E5_WhenE5_ThenIsNotValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-        let move1 = game.movePiece(from: (5, 2), toPos: (5, 4))
-        let move2 = game.movePiece(from: (5, 7), toPos: (5, 5))
+        let move = movePiece(from: sqQd1, to: sqQh5)
 
-        let move3 = game.movePiece(from: (5, 4), toPos: (5, 5))
-
-        XCTAssertTrue(move1)
-        XCTAssertTrue(move2)
-        XCTAssertFalse(move3)
+        XCTAssertFalse(move.isValid)
     }
 
-    // MARK: Move piece with Int
+    func testGivenScottishOpeningAndQd3A6_WhenMoveQh3_ThenLastMoveIsNotValid() {
+        _ = scottishOpening()
+        let move1 = movePiece(from: sqQd1, to: sqQd3)
+        let move2 = movePiece(from: sqA7, to: sqA6)
 
-    func testGivenStartNewGame_WhenMove0To16_ThenIsValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+        let move3 = movePiece(from: sqQd3, to: sqQh3)
 
-        let move = game.movePiece(fromInt: 0, toInt: 16)
-
-        XCTAssertTrue(move)
+        XCTAssertTrue(move1.isValid)
+        XCTAssertTrue(move2.isValid)
+        XCTAssertFalse(move3.isValid)
     }
 
-    func testGivenStartNewGame_WhenMove7To63_ThenIsValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
+    // MARK: - Capture same color
 
-        let move = game.movePiece(fromInt: 7, toInt: 63)
+    func testGivenScottishOpeningIsDone_WhenMoveQf3_ThenIsNotValidMove() {
+        _ = scottishOpening()
 
-        XCTAssertTrue(move)
-    }
+        let move = movePiece(from: sqQd1, to: sqKf3)
 
-    func testGivenStartNewGame_WhenMoveLess1To16_ThenIsNotValidMove() {
-        let game = Game(playerOne: player1, playerTwo: player2)
-
-        let move = game.movePiece(fromInt: -1, toInt: 16)
-
-        XCTAssertFalse(move)
+        XCTAssertFalse(move.isValid)
+        XCTAssertFalse(move.capture)
     }
 }
