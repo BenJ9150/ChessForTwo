@@ -12,7 +12,7 @@ final class GameTestCase: XCTestCase {
 
     // MARK: - Private properties
 
-    private let game = Game(playerOne: "player1", playerTwo: "player2")
+    private var game = Game(playerOne: "player1", playerTwo: "player2")
 
     private let sqA7 = (1, 7)
     private let sqA6 = (1, 6)
@@ -41,6 +41,7 @@ final class GameTestCase: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        game = Game(playerOne: "player1", playerTwo: "player2")
         game.start()
     }
 

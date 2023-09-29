@@ -48,15 +48,9 @@ final class King: Piece {
 
 extension King {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
-        // same position
-        if newFile == file && newRank == rank { return false }
-
-        // out of chessboard
-        if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
-
-        // check move validity
-        if !validMove(newFile: newFile, newRank: newRank) { return false }
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+        let validMoves = getAllValidMoves()
+        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
@@ -64,35 +58,39 @@ extension King {
         canCastling = false
         return true
     }
-}
 
-// MARK: - Private methods
+    func getAllValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
 
-extension King {
-
-    private func validMove(newFile: Int, newRank: Int) -> Bool {
-        // file difference
-        let fileDiff: Int
-        if newFile > file {
-            fileDiff = newFile - file
-        } else {
-            fileDiff = file - newFile
+        // vertical
+        if let move = ChessBoard.getValidMovesUp(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.getValidMovesDown(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        // horizontal
+        if let move = ChessBoard.getValidMovesLeft(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.getValidMovesRight(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        // first diagonal
+        if let move = ChessBoard.getValidMovesUpRight(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.getValidMovesDownLeft(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        // second diagonal
+        if let move = ChessBoard.getValidMovesUpLeft(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.getValidMovesDownRight(fromFile: file, andRank: rank, ofColor: color).first {
+            validMoves.append(move)
         }
 
-        // rank difference
-        let rankDiff: Int
-        if newRank > rank {
-            rankDiff = newRank - rank
-        } else {
-            rankDiff = rank - newRank
-        }
-
-        // castling
-        if canCastling && rankDiff == 0 && fileDiff <= 2 {
-            return true
-        }
-
-        // check validity
-        return fileDiff <= 1 && rankDiff <= 1
+        return validMoves
     }
 }

@@ -46,28 +46,26 @@ final class Rook: Piece {
 
 extension Rook {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
-        // same position
-        if newFile == file && newRank == rank { return false }
-
-        // out of chessboard
-        if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
-
-        // check move validity
-        if !validMove(newFile: newFile, newRank: newRank) { return false }
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+        let validMoves = getAllValidMoves()
+        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
         rank = newRank
         return true
     }
-}
 
-// MARK: - Private methods
+    func getAllValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
 
-extension Rook {
+        // vertical
+        validMoves.append(contentsOf: ChessBoard.getValidMovesUp(fromFile: file, andRank: rank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.getValidMovesDown(fromFile: file, andRank: rank, ofColor: color))
+        // horizontal
+        validMoves.append(contentsOf: ChessBoard.getValidMovesLeft(fromFile: file, andRank: rank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.getValidMovesRight(fromFile: file, andRank: rank, ofColor: color))
 
-    private func validMove(newFile: Int, newRank: Int) -> Bool {
-        return newFile == file || newRank == rank
+        return validMoves
     }
 }

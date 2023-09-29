@@ -47,15 +47,15 @@ final class Pawn: Piece {
 
 extension Pawn {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
-        // same position
-        if newFile == file && newRank == rank { return false }
-
-        // out of chessboard
-        if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
-
-        // check move validity
-        if !validMove(newFile: newFile, newRank: newRank, capture: capture) { return false }
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+        let validMoves: [ChessBoard]
+        switch color {
+        case .white:
+            validMoves = getAllWhiteValidMoves()
+        case .black:
+            validMoves = getAllBlackValidMoves()
+        }
+        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
@@ -63,44 +63,118 @@ extension Pawn {
         canMoveTwoSquares = false
         return true
     }
+
+    func getAllWhiteValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+
+        // vertical and capture
+        validMoves.append(contentsOf: getWhiteValidMovesUp())
+        validMoves.append(contentsOf: getWhiteDiagonalValidMoves())
+
+        return validMoves
+    }
+
+    func getAllBlackValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+
+        // vertical and capture
+        validMoves.append(contentsOf: getBlackValidMovesDown())
+        validMoves.append(contentsOf: getBlackDiagonalValidMoves())
+
+        return validMoves
+    }
 }
 
-// MARK: - Private methods
+// MARK: - Private methods for White
 
 extension Pawn {
 
-    private func validMove(newFile: Int, newRank: Int, capture: Bool) -> Bool {
-        if capture {
-            // capture, just diagonal move
-            if !validDiagonalMove(newFile: newFile, newRank: newRank) { return false }
-        } else {
-            // no capture, just vertical move
-            if !validVerticalMove(newFile: newFile, newRank: newRank) { return false }
+    private func getWhiteValidMovesUp() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+        // vertical + 1
+        if rank < ChessBoard.maxPosition {
+            let chessBoard = ChessBoard(file: file, rank: rank + 1)
+            // check if square is empty
+            if ChessBoard.board[chessBoard] == nil {
+                validMoves.append(chessBoard)
+            }
         }
-        return true
+        // vertical + 2
+        if canMoveTwoSquares && validMoves.count == 1 && rank + 1 < ChessBoard.maxPosition {
+            let chessBoard = ChessBoard(file: file, rank: rank + 2)
+            // check if square is empty
+            if ChessBoard.board[chessBoard] == nil {
+                validMoves.append(chessBoard)
+            }
+        }
+        return validMoves
     }
 
-    private func validVerticalMove(newFile: Int, newRank: Int) -> Bool {
-        if newFile != file { return false }
-
-        switch color {
-        case .white:
-            if canMoveTwoSquares && newRank == rank + 2 { return true }
-            return newRank == rank + 1
-        case .black:
-            if canMoveTwoSquares && newRank == rank - 2 { return true }
-            return newRank == rank - 1
+    private func getWhiteDiagonalValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+        // Left - Up
+        if rank < ChessBoard.maxPosition && file > ChessBoard.minPosition {
+            let chessBoard = ChessBoard(file: file - 1, rank: rank + 1)
+            // check if capture
+            if let piece = ChessBoard.board[chessBoard], piece.color != color {
+                validMoves.append(chessBoard)
+            }
         }
+        // Right - Up
+        if rank < ChessBoard.maxPosition && file < ChessBoard.maxPosition {
+            let chessBoard = ChessBoard(file: file + 1, rank: rank + 1)
+            // check if capture
+            if let piece = ChessBoard.board[chessBoard], piece.color != color {
+                validMoves.append(chessBoard)
+            }
+        }
+        return validMoves
+    }
+}
+
+// MARK: - Private methods for Black
+
+extension Pawn {
+
+    private func getBlackValidMovesDown() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+        // vertical - 1
+        if rank > ChessBoard.minPosition {
+            let chessBoard = ChessBoard(file: file, rank: rank - 1)
+            // check if square is empty
+            if ChessBoard.board[chessBoard] == nil {
+                validMoves.append(chessBoard)
+            }
+        }
+        // vertical - 2
+        if canMoveTwoSquares && validMoves.count == 1 && rank - 1 > ChessBoard.minPosition {
+            let chessBoard = ChessBoard(file: file, rank: rank - 2)
+            // check if square is empty
+            if ChessBoard.board[chessBoard] == nil {
+                validMoves.append(chessBoard)
+            }
+        }
+        return validMoves
     }
 
-    private func validDiagonalMove(newFile: Int, newRank: Int) -> Bool {
-        let validFile = newFile == file + 1 || newFile == file - 1
-
-        switch color {
-        case .white:
-            return validFile && newRank == rank + 1
-        case .black:
-            return validFile && newRank == rank - 1
+    private func getBlackDiagonalValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+        // Left - Down
+        if rank > ChessBoard.minPosition && file > ChessBoard.minPosition {
+            let chessBoard = ChessBoard(file: file - 1, rank: rank - 1)
+            // check if capture
+            if let piece = ChessBoard.board[chessBoard], piece.color != color {
+                validMoves.append(chessBoard)
+            }
         }
+        // Right - Down
+        if rank > ChessBoard.minPosition && file < ChessBoard.maxPosition {
+            let chessBoard = ChessBoard(file: file + 1, rank: rank - 1)
+            // check if capture
+            if let piece = ChessBoard.board[chessBoard], piece.color != color {
+                validMoves.append(chessBoard)
+            }
+        }
+        return validMoves
     }
 }

@@ -46,48 +46,32 @@ final class Queen: Piece {
 
 extension Queen {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
-        // same position
-        if newFile == file && newRank == rank { return false }
-
-        // out of chessboard
-        if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
-
-        // check move validity
-        if !validMove(newFile: newFile, newRank: newRank) { return false }
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+        let validMoves = getAllValidMoves()
+        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
         rank = newRank
         return true
     }
-}
 
-// MARK: - Private methods
+    func getAllValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
 
-extension Queen {
+        // vertical
+        validMoves.append(contentsOf: ChessBoard.getValidMovesUp(fromFile: file, andRank: rank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.getValidMovesDown(fromFile: file, andRank: rank, ofColor: color))
+        // horizontal
+        validMoves.append(contentsOf: ChessBoard.getValidMovesLeft(fromFile: file, andRank: rank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.getValidMovesRight(fromFile: file, andRank: rank, ofColor: color))
+        // first diagonal
+        validMoves.append(contentsOf: ChessBoard.getValidMovesUpRight(fromFile: file, andRank: rank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.getValidMovesDownLeft(fromFile: file, andRank: rank, ofColor: color))
+        // second diagonal
+        validMoves.append(contentsOf: ChessBoard.getValidMovesUpLeft(fromFile: file, andRank: rank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.getValidMovesDownRight(fromFile: file, andRank: rank, ofColor: color))
 
-    private func validMove(newFile: Int, newRank: Int) -> Bool {
-        // file difference
-        let fileDiff: Int
-        if newFile > file {
-            fileDiff = newFile - file
-        } else {
-            fileDiff = file - newFile
-        }
-
-        // rank difference
-        let rankDiff: Int
-        if newRank > rank {
-            rankDiff = newRank - rank
-        } else {
-            rankDiff = rank - newRank
-        }
-
-        // check horizontal
-        if fileDiff == 0 || rankDiff == 0 { return true }
-
-        // check diagonal
-        return fileDiff == rankDiff
+        return validMoves
     }
 }

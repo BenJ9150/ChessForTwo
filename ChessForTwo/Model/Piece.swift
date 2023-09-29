@@ -27,5 +27,5 @@ protocol Piece {
 
     // MARK: - Public methods
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool
 }

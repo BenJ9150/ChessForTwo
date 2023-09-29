@@ -29,13 +29,6 @@ final class Knight: Piece {
     private var file: Int
     private var rank: Int
 
-    private var possibleMoves: [(file: Int, rank: Int)] {
-        return [(currentFile - 2, currentRank - 1), (currentFile - 2, currentRank + 1),
-                (currentFile - 1, currentRank - 2), (currentFile - 1, currentRank + 2),
-                (currentFile + 1, currentRank - 2), (currentFile + 1, currentRank + 2),
-                (currentFile + 2, currentRank - 1), (currentFile + 2, currentRank + 1)]
-    }
-
     // MARK: - Init
 
     init(initialFile: Int, initialRank: Int, color: PieceColor) {
@@ -53,20 +46,29 @@ final class Knight: Piece {
 
 extension Knight {
 
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int, capture: Bool) -> Bool {
-        // same position
-        if newFile == file && newRank == rank { return false }
-
-        // out of chessboard
-        if ChessBoard.isOutOfChessBoard(file: newFile, rank: newRank) { return false }
-
-        // check move validity
-        if !validMove(newFile: newFile, newRank: newRank) { return false }
+    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
+        let validMoves = getAllValidMoves()
+        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
         rank = newRank
         return true
+    }
+
+    func getAllValidMoves() -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 2, rank: currentRank - 1))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 2, rank: currentRank + 1))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 1, rank: currentRank - 2))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 1, rank: currentRank + 2))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile + 1, rank: currentRank - 2))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile + 1, rank: currentRank + 2))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile + 2, rank: currentRank - 1))
+        validMoves.append(contentsOf: checkValidMoveAt(file: currentFile + 2, rank: currentRank + 1))
+
+        return validMoves
     }
 }
 
@@ -74,10 +76,19 @@ extension Knight {
 
 extension Knight {
 
-    private func validMove(newFile: Int, newRank: Int) -> Bool {
-        for (file, rank) in possibleMoves where newFile == file && newRank == rank {
-            return true
+    private func checkValidMoveAt(file: Int, rank: Int) -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+
+        if rank < ChessBoard.maxPosition && file > ChessBoard.minPosition {
+            let chessBoard = ChessBoard(file: file, rank: rank)
+            // check if there is a piece
+            if let piece = ChessBoard.board[chessBoard] {
+                if piece.color != color { validMoves.append(chessBoard) }
+                return validMoves
+            }
+            // empty square
+            validMoves.append(chessBoard)
         }
-        return false
+        return validMoves
     }
 }

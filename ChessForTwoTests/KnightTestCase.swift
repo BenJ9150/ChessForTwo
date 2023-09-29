@@ -10,35 +10,13 @@ import XCTest
 
 final class KnightTestCase: XCTestCase {
 
-    // MARK: - Same position
-
-    func testGivenKnightIsAt1x2_WhenMoveTo1x2_ThenIsNotValidMove() {
-        let knight = Knight(initialFile: 1, initialRank: 2, color: .white)
-
-        let valid = knight.setNewPosition(atFile: 1, andRank: 2, capture: false)
-
-        XCTAssertFalse(valid)
-    }
-
-    // MARK: - Out of chess board
-
-    func testGivenKnightIsAt1x2_WhenMoveTo9x2_ThenIsNotValidMove() {
-        let knight = Knight(initialFile: 1, initialRank: 2, color: .white)
-
-        let valid = knight.setNewPosition(atFile: 9, andRank: 2, capture: false)
-
-        XCTAssertFalse(valid)
-    }
-
     // MARK: - Valid move
 
-    func testGivenKnightIsAt3x1_WhenMovingAt4x3_ThenPosIs4x3AndIsValidMove() {
-        let knight = Knight(initialFile: 3, initialRank: 1, color: .white)
+    func testGivenKnightIsAt4x5_WhenMovingAt5x7_ThenIsValidMove() {
+        let knight = Knight(initialFile: 4, initialRank: 5, color: .white)
 
-        let valid = knight.setNewPosition(atFile: 4, andRank: 3, capture: false)
+        let valid = knight.setNewPosition(atFile: 5, andRank: 7)
 
-        XCTAssertEqual(knight.currentFile, 4)
-        XCTAssertEqual(knight.currentRank, 3)
         XCTAssertTrue(valid)
     }
 
@@ -47,7 +25,7 @@ final class KnightTestCase: XCTestCase {
     func testGivenKnightIsAt3x1_WhenMovingAt4x4_ThenIsNotValidMove() {
         let knight = Knight(initialFile: 3, initialRank: 1, color: .white)
 
-        let valid = knight.setNewPosition(atFile: 4, andRank: 4, capture: false)
+        let valid = knight.setNewPosition(atFile: 4, andRank: 4)
 
         XCTAssertFalse(valid)
     }

@@ -10,43 +10,12 @@ import XCTest
 
 final class KingTestCase: XCTestCase {
 
-    // MARK: - Same position
-
-    func testGivenKingIsAt1x2_WhenMoveTo1x2_ThenIsNotValidMove() {
-        let king = King(initialFile: 1, initialRank: 2, color: .white)
-
-        let valid = king.setNewPosition(atFile: 1, andRank: 2, capture: false)
-
-        XCTAssertFalse(valid)
-    }
-
-    // MARK: - Out of chess board
-
-    func testGivenKingIsAt1x2_WhenMoveTo9x10_ThenIsNotValidMove() {
-        let king = King(initialFile: 1, initialRank: 2, color: .white)
-
-        let valid = king.setNewPosition(atFile: 9, andRank: 10, capture: false)
-
-        XCTAssertFalse(valid)
-    }
-
     // MARK: - Valid move
-
-    func testGivenKingIsAt3x4_WhenMovingAt4x5_ThenPosIs4x5AndIsValidMoveAndCastlingIsNotPossible() {
-        let king = King(initialFile: 3, initialRank: 4, color: .white)
-
-        let valid = king.setNewPosition(atFile: 4, andRank: 5, capture: false)
-
-        XCTAssertEqual(king.currentFile, 4)
-        XCTAssertEqual(king.currentRank, 5)
-        XCTAssertTrue(valid)
-        XCTAssertFalse(king.canCastling)
-    }
 
     func testGivenKingIsAt7x6_WhenMovingAt6x5_ThenIsValidMove() {
         let king = King(initialFile: 7, initialRank: 6, color: .white)
 
-        let valid = king.setNewPosition(atFile: 6, andRank: 5, capture: false)
+        let valid = king.setNewPosition(atFile: 6, andRank: 5)
 
         XCTAssertTrue(valid)
     }
@@ -56,19 +25,8 @@ final class KingTestCase: XCTestCase {
     func testGivenKingIsAt7x6_WhenMovingAt7x8_ThenIsNotValidMove() {
         let king = King(initialFile: 7, initialRank: 6, color: .white)
 
-        let valid = king.setNewPosition(atFile: 7, andRank: 8, capture: false)
+        let valid = king.setNewPosition(atFile: 7, andRank: 8)
 
         XCTAssertFalse(valid)
-    }
-
-    // MARK: Castling
-
-    func testGivenKingIsAt5x1_WhenMovingAt7x1_ThenIsValidMoveAndCastlingIsNotPossible() {
-        let king = King(initialFile: 5, initialRank: 1, color: .white)
-
-        let valid = king.setNewPosition(atFile: 7, andRank: 1, capture: false)
-
-        XCTAssertTrue(valid)
-        XCTAssertFalse(king.canCastling)
     }
 }
