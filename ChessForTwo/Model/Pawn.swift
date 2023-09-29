@@ -21,6 +21,10 @@ final class Pawn: Piece {
         return rank
     }
 
+    var movingTwoSquaresAtMove: Int? {
+        return movingTwoSqAtMove
+    }
+
     // initial positions : file, white rank
     static let initialWhitePos = [(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (8, 2)]
 
@@ -28,7 +32,8 @@ final class Pawn: Piece {
 
     private var file: Int
     private var rank: Int
-    private var canMoveTwoSquares = true
+    private var movingTwoSqAtMove: Int?
+    private var canMoveTwoSquares: Bool
 
     // MARK: - Init
 
@@ -36,6 +41,8 @@ final class Pawn: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
+        self.movingTwoSqAtMove = nil
+        self.canMoveTwoSquares = true
     }
 
     convenience init() {
@@ -57,7 +64,13 @@ extension Pawn {
         }
         if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
 
-        // valid move
+        // valid move, check if move of 2 squares
+        if abs(rank - newRank) == 2 {
+            movingTwoSqAtMove = ChessBoard.movesCount + 1 // +1 for this new move
+        } else {
+            movingTwoSqAtMove = nil
+        }
+        // update positions and move possibility
         file = newFile
         rank = newRank
         canMoveTwoSquares = false
@@ -93,19 +106,11 @@ extension Pawn {
         var validMoves: [ChessBoard] = []
         // vertical + 1
         if rank < ChessBoard.maxPosition {
-            let chessBoard = ChessBoard(file: file, rank: rank + 1)
-            // check if square is empty
-            if ChessBoard.board[chessBoard] == nil {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank + 1))
         }
         // vertical + 2
         if canMoveTwoSquares && validMoves.count == 1 && rank + 1 < ChessBoard.maxPosition {
-            let chessBoard = ChessBoard(file: file, rank: rank + 2)
-            // check if square is empty
-            if ChessBoard.board[chessBoard] == nil {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank + 2))
         }
         return validMoves
     }
@@ -114,19 +119,11 @@ extension Pawn {
         var validMoves: [ChessBoard] = []
         // Left - Up
         if rank < ChessBoard.maxPosition && file > ChessBoard.minPosition {
-            let chessBoard = ChessBoard(file: file - 1, rank: rank + 1)
-            // check if capture
-            if let piece = ChessBoard.board[chessBoard], piece.color != color {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file - 1, newRank: rank + 1))
         }
         // Right - Up
         if rank < ChessBoard.maxPosition && file < ChessBoard.maxPosition {
-            let chessBoard = ChessBoard(file: file + 1, rank: rank + 1)
-            // check if capture
-            if let piece = ChessBoard.board[chessBoard], piece.color != color {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file + 1, newRank: rank + 1))
         }
         return validMoves
     }
@@ -140,19 +137,11 @@ extension Pawn {
         var validMoves: [ChessBoard] = []
         // vertical - 1
         if rank > ChessBoard.minPosition {
-            let chessBoard = ChessBoard(file: file, rank: rank - 1)
-            // check if square is empty
-            if ChessBoard.board[chessBoard] == nil {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank - 1))
         }
         // vertical - 2
         if canMoveTwoSquares && validMoves.count == 1 && rank - 1 > ChessBoard.minPosition {
-            let chessBoard = ChessBoard(file: file, rank: rank - 2)
-            // check if square is empty
-            if ChessBoard.board[chessBoard] == nil {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank - 2))
         }
         return validMoves
     }
@@ -161,19 +150,51 @@ extension Pawn {
         var validMoves: [ChessBoard] = []
         // Left - Down
         if rank > ChessBoard.minPosition && file > ChessBoard.minPosition {
-            let chessBoard = ChessBoard(file: file - 1, rank: rank - 1)
-            // check if capture
-            if let piece = ChessBoard.board[chessBoard], piece.color != color {
-                validMoves.append(chessBoard)
-            }
+            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file - 1, newRank: rank - 1))
         }
         // Right - Down
         if rank > ChessBoard.minPosition && file < ChessBoard.maxPosition {
-            let chessBoard = ChessBoard(file: file + 1, rank: rank - 1)
-            // check if capture
-            if let piece = ChessBoard.board[chessBoard], piece.color != color {
-                validMoves.append(chessBoard)
+            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file + 1, newRank: rank - 1))
+        }
+        return validMoves
+    }
+}
+
+// MARK: - Private common methods
+
+extension Pawn {
+
+    private func getCoordinateIfCaptureAt(newFile: Int, newRank: Int) -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+        let chessBoard = ChessBoard(file: newFile, rank: newRank)
+
+        // check if square is empty for capture in passing
+        if ChessBoard.board[chessBoard] == nil {
+            // check if capture in passing
+            let chessBoardCapInPass = ChessBoard(file: newFile, rank: rank)
+            if let pieceCapInPass = ChessBoard.board[chessBoardCapInPass], pieceCapInPass.color != color {
+                // check if piece just move of 2 squares
+                if let justMoveTwoSq = pieceCapInPass.movingTwoSquaresAtMove, justMoveTwoSq == ChessBoard.movesCount {
+                    validMoves.append(chessBoard)
+                    return validMoves
+                }
             }
+        }
+
+        // check if capture
+        if let piece = ChessBoard.board[chessBoard], piece.color != color {
+            validMoves.append(chessBoard)
+        }
+        return validMoves
+    }
+
+    private func getCoordinateIfEmptyAt(newFile: Int, newRank: Int) -> [ChessBoard] {
+        var validMoves: [ChessBoard] = []
+        let chessBoard = ChessBoard(file: newFile, rank: newRank)
+
+        // check if square is empty
+        if ChessBoard.board[chessBoard] == nil {
+            validMoves.append(chessBoard)
         }
         return validMoves
     }

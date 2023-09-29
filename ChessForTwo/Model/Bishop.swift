@@ -12,6 +12,7 @@ final class Bishop: Piece {
     // MARK: - Public properties
 
     let color: PieceColor
+    var movingTwoSquaresAtMove: Int? = nil // just for protocol, use for pawn
 
     var currentFile: Int {
         return file

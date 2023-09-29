@@ -9,11 +9,15 @@ import Foundation
 
 struct ChessBoard: Hashable {
 
-    // MARK: - Public properties
+    // MARK: - Init properties
 
-    static var board: [ChessBoard: Piece] = [:]
     var file: Int
     var rank: Int
+
+    // MARK: - Public static properties
+
+    static var board: [ChessBoard: Piece] = [:]
+    static var movesCount = 0
     static let minPosition = 1
     static let maxPosition = 8
 
@@ -22,15 +26,34 @@ struct ChessBoard: Hashable {
     private static let startingRank = [0, 8, 16, 24, 32, 40, 48, 56]
 }
 
-// MARK: - Out of board
-/*
+// MARK: - Init Chessboard
+
 extension ChessBoard {
 
-    static func isOutOfChessBoard(file: Int, rank: Int) -> Bool {
-        return file < minPosition || file > maxPosition || rank < minPosition || rank > maxPosition
+    static func initChessBoard() {
+        movesCount = 0
+        board.removeAll()
+        initPiecesType(Pawn())
+        initPiecesType(Rook())
+        initPiecesType(Knight())
+        initPiecesType(Bishop())
+        initPiecesType(Queen())
+        initPiecesType(King())
     }
-}*/
 
+    private static func initPiecesType<T: Piece>(_: T) {
+        for (file, whiteRank) in T.initialWhitePos {
+            // get black rank
+            let blackRank = maxPosition + 1 - whiteRank
+            // white
+            let white = T(initialFile: file, initialRank: whiteRank, color: .white)
+            board[ChessBoard(file: file, rank: whiteRank)] = white
+            // black
+            let black = T(initialFile: file, initialRank: blackRank, color: .black)
+            board[ChessBoard(file: file, rank: blackRank)] = black
+        }
+    }
+}
 // MARK: - Convert position
 
 extension ChessBoard {
@@ -42,7 +65,7 @@ extension ChessBoard {
         if int == 0 { return (1, 1) }
         // get rank
         let rank: Int
-        if let optRank = ChessBoard.startingRank.firstIndex(where: { $0 > int }) {
+        if let optRank = startingRank.firstIndex(where: { $0 > int }) {
             rank = optRank
         } else {
             // up to 56
@@ -60,14 +83,14 @@ extension ChessBoard {
 
     static func getValidMovesUpLeft(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if rank < ChessBoard.maxPosition && file > ChessBoard.minPosition {
+        if rank < maxPosition && file > minPosition {
             var rankIndex = rank + 1
             var fileIndex = file - 1
 
-            while rankIndex <= ChessBoard.maxPosition && fileIndex >= ChessBoard.minPosition {
+            while rankIndex <= maxPosition && fileIndex >= minPosition {
                 let chessBoard = ChessBoard(file: fileIndex, rank: rankIndex)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -83,14 +106,14 @@ extension ChessBoard {
     static func getValidMovesDownRight(fromFile file: Int, andRank rank: Int,
                                        ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if rank > ChessBoard.minPosition && file < ChessBoard.maxPosition {
+        if rank > minPosition && file < maxPosition {
             var rankIndex = rank - 1
             var fileIndex = file + 1
 
-            while rankIndex >= ChessBoard.minPosition && fileIndex <= ChessBoard.maxPosition {
+            while rankIndex >= minPosition && fileIndex <= maxPosition {
                 let chessBoard = ChessBoard(file: fileIndex, rank: rankIndex)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -105,14 +128,14 @@ extension ChessBoard {
 
     static func getValidMovesUpRight(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if rank < ChessBoard.maxPosition && file < ChessBoard.maxPosition {
+        if rank < maxPosition && file < maxPosition {
             var rankIndex = rank + 1
             var fileIndex = file + 1
 
-            while rankIndex <= ChessBoard.maxPosition && fileIndex <= ChessBoard.maxPosition {
+            while rankIndex <= maxPosition && fileIndex <= maxPosition {
                 let chessBoard = ChessBoard(file: fileIndex, rank: rankIndex)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -128,14 +151,14 @@ extension ChessBoard {
     static func getValidMovesDownLeft(fromFile file: Int, andRank rank: Int,
                                       ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if rank > ChessBoard.minPosition && file > ChessBoard.minPosition {
+        if rank > minPosition && file > minPosition {
             var rankIndex = rank - 1
             var fileIndex = file - 1
 
-            while rankIndex >= ChessBoard.minPosition && fileIndex >= ChessBoard.minPosition {
+            while rankIndex >= minPosition && fileIndex >= minPosition {
                 let chessBoard = ChessBoard(file: fileIndex, rank: rankIndex)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -154,13 +177,13 @@ extension ChessBoard {
 extension ChessBoard {
     static func getValidMovesUp(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if rank < ChessBoard.maxPosition {
+        if rank < maxPosition {
             var index = rank + 1
 
-            while index <= ChessBoard.maxPosition {
+            while index <= maxPosition {
                 let chessBoard = ChessBoard(file: file, rank: index)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -174,13 +197,13 @@ extension ChessBoard {
 
     static func getValidMovesRight(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if file < ChessBoard.maxPosition {
+        if file < maxPosition {
             var index = file + 1
 
-            while index <= ChessBoard.maxPosition {
+            while index <= maxPosition {
                 let chessBoard = ChessBoard(file: index, rank: rank)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -198,13 +221,13 @@ extension ChessBoard {
 extension ChessBoard {
     static func getValidMovesDown(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if rank > ChessBoard.minPosition {
+        if rank > minPosition {
             var index = rank - 1
 
-            while index >= ChessBoard.minPosition {
+            while index >= minPosition {
                 let chessBoard = ChessBoard(file: file, rank: index)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }
@@ -218,13 +241,13 @@ extension ChessBoard {
 
     static func getValidMovesLeft(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [ChessBoard] {
         var validMoves: [ChessBoard] = []
-        if file > ChessBoard.minPosition {
+        if file > minPosition {
             var index = file - 1
 
-            while index >= ChessBoard.minPosition {
+            while index >= minPosition {
                 let chessBoard = ChessBoard(file: index, rank: rank)
                 // check if there is a piece
-                if let piece = ChessBoard.board[chessBoard] {
+                if let piece = board[chessBoard] {
                     if piece.color != color { validMoves.append(chessBoard) }
                     break
                 }

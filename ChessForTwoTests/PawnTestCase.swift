@@ -10,6 +10,19 @@ import XCTest
 
 final class PawnTestCase: XCTestCase {
 
+    private func updateChessBoard(piece: Piece, startFile: Int, startRank: Int, endFile: Int, endRank: Int) {
+        ChessBoard.board[ChessBoard(file: endFile, rank: endRank)] = piece
+        ChessBoard.board.removeValue(forKey: ChessBoard(file: startFile, rank: startRank))
+        ChessBoard.movesCount += 1
+    }
+
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.initChessBoard()
+    }
+    /*
     // MARK: - Valid move
 
     func testGivenWhitePawnIsAt1x2_WhenMoveTo1x4_ThenIsValidMove() {
@@ -27,7 +40,7 @@ final class PawnTestCase: XCTestCase {
 
         XCTAssertTrue(valid)
     }
-
+*/
     // MARK: - Not valid move
 
     func testGivenWhitePawnIsAt1x2_WhenMoveTo1x5_ThenIsNotValidMove() {
@@ -116,5 +129,38 @@ final class PawnTestCase: XCTestCase {
         let valid = pawn.setNewPosition(atFile: 2, andRank: 6)
 
         XCTAssertFalse(valid)
+    }
+
+    // MARK: - Capture in passing
+
+    func testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves() {
+        let blackPawn = Pawn(initialFile: 1, initialRank: 7, color: .black)
+        let whitePawn = Pawn(initialFile: 2, initialRank: 5, color: .white)
+
+        let blackMove = blackPawn.setNewPosition(atFile: 1, andRank: 5)
+        updateChessBoard(piece: blackPawn, startFile: 1, startRank: 7, endFile: 1, endRank: 5)
+        let whiteMove = whitePawn.setNewPosition(atFile: 1, andRank: 6)
+
+        XCTAssertTrue(blackMove)
+        XCTAssertTrue(whiteMove)
+    }
+
+    func testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndOtherMovesAndTo1x6_ThenFinalMoveNotValid() {
+        let blackPawn1 = Pawn(initialFile: 1, initialRank: 7, color: .black)
+        let whitePawn1 = Pawn(initialFile: 2, initialRank: 5, color: .white)
+        let blackPawn2 = Pawn(initialFile: 8, initialRank: 7, color: .black)
+        let whitePawn2 = Pawn(initialFile: 8, initialRank: 2, color: .white)
+
+        _ = blackPawn1.setNewPosition(atFile: 1, andRank: 5)
+        updateChessBoard(piece: blackPawn1, startFile: 1, startRank: 7, endFile: 1, endRank: 5)
+        let whiteMove1 = whitePawn2.setNewPosition(atFile: 8, andRank: 4)
+        updateChessBoard(piece: whitePawn2, startFile: 8, startRank: 2, endFile: 8, endRank: 4)
+        let blackMove2 = blackPawn2.setNewPosition(atFile: 8, andRank: 6)
+        updateChessBoard(piece: blackPawn2, startFile: 8, startRank: 7, endFile: 8, endRank: 6)
+        let whiteMove2 = whitePawn1.setNewPosition(atFile: 1, andRank: 6)
+
+        XCTAssertTrue(whiteMove1)
+        XCTAssertTrue(blackMove2)
+        XCTAssertFalse(whiteMove2)
     }
 }

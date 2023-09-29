@@ -41,7 +41,7 @@ final class Game {
     init(playerOne: String, playerTwo: String) {
         self.names = [Player.one: playerOne, Player.two: playerTwo]
         self.gameState = .isOver
-        initPieces()
+        ChessBoard.initChessBoard()
     }
 }
 
@@ -110,6 +110,10 @@ extension Game {
         } else {
             whoIsPlaying = .white
         }
+
+        // update total moves count
+        ChessBoard.movesCount += 1
+
         return captureResult
     }
 }
@@ -127,28 +131,5 @@ extension Game {
         }
         // no capture
         return (true, false)
-    }
-
-    private func initPieces() {
-        ChessBoard.board.removeAll()
-        initPiecesType(Pawn())
-        initPiecesType(Rook())
-        initPiecesType(Knight())
-        initPiecesType(Bishop())
-        initPiecesType(Queen())
-        initPiecesType(King())
-    }
-
-    private func initPiecesType<T: Piece>(_: T) {
-        for (file, whiteRank) in T.initialWhitePos {
-            // get black rank
-            let blackRank = ChessBoard.maxPosition + 1 - whiteRank
-            // white
-            let white = T(initialFile: file, initialRank: whiteRank, color: .white)
-            ChessBoard.board[ChessBoard(file: file, rank: whiteRank)] = white
-            // black
-            let black = T(initialFile: file, initialRank: blackRank, color: .black)
-            ChessBoard.board[ChessBoard(file: file, rank: blackRank)] = black
-        }
     }
 }

@@ -19,6 +19,7 @@ protocol Piece {
     var color: PieceColor { get }
     var currentFile: Int { get }
     var currentRank: Int { get }
+    var movingTwoSquaresAtMove: Int? { get }
     static var initialWhitePos: [(Int, Int)] { get }
 
     // MARK: - Init
