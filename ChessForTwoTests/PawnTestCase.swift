@@ -22,25 +22,7 @@ final class PawnTestCase: XCTestCase {
         super.setUp()
         ChessBoard.initChessBoard()
     }
-    /*
-    // MARK: - Valid move
 
-    func testGivenWhitePawnIsAt1x2_WhenMoveTo1x4_ThenIsValidMove() {
-        let pawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
-
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 4)
-
-        XCTAssertTrue(valid)
-    }
-
-    func testGivenBlackPawnIsAt1x7_WhenMoveTo1x5_ThenIsValidMove() {
-        let pawn = Pawn(initialFile: 1, initialRank: 7, color: .black)
-
-        let valid = pawn.setNewPosition(atFile: 1, andRank: 5)
-
-        XCTAssertTrue(valid)
-    }
-*/
     // MARK: - Not valid move
 
     func testGivenWhitePawnIsAt1x2_WhenMoveTo1x5_ThenIsNotValidMove() {
