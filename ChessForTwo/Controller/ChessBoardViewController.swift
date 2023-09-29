@@ -12,7 +12,6 @@ class ChessBoardViewController: UIViewController {
     // MARK: - Public properties
 
     static let nibName = "ChessBoardView"
-    var board: [ChessBoard: Piece]?
     var viewOfColor: PieceColor?
 
     // MARK: - IBOutlet
@@ -35,11 +34,11 @@ extension ChessBoardViewController {
 extension ChessBoardViewController {
 
     private func initBoard() {
-        guard let board = board, let viewOfColor = viewOfColor else { return }
+        guard let viewOfColor = viewOfColor else { return }
         chessBoardView.viewOfColor = viewOfColor // for notification of move
 
         // load piece
-        for (_, piece) in board {
+        for piece in ChessBoard.allPieces() {
             load(piece: piece,
                  atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank),
                  viewOfColor: viewOfColor)

@@ -22,6 +22,10 @@ final class Bishop: Piece {
         return rank
     }
 
+    var hasNotMoved: Bool {
+        return firstMove
+    }
+
     // initial positions : file, white rank
     static let initialWhitePos = [(3, 1), (6, 1)]
 
@@ -29,6 +33,7 @@ final class Bishop: Piece {
 
     private var file: Int
     private var rank: Int
+    private var firstMove: Bool
 
     // MARK: - Init
 
@@ -36,6 +41,7 @@ final class Bishop: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
+        self.firstMove = true
     }
 
     convenience init() {
@@ -49,16 +55,17 @@ extension Bishop {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
         let validMoves = getAllValidMoves()
-        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
+        if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
         rank = newRank
+        firstMove = false
         return true
     }
 
-    func getAllValidMoves() -> [ChessBoard] {
-        var validMoves: [ChessBoard] = []
+    func getAllValidMoves() -> [Square] {
+        var validMoves: [Square] = []
 
         // first diagonal
         validMoves.append(contentsOf: ChessBoard.getValidMovesUpRight(fromFile: file, andRank: rank, ofColor: color))

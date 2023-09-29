@@ -20,7 +20,6 @@ final class Game {
     // MARK: - Public properties
 
     let names: [Player: String]
-    var capturedPieces: [Piece] = []
     var currentColor: PieceColor? {
         return whoIsPlaying
     }
@@ -82,11 +81,11 @@ extension Game {
         // coordinates
         let start = ChessBoard.intToPos(start)
         let end = ChessBoard.intToPos(end)
-        let startingPos = ChessBoard(file: start.file, rank: start.rank)
-        let endingPos = ChessBoard(file: end.file, rank: end.rank)
+        let startingPos = Square(file: start.file, rank: start.rank)
+        let endingPos = Square(file: end.file, rank: end.rank)
 
         // get piece at start
-        guard let movedPiece = ChessBoard.board[startingPos] else { return false }
+        guard let movedPiece = ChessBoard.piece(atPosition: startingPos) else { return false }
 
         // check good color played
         if movedPiece.color != playerColor { return false }
@@ -98,15 +97,10 @@ extension Game {
         checkIfCapture(movedPiece: movedPiece, startPos: startingPos, endPos: endingPos)
 
         // change pieces position in board
-        ChessBoard.board[endingPos] = movedPiece
-        ChessBoard.board.removeValue(forKey: startingPos)
+        ChessBoard.move(piece: movedPiece, fromPosition: startingPos, toPosition: endingPos)
 
         // change who is playing
-        if whoIsPlaying == .white {
-            whoIsPlaying = .black
-        } else {
-            whoIsPlaying = .white
-        }
+        whoIsPlaying = whoIsPlaying == .white ? .black : .white
 
         // update total moves count
         ChessBoard.movesCount += 1
@@ -118,23 +112,22 @@ extension Game {
 
 extension Game {
 
-    private func checkIfCapture(movedPiece: Piece, startPos: ChessBoard, endPos: ChessBoard) {
-        if let capturedPiece = ChessBoard.board[endPos] {
+    private func checkIfCapture(movedPiece: Piece, startPos: Square, endPos: Square) {
+        if let capturedPiece = ChessBoard.piece(atPosition: endPos) {
             removeCapturedPieceAndNotify(capturedPiece: capturedPiece, position: endPos)
             return
         }
         // check capture in passing
         if movedPiece is Pawn && startPos.file != endPos.file {
             // it's a pawn that has moved on diagonal in empty case: capture in passing
-            if let capPieceInPass = ChessBoard.board[ChessBoard(file: endPos.file, rank: startPos.rank)] {
+            if let capPieceInPass = ChessBoard.piece(atPosition: Square(file: endPos.file, rank: startPos.rank)) {
                 removeCapturedPieceAndNotify(capturedPiece: capPieceInPass, position: endPos)
             }
         }
     }
 
-    private func removeCapturedPieceAndNotify(capturedPiece: Piece, position: ChessBoard) {
-        capturedPieces.append(capturedPiece)
-        ChessBoard.board.removeValue(forKey: position)
+    private func removeCapturedPieceAndNotify(capturedPiece: Piece, position: Square) {
+        ChessBoard.remove(capturedPiece: capturedPiece, atPosition: position)
         // get position in Int for notif
         let position = ChessBoard.posToInt(file: capturedPiece.currentFile, rank: capturedPiece.currentRank)
         NotificationCenter.default.post(name: .capturedPieceAtPosition, object: position)

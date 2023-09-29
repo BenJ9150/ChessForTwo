@@ -12,6 +12,13 @@ final class ChessBoardTestCase: XCTestCase {
 
     let queen = Queen(initialFile: 5, initialRank: 4, color: .white)
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.initChessBoard()
+    }
+
     // MARK: - Vertical white moves
 
     func testGivenPositionIs5x4ForWhite_WhenGoingUp_ThenValidPositionsCountIs3() {

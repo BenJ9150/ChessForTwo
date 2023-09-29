@@ -115,10 +115,10 @@ final class GameTestCase: XCTestCase {
     func testGivenScottishOpeningIsDone_WhenCheckingCapture_ThenOpeningIsValidWithOneCapturedPawnInD4() {
         let opening = scottishOpening()
 
-        let capturedPiece = game.capturedPieces[0]
+        let capturedPiece = ChessBoard.allCapturedPieces().first!
 
         XCTAssertTrue(opening)
-        XCTAssertEqual(game.capturedPieces.count, 1)
+        XCTAssertEqual(ChessBoard.allCapturedPieces().count, 1)
         XCTAssertTrue(capturedPiece is Pawn)
         XCTAssertEqual(capturedPiece.currentFile, 4)
         XCTAssertEqual(capturedPiece.currentRank, 4)

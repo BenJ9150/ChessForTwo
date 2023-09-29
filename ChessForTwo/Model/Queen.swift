@@ -22,6 +22,10 @@ final class Queen: Piece {
         return rank
     }
 
+    var hasNotMoved: Bool {
+        return firstMove
+    }
+
     // initial positions : file, white rank
     static let initialWhitePos = [(4, 1)]
 
@@ -29,6 +33,7 @@ final class Queen: Piece {
 
     private var file: Int
     private var rank: Int
+    private var firstMove: Bool
 
     // MARK: - Init
 
@@ -36,6 +41,7 @@ final class Queen: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
+        self.firstMove = true
     }
 
     convenience init() {
@@ -49,16 +55,17 @@ extension Queen {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
         let validMoves = getAllValidMoves()
-        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
+        if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
         rank = newRank
+        firstMove = false
         return true
     }
 
-    func getAllValidMoves() -> [ChessBoard] {
-        var validMoves: [ChessBoard] = []
+    func getAllValidMoves() -> [Square] {
+        var validMoves: [Square] = []
 
         // vertical
         validMoves.append(contentsOf: ChessBoard.getValidMovesUp(fromFile: file, andRank: rank, ofColor: color))

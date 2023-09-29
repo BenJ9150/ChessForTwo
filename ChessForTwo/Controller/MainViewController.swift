@@ -81,7 +81,6 @@ extension MainViewController {
     private func instantiateChessBoardVC(container: UIView, withColor color: PieceColor) -> ChessBoardViewController {
         // Instantiate View Controller
         let childVC = ChessBoardViewController(nibName: ChessBoardViewController.nibName, bundle: .main)
-        childVC.board = ChessBoard.board
         childVC.viewOfColor = color
         // Add Child View Controller
         addChild(childVC)

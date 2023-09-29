@@ -22,6 +22,10 @@ final class Knight: Piece {
         return rank
     }
 
+    var hasNotMoved: Bool {
+        return firstMove
+    }
+
     // initial positions : file, white rank
     static let initialWhitePos = [(2, 1), (7, 1)]
 
@@ -29,6 +33,7 @@ final class Knight: Piece {
 
     private var file: Int
     private var rank: Int
+    private var firstMove: Bool
 
     // MARK: - Init
 
@@ -36,6 +41,7 @@ final class Knight: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
+        self.firstMove = true
     }
 
     convenience init() {
@@ -49,16 +55,17 @@ extension Knight {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
         let validMoves = getAllValidMoves()
-        if !validMoves.contains(ChessBoard(file: newFile, rank: newRank)) { return false }
+        if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move
         file = newFile
         rank = newRank
+        firstMove = false
         return true
     }
 
-    func getAllValidMoves() -> [ChessBoard] {
-        var validMoves: [ChessBoard] = []
+    func getAllValidMoves() -> [Square] {
+        var validMoves: [Square] = []
 
         validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 2, rank: currentRank - 1))
         validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 2, rank: currentRank + 1))
@@ -77,13 +84,13 @@ extension Knight {
 
 extension Knight {
 
-    private func checkValidMoveAt(file: Int, rank: Int) -> [ChessBoard] {
-        var validMoves: [ChessBoard] = []
+    private func checkValidMoveAt(file: Int, rank: Int) -> [Square] {
+        var validMoves: [Square] = []
 
         if rank < ChessBoard.maxPosition && file > ChessBoard.minPosition {
-            let chessBoard = ChessBoard(file: file, rank: rank)
+            let chessBoard = Square(file: file, rank: rank)
             // check if there is a piece
-            if let piece = ChessBoard.board[chessBoard] {
+            if let piece = ChessBoard.piece(atPosition: chessBoard) {
                 if piece.color != color { validMoves.append(chessBoard) }
                 return validMoves
             }

@@ -19,7 +19,8 @@ protocol Piece {
     var color: PieceColor { get }
     var currentFile: Int { get }
     var currentRank: Int { get }
-    var movingTwoSquaresAtMove: Int? { get }
+    var hasNotMoved: Bool { get }
+    var movingTwoSquaresAtMove: Int? { get } // just for pawn and capture in passing
     static var initialWhitePos: [(Int, Int)] { get }
 
     // MARK: - Init
@@ -29,4 +30,5 @@ protocol Piece {
     // MARK: - Public methods
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool
+    func getAllValidMoves() -> [Square]
 }
