@@ -117,8 +117,9 @@ extension Game {
         // check capture in passing
         if movedPiece is Pawn && startPos.file != endPos.file {
             // it's a pawn that has moved on diagonal in empty case: capture in passing
-            if let capPieceInPass = ChessBoard.piece(atPosition: Square(file: endPos.file, rank: startPos.rank)) {
-                removeCapturedPieceAndNotify(capturedPiece: capPieceInPass, position: endPos)
+            let posOfCapPiece = Square(file: endPos.file, rank: startPos.rank)
+            if let capPieceInPass = ChessBoard.piece(atPosition: posOfCapPiece), capPieceInPass is Pawn {
+                removeCapturedPieceAndNotify(capturedPiece: capPieceInPass, position: posOfCapPiece)
             }
         }
     }

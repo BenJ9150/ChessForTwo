@@ -268,134 +268,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "214"
             endingLineNumber = "214"
-            landmarkName = "getValidMovesDownRight(fromFile:andRank:ofColor:)"
+            landmarkName = "validDownRight(fromFile:andRank:ofColor:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "297653A1-2F2B-4CBA-91D9-E75C218FA0A0"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/Pawn.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
-            landmarkName = "getCoordinateIfCaptureAt(newFile:newRank:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "297653A1-2F2B-4CBA-91D9-E75C218FA0A0 - ddc6e2eb1b3d2501"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.Pawn.getCoordinateIfCaptureAt(newFile: Swift.Int, newRank: Swift.Int) -&gt; Swift.Array&lt;ChessForTwo.ChessBoard&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Pawn.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "172"
-                  endingLineNumber = "172"
-                  offsetFromSymbolStart = "188">
-               </Location>
-               <Location
-                  uuid = "297653A1-2F2B-4CBA-91D9-E75C218FA0A0 - ddc6e2eb1b3d2501"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.Pawn.getCoordinateIfCaptureAt(newFile: Swift.Int, newRank: Swift.Int) -&gt; Swift.Array&lt;ChessForTwo.ChessBoard&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Pawn.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "172"
-                  endingLineNumber = "172"
-                  offsetFromSymbolStart = "196">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "12081C6C-B2D7-4E92-ACC8-8190C9928E43"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/Pawn.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "201"
-            endingLineNumber = "201"
-            landmarkName = "getCoordinateIfCaptureAt(newFile:newRank:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "12081C6C-B2D7-4E92-ACC8-8190C9928E43 - ddc6e2eb1b3d24bf"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.Pawn.getCoordinateIfCaptureAt(newFile: Swift.Int, newRank: Swift.Int) -&gt; Swift.Array&lt;ChessForTwo.ChessBoard&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Pawn.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "174"
-                  endingLineNumber = "174"
-                  offsetFromSymbolStart = "424">
-               </Location>
-               <Location
-                  uuid = "12081C6C-B2D7-4E92-ACC8-8190C9928E43 - ddc6e2eb1b3d24bf"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.Pawn.getCoordinateIfCaptureAt(newFile: Swift.Int, newRank: Swift.Int) -&gt; Swift.Array&lt;ChessForTwo.ChessBoard&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Pawn.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "174"
-                  endingLineNumber = "174"
-                  offsetFromSymbolStart = "728">
-               </Location>
-               <Location
-                  uuid = "12081C6C-B2D7-4E92-ACC8-8190C9928E43 - ddc6e2eb1b3d249c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.Pawn.getCoordinateIfCaptureAt(newFile: Swift.Int, newRank: Swift.Int) -&gt; Swift.Array&lt;ChessForTwo.ChessBoard&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Pawn.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "175"
-                  endingLineNumber = "175"
-                  offsetFromSymbolStart = "520">
-               </Location>
-               <Location
-                  uuid = "12081C6C-B2D7-4E92-ACC8-8190C9928E43 - ddc6e2eb1b3d249c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.Pawn.getCoordinateIfCaptureAt(newFile: Swift.Int, newRank: Swift.Int) -&gt; Swift.Array&lt;ChessForTwo.ChessBoard&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Pawn.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "175"
-                  endingLineNumber = "175"
-                  offsetFromSymbolStart = "736">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -465,118 +339,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A4F6B4DB-E2C2-4B05-8506-3B07951944D9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/King.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "validMoveForCastling(atLeft:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "A4F6B4DB-E2C2-4B05-8506-3B07951944D9 - 8d49682035cc272c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.King.getValidHorizontalMoves(atLeft: Swift.Bool) -&gt; Swift.Array&lt;ChessForTwo.Coordinates&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/King.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "137"
-                  endingLineNumber = "137"
-                  offsetFromSymbolStart = "1700">
-               </Location>
-               <Location
-                  uuid = "A4F6B4DB-E2C2-4B05-8506-3B07951944D9 - 8d49682035cc2599"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.King.getValidHorizontalMoves(atLeft: Swift.Bool) -&gt; Swift.Array&lt;ChessForTwo.Coordinates&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/King.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "148"
-                  endingLineNumber = "148"
-                  offsetFromSymbolStart = "1592">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "37F193DC-6C7C-4C4F-8686-CDB20EFE700F"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/King.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "157"
-            endingLineNumber = "157"
-            landmarkName = "validMoveForCastling(atLeft:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2C3A58EC-9455-4A61-BBBE-B1A9FA9B98BE"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/King.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
-            landmarkName = "validMoveForCastling(atLeft:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2C3A58EC-9455-4A61-BBBE-B1A9FA9B98BE - 8d49682035cc274f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.King.getValidHorizontalMoves(atLeft: Swift.Bool) -&gt; Swift.Array&lt;ChessForTwo.Coordinates&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/King.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "134"
-                  endingLineNumber = "134"
-                  offsetFromSymbolStart = "1588">
-               </Location>
-               <Location
-                  uuid = "2C3A58EC-9455-4A61-BBBE-B1A9FA9B98BE - 8d49682035cc2599"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ChessForTwo.King.getValidHorizontalMoves(atLeft: Swift.Bool) -&gt; Swift.Array&lt;ChessForTwo.Coordinates&gt;"
-                  moduleName = "ChessForTwo"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/King.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "148"
-                  endingLineNumber = "148"
-                  offsetFromSymbolStart = "1592">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "EF6CE8B8-780E-4107-A23C-0997893D286D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -584,8 +346,8 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
             landmarkName = "getAttackedPositions(byColor:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -656,22 +418,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DA219A06-7F12-4262-93E8-DA57C1BB43CE"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/Pawn.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "setNewPosition(atFile:andRank:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "EC3E302E-1D68-45BC-9830-4E5E3A470C88"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -688,16 +434,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A7F63F31-BEEC-4EA1-826B-5FF5FD02D3BC"
+            uuid = "6E0E7537-DECF-4839-8FA5-105715C91645"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/Pawn.swift"
+            filePath = "ChessForTwo/Model/Piece.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
             landmarkName = "setNewPosition(atFile:andRank:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0150EC38-2788-4874-A937-3A90C0CA1A57"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwo/Model/Piece.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "setNewPosition(atFile:andRank:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1301E90D-D604-47B6-8CD8-779E3E92AEC4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwo/Model/ChessBoard.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "remove(capturedPiece:atPosition:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

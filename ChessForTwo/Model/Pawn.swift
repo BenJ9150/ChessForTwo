@@ -7,92 +7,17 @@
 
 import Foundation
 
-final class Pawn: Piece {
+final class Pawn: Pieces {
 
     // MARK: - Public properties
 
-    let color: PieceColor
-
-    var movingTwoSquaresAtMove: Int? {
-        return movingTwoSqAtMove
+    override class var initialWhitePos: [(Int, Int)] {
+        return [(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (8, 2)]
     }
 
-    var currentFile: Int {
-        return file
-    }
+    // MARK: - Public methods
 
-    var currentRank: Int {
-        return rank
-    }
-
-    var oldFile: Int {
-        return lastFile
-    }
-
-    var oldRank: Int {
-        return lastRank
-    }
-
-    var hasNotMoved: Bool {
-        return firstMove
-    }
-
-    // initial positions : file, white rank
-    static let initialWhitePos = [(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (8, 2)]
-
-    // MARK: - Private properties
-
-    private var movingTwoSqAtMove: Int?
-    private var file: Int
-    private var rank: Int
-    private var lastFile: Int
-    private var lastRank: Int
-    private var firstMove: Bool
-
-    // MARK: - Init
-
-    init(initialFile: Int, initialRank: Int, color: PieceColor) {
-        self.file = initialFile
-        self.rank = initialRank
-        self.lastFile = initialFile
-        self.lastRank = initialRank
-        self.color = color
-        self.movingTwoSqAtMove = nil
-        self.firstMove = true
-    }
-
-    convenience init() {
-        self.init(initialFile: 0, initialRank: 0, color: .white)
-    }
-}
-
-// MARK: - Public methods
-
-extension Pawn {
-
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
-        let validMoves = getAllValidMoves()
-        if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
-
-        // valid move, check if move of 2 squares
-        if abs(rank - newRank) == 2 {
-            movingTwoSqAtMove = ChessBoard.movesCount + 1 // +1 for this new move
-        } else {
-            movingTwoSqAtMove = nil
-        }
-        // update positions and move possibility
-        lastFile = file
-        lastRank = rank
-        file = newFile
-        rank = newRank
-        firstMove = false
-
-        // update total moves count
-        ChessBoard.movesCount += 1
-        return true
-    }
-
-    func getAllValidMoves() -> [Square] {
+    override func getAllValidMoves() -> [Square] {
         let validMoves: [Square]
         switch color {
         case .white:
@@ -131,12 +56,12 @@ extension Pawn {
     private func getWhiteValidMovesUp() -> [Square] {
         var validMoves: [Square] = []
         // vertical + 1
-        if rank < ChessBoard.maxPosition {
-            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank + 1))
+        if currentRank < ChessBoard.maxPosition {
+            validMoves.append(contentsOf: squaresIfEmptyAt(newFile: currentFile, newRank: currentRank + 1))
         }
         // vertical + 2
-        if hasNotMoved && validMoves.count == 1 && rank + 1 < ChessBoard.maxPosition {
-            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank + 2))
+        if hasNotMoved && validMoves.count == 1 && currentRank + 1 < ChessBoard.maxPosition {
+            validMoves.append(contentsOf: squaresIfEmptyAt(newFile: currentFile, newRank: currentRank + 2))
         }
         return validMoves
     }
@@ -144,12 +69,12 @@ extension Pawn {
     private func getWhiteDiagonalValidMoves() -> [Square] {
         var validMoves: [Square] = []
         // Left - Up
-        if rank < ChessBoard.maxPosition && file > ChessBoard.minPosition {
-            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file - 1, newRank: rank + 1))
+        if currentRank < ChessBoard.maxPosition && currentFile > ChessBoard.minPosition {
+            validMoves.append(contentsOf: squaresIfCaptureAt(newFile: currentFile - 1, newRank: currentRank + 1))
         }
         // Right - Up
-        if rank < ChessBoard.maxPosition && file < ChessBoard.maxPosition {
-            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file + 1, newRank: rank + 1))
+        if currentRank < ChessBoard.maxPosition && currentFile < ChessBoard.maxPosition {
+            validMoves.append(contentsOf: squaresIfCaptureAt(newFile: currentFile + 1, newRank: currentRank + 1))
         }
         return validMoves
     }
@@ -162,12 +87,12 @@ extension Pawn {
     private func getBlackValidMovesDown() -> [Square] {
         var validMoves: [Square] = []
         // vertical - 1
-        if rank > ChessBoard.minPosition {
-            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank - 1))
+        if currentRank > ChessBoard.minPosition {
+            validMoves.append(contentsOf: squaresIfEmptyAt(newFile: currentFile, newRank: currentRank - 1))
         }
         // vertical - 2
-        if hasNotMoved && validMoves.count == 1 && rank - 1 > ChessBoard.minPosition {
-            validMoves.append(contentsOf: getCoordinateIfEmptyAt(newFile: file, newRank: rank - 2))
+        if hasNotMoved && validMoves.count == 1 && currentRank - 1 > ChessBoard.minPosition {
+            validMoves.append(contentsOf: squaresIfEmptyAt(newFile: currentFile, newRank: currentRank - 2))
         }
         return validMoves
     }
@@ -175,12 +100,12 @@ extension Pawn {
     private func getBlackDiagonalValidMoves() -> [Square] {
         var validMoves: [Square] = []
         // Left - Down
-        if rank > ChessBoard.minPosition && file > ChessBoard.minPosition {
-            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file - 1, newRank: rank - 1))
+        if currentRank > ChessBoard.minPosition && currentFile > ChessBoard.minPosition {
+            validMoves.append(contentsOf: squaresIfCaptureAt(newFile: currentFile - 1, newRank: currentRank - 1))
         }
         // Right - Down
-        if rank > ChessBoard.minPosition && file < ChessBoard.maxPosition {
-            validMoves.append(contentsOf: getCoordinateIfCaptureAt(newFile: file + 1, newRank: rank - 1))
+        if currentRank > ChessBoard.minPosition && currentFile < ChessBoard.maxPosition {
+            validMoves.append(contentsOf: squaresIfCaptureAt(newFile: currentFile + 1, newRank: currentRank - 1))
         }
         return validMoves
     }
@@ -190,14 +115,14 @@ extension Pawn {
 
 extension Pawn {
 
-    private func getCoordinateIfCaptureAt(newFile: Int, newRank: Int) -> [Square] {
+    private func squaresIfCaptureAt(newFile: Int, newRank: Int) -> [Square] {
         var validMoves: [Square] = []
         let chessBoard = Square(file: newFile, rank: newRank)
 
         // check if square is empty for capture in passing
         if ChessBoard.isEmpty(atPosition: chessBoard) {
             // check if capture in passing
-            let chessBoardCapInPass = Square(file: newFile, rank: rank)
+            let chessBoardCapInPass = Square(file: newFile, rank: currentRank)
             if let pieceCapInPass = ChessBoard.piece(atPosition: chessBoardCapInPass), pieceCapInPass.color != color {
                 // check if piece just move of 2 squares
                 if let justMoveTwoSq = pieceCapInPass.movingTwoSquaresAtMove, justMoveTwoSq == ChessBoard.movesCount {
@@ -214,7 +139,7 @@ extension Pawn {
         return validMoves
     }
 
-    private func getCoordinateIfEmptyAt(newFile: Int, newRank: Int) -> [Square] {
+    private func squaresIfEmptyAt(newFile: Int, newRank: Int) -> [Square] {
         var validMoves: [Square] = []
         let chessBoard = Square(file: newFile, rank: newRank)
 

@@ -7,67 +7,61 @@
 
 import Foundation
 
-final class King: Piece {
+final class King: Pieces {
 
     // MARK: - Public properties
 
-    let color: PieceColor
-    var movingTwoSquaresAtMove: Int? // just for protocol, use for pawn
-
-    var currentFile: Int {
-        return file
+    override class var initialWhitePos: [(Int, Int)] {
+        return [(5, 1)]
     }
 
-    var currentRank: Int {
-        return rank
+    // MARK: - Public methods
+
+    override func getAllValidMoves() -> [Square] {
+        var validMoves: [Square] = []
+
+        // vertical
+        if let move = ChessBoard.validUp(fromFile: currentFile,
+                                                 andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.validDown(fromFile: currentFile,
+                                                   andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        // horizontal
+        if let move = ChessBoard.validLeft(fromFile: currentFile,
+                                                   andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.validRight(fromFile: currentFile,
+                                                    andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        // first diagonal
+        if let move = ChessBoard.validUpRight(fromFile: currentFile,
+                                                      andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.validDownLeft(fromFile: currentFile,
+                                                       andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        // second diagonal
+        if let move = ChessBoard.validUpLeft(fromFile: currentFile,
+                                                     andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+        if let move = ChessBoard.validDownRight(fromFile: currentFile,
+                                                        andRank: currentRank, ofColor: color).first {
+            validMoves.append(move)
+        }
+
+        return validMoves
     }
 
-    var oldFile: Int {
-        return lastFile
-    }
-
-    var oldRank: Int {
-        return lastRank
-    }
-
-    var hasNotMoved: Bool {
-        return firstMove
-    }
-
-    // initial positions : file, white rank
-    static let initialWhitePos = [(5, 1)]
-
-    // MARK: - Private properties
-
-    private var file: Int
-    private var rank: Int
-    private var lastFile: Int
-    private var lastRank: Int
-    private var firstMove: Bool
-
-    // MARK: - Init
-
-    init(initialFile: Int, initialRank: Int, color: PieceColor) {
-        self.file = initialFile
-        self.rank = initialRank
-        self.lastFile = initialFile
-        self.lastRank = initialRank
-        self.color = color
-        self.firstMove = true
-    }
-
-    convenience init() {
-        self.init(initialFile: 0, initialRank: 0, color: .white)
-    }
-}
-
-// MARK: - Public methods
-
-extension King {
-
-    func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
-        var validMoves = getAllValidMoves()
-
+    override func getOtherMoves() -> [Square] {
+        var validMoves: [Square] = []
         // check for castling
         if let leftCastlingPos = validMoveForCastling(atLeft: true) {
             validMoves.append(leftCastlingPos)
@@ -75,54 +69,6 @@ extension King {
         if let rightCastlingPos = validMoveForCastling(atLeft: false) {
             validMoves.append(rightCastlingPos)
         }
-
-        // check valid move
-        if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
-
-        // valid move
-        lastFile = file
-        lastRank = rank
-        file = newFile
-        rank = newRank
-        firstMove = false
-
-        // update total moves count
-        ChessBoard.movesCount += 1
-        return true
-    }
-
-    func getAllValidMoves() -> [Square] {
-        var validMoves: [Square] = []
-
-        // vertical
-        if let move = ChessBoard.getValidMovesUp(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        if let move = ChessBoard.getValidMovesDown(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        // horizontal
-        if let move = ChessBoard.getValidMovesLeft(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        if let move = ChessBoard.getValidMovesRight(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        // first diagonal
-        if let move = ChessBoard.getValidMovesUpRight(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        if let move = ChessBoard.getValidMovesDownLeft(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        // second diagonal
-        if let move = ChessBoard.getValidMovesUpLeft(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-        if let move = ChessBoard.getValidMovesDownRight(fromFile: file, andRank: rank, ofColor: color).first {
-            validMoves.append(move)
-        }
-
         return validMoves
     }
 }
@@ -150,9 +96,9 @@ extension King {
         // check if left squares are empty
         let moves: [Square]
         if leftMoves {
-            moves = ChessBoard.getValidMovesLeft(fromFile: file, andRank: rank, ofColor: color)
+            moves = ChessBoard.validLeft(fromFile: currentFile, andRank: currentRank, ofColor: color)
         } else {
-            moves = ChessBoard.getValidMovesRight(fromFile: file, andRank: rank, ofColor: color)
+            moves = ChessBoard.validRight(fromFile: currentFile, andRank: currentRank, ofColor: color)
         }
         if moves.count != (leftMoves ? 3 : 2) { return nil }
 
@@ -160,7 +106,7 @@ extension King {
         let attackedPositions = ChessBoard.getAttackedPositions(byColor: (color == .white ? .black : .white))
 
         // check if King is attacked
-        if attackedPositions.contains(Square(file: file, rank: rank)) { return nil }
+        if attackedPositions.contains(Square(file: currentFile, rank: currentRank)) { return nil }
 
         // check if 2 left empty squares are attacked
         if attackedPositions.contains(moves[0]) || attackedPositions.contains(moves[1]) { return nil }
