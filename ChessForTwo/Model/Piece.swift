@@ -19,6 +19,8 @@ protocol Piece {
     var color: PieceColor { get }
     var currentFile: Int { get }
     var currentRank: Int { get }
+    var oldFile: Int { get }
+    var oldRank: Int { get }
     var hasNotMoved: Bool { get }
     var movingTwoSquaresAtMove: Int? { get } // just for pawn and capture in passing
     static var initialWhitePos: [(Int, Int)] { get }

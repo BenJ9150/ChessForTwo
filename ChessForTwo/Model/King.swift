@@ -22,6 +22,14 @@ final class King: Piece {
         return rank
     }
 
+    var oldFile: Int {
+        return lastFile
+    }
+
+    var oldRank: Int {
+        return lastRank
+    }
+
     var hasNotMoved: Bool {
         return firstMove
     }
@@ -33,6 +41,8 @@ final class King: Piece {
 
     private var file: Int
     private var rank: Int
+    private var lastFile: Int
+    private var lastRank: Int
     private var firstMove: Bool
 
     // MARK: - Init
@@ -40,6 +50,8 @@ final class King: Piece {
     init(initialFile: Int, initialRank: Int, color: PieceColor) {
         self.file = initialFile
         self.rank = initialRank
+        self.lastFile = initialFile
+        self.lastRank = initialRank
         self.color = color
         self.firstMove = true
     }
@@ -68,6 +80,8 @@ extension King {
         if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move
+        lastFile = file
+        lastRank = rank
         file = newFile
         rank = newRank
         firstMove = false

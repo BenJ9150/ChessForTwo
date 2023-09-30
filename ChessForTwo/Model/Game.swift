@@ -97,7 +97,7 @@ extension Game {
         checkIfCapture(movedPiece: movedPiece, startPos: startingPos, endPos: endingPos)
 
         // change pieces position in board
-        ChessBoard.move(piece: movedPiece, fromPosition: startingPos, toPosition: endingPos)
+        ChessBoard.moveAfterSetPosition(piece: movedPiece)
 
         // change who is playing
         whoIsPlaying = whoIsPlaying == .white ? .black : .white

@@ -23,6 +23,14 @@ final class Knight: Piece {
         return rank
     }
 
+    var oldFile: Int {
+        return lastFile
+    }
+
+    var oldRank: Int {
+        return lastRank
+    }
+
     // initial positions : file, white rank
     static let initialWhitePos = [(2, 1), (7, 1)]
 
@@ -30,12 +38,16 @@ final class Knight: Piece {
 
     private var file: Int
     private var rank: Int
+    private var lastFile: Int
+    private var lastRank: Int
 
     // MARK: - Init
 
     init(initialFile: Int, initialRank: Int, color: PieceColor) {
         self.file = initialFile
         self.rank = initialRank
+        self.lastFile = initialFile
+        self.lastRank = initialRank
         self.color = color
     }
 
@@ -53,6 +65,8 @@ extension Knight {
         if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move
+        lastFile = file
+        lastRank = rank
         file = newFile
         rank = newRank
 

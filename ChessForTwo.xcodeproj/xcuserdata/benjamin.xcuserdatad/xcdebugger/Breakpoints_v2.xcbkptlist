@@ -282,8 +282,8 @@
             filePath = "ChessForTwo/Model/Pawn.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
             landmarkName = "getCoordinateIfCaptureAt(newFile:newRank:)"
             landmarkType = "7">
             <Locations>
@@ -330,8 +330,8 @@
             filePath = "ChessForTwo/Model/Pawn.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "getCoordinateIfCaptureAt(newFile:newRank:)"
             landmarkType = "7">
             <Locations>
@@ -456,8 +456,8 @@
             filePath = "ChessForTwoTests/KingTestCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
             landmarkName = "testGivenKingAndRookNotMoved_WhenLittleCastling_ThenCastlingIsValid()"
             landmarkType = "7">
          </BreakpointContent>
@@ -472,8 +472,8 @@
             filePath = "ChessForTwo/Model/King.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
+            startingLineNumber = "163"
+            endingLineNumber = "163"
             landmarkName = "validMoveForCastling(atLeft:)"
             landmarkType = "7">
             <Locations>
@@ -520,8 +520,8 @@
             filePath = "ChessForTwo/Model/King.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
             landmarkName = "validMoveForCastling(atLeft:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -536,8 +536,8 @@
             filePath = "ChessForTwo/Model/King.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
             landmarkName = "validMoveForCastling(atLeft:)"
             landmarkType = "7">
             <Locations>
@@ -600,8 +600,8 @@
             filePath = "ChessForTwoTests/PawnTestCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
             landmarkName = "testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves()"
             landmarkType = "7">
             <Locations>
@@ -635,7 +635,70 @@
                   endingLineNumber = "136"
                   offsetFromSymbolStart = "368">
                </Location>
+               <Location
+                  uuid = "13F0464A-4591-47F6-838D-9806D85B47EE - 15ea4ba7c4120581"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ChessForTwoTests.PawnTestCase.testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves() -&gt; ()"
+                  moduleName = "ChessForTwoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwoTests/PawnTestCase.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "133"
+                  endingLineNumber = "133"
+                  offsetFromSymbolStart = "368">
+               </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DA219A06-7F12-4262-93E8-DA57C1BB43CE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwo/Model/Pawn.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "setNewPosition(atFile:andRank:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EC3E302E-1D68-45BC-9830-4E5E3A470C88"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwoTests/PawnTestCase.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "136"
+            endingLineNumber = "136"
+            landmarkName = "testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A7F63F31-BEEC-4EA1-826B-5FF5FD02D3BC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwo/Model/Pawn.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "setNewPosition(atFile:andRank:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

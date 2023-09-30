@@ -25,6 +25,14 @@ final class Pawn: Piece {
         return rank
     }
 
+    var oldFile: Int {
+        return lastFile
+    }
+
+    var oldRank: Int {
+        return lastRank
+    }
+
     var hasNotMoved: Bool {
         return firstMove
     }
@@ -37,6 +45,8 @@ final class Pawn: Piece {
     private var movingTwoSqAtMove: Int?
     private var file: Int
     private var rank: Int
+    private var lastFile: Int
+    private var lastRank: Int
     private var firstMove: Bool
 
     // MARK: - Init
@@ -44,6 +54,8 @@ final class Pawn: Piece {
     init(initialFile: Int, initialRank: Int, color: PieceColor) {
         self.file = initialFile
         self.rank = initialRank
+        self.lastFile = initialFile
+        self.lastRank = initialRank
         self.color = color
         self.movingTwoSqAtMove = nil
         self.firstMove = true
@@ -69,6 +81,8 @@ extension Pawn {
             movingTwoSqAtMove = nil
         }
         // update positions and move possibility
+        lastFile = file
+        lastRank = rank
         file = newFile
         rank = newRank
         firstMove = false

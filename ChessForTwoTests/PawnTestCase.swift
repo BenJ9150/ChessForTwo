@@ -19,13 +19,10 @@ final class PawnTestCase: XCTestCase {
     }
 
     private func moveAndUpdateChessBoard(piece: Piece, atFile newFile: Int, andRank newRank: Int) -> Bool {
-        let startFile = piece.currentFile
-        let startRank = piece.currentRank
         // move piece
         let move = piece.setNewPosition(atFile: newFile, andRank: newRank)
         // update chessboard
-        ChessBoard.move(piece: piece, fromPosition: Square(file: startFile, rank: startRank),
-                        toPosition: Square(file: newFile, rank: newRank))
+        ChessBoard.moveAfterSetPosition(piece: piece)
         return move
     }
 

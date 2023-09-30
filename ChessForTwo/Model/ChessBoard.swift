@@ -97,9 +97,9 @@ extension ChessBoard {
         return chessboard[position] == nil ? true : false
     }
 
-    static func move(piece: Piece, fromPosition startPos: Square, toPosition endPos: Square) {
-        chessboard[endPos] = piece
-        chessboard.removeValue(forKey: startPos)
+    static func moveAfterSetPosition(piece: Piece) {
+        chessboard[Square(file: piece.currentFile, rank: piece.currentRank)] = piece
+        chessboard.removeValue(forKey: Square(file: piece.oldFile, rank: piece.oldRank))
     }
 
     static func remove(capturedPiece: Piece, atPosition position: Square) {
