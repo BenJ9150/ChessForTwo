@@ -21,15 +21,11 @@ final class Rook: Pieces {
         var validMoves: [Square] = []
 
         // vertical
-        validMoves.append(contentsOf: ChessBoard.validUp(fromFile: currentFile,
-                                                         andRank: currentRank, ofColor: color))
-        validMoves.append(contentsOf: ChessBoard.validDown(fromFile: currentFile,
-                                                           andRank: currentRank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.validUp(file: currentFile, rank: currentRank, color: color))
+        validMoves.append(contentsOf: ChessBoard.validDown(file: currentFile, rank: currentRank, color: color))
         // horizontal
-        validMoves.append(contentsOf: ChessBoard.validLeft(fromFile: currentFile,
-                                                           andRank: currentRank, ofColor: color))
-        validMoves.append(contentsOf: ChessBoard.validRight(fromFile: currentFile,
-                                                            andRank: currentRank, ofColor: color))
+        validMoves.append(contentsOf: ChessBoard.validLeft(file: currentFile, rank: currentRank, color: color))
+        validMoves.append(contentsOf: ChessBoard.validRight(file: currentFile, rank: currentRank, color: color))
 
         return validMoves
     }

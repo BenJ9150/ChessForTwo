@@ -104,8 +104,7 @@ extension ChessBoard {
 
     static func remove(capturedPiece: Piece, atPosition position: Square) {
         capturedPieces.append(capturedPiece)
-        let result = chessboard.removeValue(forKey: position)
-        var test = 10
+        chessboard.removeValue(forKey: position)
     }
 
     static func allPieces() -> [Piece] {
@@ -170,7 +169,7 @@ extension ChessBoard {
 
 extension ChessBoard {
 
-    static func validUpLeft(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validUpLeft(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if rank < maxPosition && file > minPosition {
             var rankIndex = rank + 1
@@ -192,7 +191,7 @@ extension ChessBoard {
         return validMoves
     }
 
-    static func validDownRight(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validDownRight(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if rank > minPosition && file < maxPosition {
             var rankIndex = rank - 1
@@ -214,7 +213,7 @@ extension ChessBoard {
         return validMoves
     }
 
-    static func validUpRight(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validUpRight(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if rank < maxPosition && file < maxPosition {
             var rankIndex = rank + 1
@@ -236,7 +235,7 @@ extension ChessBoard {
         return validMoves
     }
 
-    static func validDownLeft(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validDownLeft(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if rank > minPosition && file > minPosition {
             var rankIndex = rank - 1
@@ -262,7 +261,7 @@ extension ChessBoard {
 // MARK: - Valid moves: vertical
 
 extension ChessBoard {
-    static func validUp(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validUp(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if rank < maxPosition {
             var index = rank + 1
@@ -282,7 +281,7 @@ extension ChessBoard {
         return validMoves
     }
 
-    static func validRight(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validRight(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if file < maxPosition {
             var index = file + 1
@@ -306,7 +305,7 @@ extension ChessBoard {
 // MARK: - Valid moves: horizontal
 
 extension ChessBoard {
-    static func validDown(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validDown(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if rank > minPosition {
             var index = rank - 1
@@ -326,7 +325,7 @@ extension ChessBoard {
         return validMoves
     }
 
-    static func validLeft(fromFile file: Int, andRank rank: Int, ofColor color: PieceColor) -> [Square] {
+    static func validLeft(file: Int, rank: Int, color: PieceColor) -> [Square] {
         var validMoves: [Square] = []
         if file > minPosition {
             var index = file - 1

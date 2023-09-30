@@ -266,9 +266,9 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
-            landmarkName = "validDownRight(fromFile:andRank:ofColor:)"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
+            landmarkName = "validDownRight(file:rank:color:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -346,8 +346,8 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "getAttackedPositions(byColor:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -460,22 +460,6 @@
             startingLineNumber = "102"
             endingLineNumber = "102"
             landmarkName = "setNewPosition(atFile:andRank:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1301E90D-D604-47B6-8CD8-779E3E92AEC4"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/ChessBoard.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "remove(capturedPiece:atPosition:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

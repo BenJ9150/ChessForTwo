@@ -22,13 +22,13 @@ final class ChessBoardTestCase: XCTestCase {
     // MARK: - Vertical white moves
 
     func testGivenPositionIs5x4ForWhite_WhenGoingUp_ThenValidPositionsCountIs3() {
-        let validMoves = ChessBoard.validUp(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validUp(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 3)
     }
 
     func testGivenPositionIs5x4ForWhite_WhenGoingDown_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validDown(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validDown(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 1)
     }
@@ -36,13 +36,13 @@ final class ChessBoardTestCase: XCTestCase {
     // MARK: - Horizontal white moves
 
     func testGivenPositionIs5x4ForWhite_WhenGoingLeft_ThenValidPositionsCountIs4() {
-        let validMoves = ChessBoard.validLeft(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validLeft(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 4)
     }
 
     func testGivenPositionIs5x4ForWhite_WhenGoingRight_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validRight(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validRight(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 3)
     }
@@ -50,25 +50,25 @@ final class ChessBoardTestCase: XCTestCase {
     // MARK: - Diagonal white moves
 
     func testGivenPositionIs5x4ForWhite_WhenGoingUpLeft_ThenValidPositionsCountIs3() {
-        let validMoves = ChessBoard.validUpLeft(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validUpLeft(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 3)
     }
 
     func testGivenPositionIs5x4ForWhite_WhenGoingUpRight_ThenValidPositionsCountIs3() {
-        let validMoves = ChessBoard.validUpRight(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validUpRight(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 3)
     }
 
     func testGivenPositionIs5x4ForWhite_WhenGoingDownLeft_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validDownLeft(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validDownLeft(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 1)
     }
 
     func testGivenPositionIs5x4ForWhite_WhenGoingDownRight_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validDownRight(fromFile: 5, andRank: 4, ofColor: .white)
+        let validMoves = ChessBoard.validDownRight(file: 5, rank: 4, color: .white)
 
         XCTAssertEqual(validMoves.count, 1)
     }
@@ -76,13 +76,13 @@ final class ChessBoardTestCase: XCTestCase {
     // MARK: - Vertical black moves
 
     func testGivenPositionIs4x5ForBlack_WhenGoingUp_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validUp(fromFile: 4, andRank: 5, ofColor: .black)
+        let validMoves = ChessBoard.validUp(file: 4, rank: 5, color: .black)
 
         XCTAssertEqual(validMoves.count, 1)
     }
 
     func testGivenPositionIs4x5ForBlack_WhenGoingDown_ThenValidPositionsCountIs3() {
-        let validMoves = ChessBoard.validDown(fromFile: 4, andRank: 5, ofColor: .black)
+        let validMoves = ChessBoard.validDown(file: 4, rank: 5, color: .black)
 
         XCTAssertEqual(validMoves.count, 3)
     }
@@ -90,13 +90,13 @@ final class ChessBoardTestCase: XCTestCase {
     // MARK: - Horizontal black moves
 
     func testGivenPositionIs5x2ForBlack_WhenGoingLeft_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validLeft(fromFile: 5, andRank: 2, ofColor: .black)
+        let validMoves = ChessBoard.validLeft(file: 5, rank: 2, color: .black)
 
         XCTAssertEqual(validMoves.count, 1)
     }
 
     func testGivenPositionIs5x2ForBlack_WhenGoingRight_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validRight(fromFile: 5, andRank: 2, ofColor: .black)
+        let validMoves = ChessBoard.validRight(file: 5, rank: 2, color: .black)
 
         XCTAssertEqual(validMoves.count, 1)
     }
@@ -104,25 +104,25 @@ final class ChessBoardTestCase: XCTestCase {
     // MARK: - Diagonal black moves
 
     func testGivenPositionIs4x5ForBlack_WhenGoingUpLeft_ThenValidPositionsCountIs1() {
-        let validMoves = ChessBoard.validUpLeft(fromFile: 4, andRank: 5, ofColor: .black)
+        let validMoves = ChessBoard.validUpLeft(file: 4, rank: 5, color: .black)
 
         XCTAssertEqual(validMoves.count, 1)
     }
 
     func testGivenPositionIs6x4ForBlack_WhenGoingUpRight_ThenValidPositionsCountIs2() {
-        let validMoves = ChessBoard.validUpRight(fromFile: 6, andRank: 4, ofColor: .black)
+        let validMoves = ChessBoard.validUpRight(file: 6, rank: 4, color: .black)
 
         XCTAssertEqual(validMoves.count, 2)
     }
 
     func testGivenPositionIs4x5ForBlack_WhenGoingDownLeft_ThenValidPositionsCountIs3() {
-        let validMoves = ChessBoard.validDownLeft(fromFile: 4, andRank: 5, ofColor: .black)
+        let validMoves = ChessBoard.validDownLeft(file: 4, rank: 5, color: .black)
 
         XCTAssertEqual(validMoves.count, 3)
     }
 
     func testGivenPositionIs4x5ForBlack_WhenGoingDownRight_ThenValidPositionsCountIs3() {
-        let validMoves = ChessBoard.validDownRight(fromFile: 4, andRank: 5, ofColor: .black)
+        let validMoves = ChessBoard.validDownRight(file: 4, rank: 5, color: .black)
 
         XCTAssertEqual(validMoves.count, 3)
     }

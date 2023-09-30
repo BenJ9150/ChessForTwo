@@ -21,39 +21,39 @@ final class King: Pieces {
         var validMoves: [Square] = []
 
         // vertical
-        if let move = ChessBoard.validUp(fromFile: currentFile,
-                                                 andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validUp(file: currentFile,
+                                                 rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validDown(fromFile: currentFile,
-                                                   andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validDown(file: currentFile,
+                                                   rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // horizontal
-        if let move = ChessBoard.validLeft(fromFile: currentFile,
-                                                   andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validLeft(file: currentFile,
+                                                   rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validRight(fromFile: currentFile,
-                                                    andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validRight(file: currentFile,
+                                                    rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // first diagonal
-        if let move = ChessBoard.validUpRight(fromFile: currentFile,
-                                                      andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validUpRight(file: currentFile,
+                                                      rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validDownLeft(fromFile: currentFile,
-                                                       andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validDownLeft(file: currentFile,
+                                                       rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // second diagonal
-        if let move = ChessBoard.validUpLeft(fromFile: currentFile,
-                                                     andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validUpLeft(file: currentFile,
+                                                     rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validDownRight(fromFile: currentFile,
-                                                        andRank: currentRank, ofColor: color).first {
+        if let move = ChessBoard.validDownRight(file: currentFile,
+                                                        rank: currentRank, color: color).first {
             validMoves.append(move)
         }
 
@@ -96,9 +96,9 @@ extension King {
         // check if left squares are empty
         let moves: [Square]
         if leftMoves {
-            moves = ChessBoard.validLeft(fromFile: currentFile, andRank: currentRank, ofColor: color)
+            moves = ChessBoard.validLeft(file: currentFile, rank: currentRank, color: color)
         } else {
-            moves = ChessBoard.validRight(fromFile: currentFile, andRank: currentRank, ofColor: color)
+            moves = ChessBoard.validRight(file: currentFile, rank: currentRank, color: color)
         }
         if moves.count != (leftMoves ? 3 : 2) { return nil }
 
