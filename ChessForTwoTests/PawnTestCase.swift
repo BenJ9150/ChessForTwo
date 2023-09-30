@@ -26,7 +26,6 @@ final class PawnTestCase: XCTestCase {
         // update chessboard
         ChessBoard.move(piece: piece, fromPosition: Square(file: startFile, rank: startRank),
                         toPosition: Square(file: newFile, rank: newRank))
-        ChessBoard.movesCount += 1
         return move
     }
 

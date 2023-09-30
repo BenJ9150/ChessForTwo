@@ -266,8 +266,8 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
             landmarkName = "getValidMovesDownRight(fromFile:andRank:ofColor:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -282,8 +282,8 @@
             filePath = "ChessForTwo/Model/Pawn.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "181"
-            endingLineNumber = "181"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
             landmarkName = "getCoordinateIfCaptureAt(newFile:newRank:)"
             landmarkType = "7">
             <Locations>
@@ -330,8 +330,8 @@
             filePath = "ChessForTwo/Model/Pawn.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
             landmarkName = "getCoordinateIfCaptureAt(newFile:newRank:)"
             landmarkType = "7">
             <Locations>
@@ -456,8 +456,8 @@
             filePath = "ChessForTwoTests/KingTestCase.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
             landmarkName = "testGivenKingAndRookNotMoved_WhenLittleCastling_ThenCastlingIsValid()"
             landmarkType = "7">
          </BreakpointContent>
@@ -472,8 +472,8 @@
             filePath = "ChessForTwo/Model/King.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
             landmarkName = "validMoveForCastling(atLeft:)"
             landmarkType = "7">
             <Locations>
@@ -520,8 +520,8 @@
             filePath = "ChessForTwo/Model/King.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
             landmarkName = "validMoveForCastling(atLeft:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -536,8 +536,8 @@
             filePath = "ChessForTwo/Model/King.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
             landmarkName = "validMoveForCastling(atLeft:)"
             landmarkType = "7">
             <Locations>
@@ -584,10 +584,58 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "getAttackedPositions(byColor:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "13F0464A-4591-47F6-838D-9806D85B47EE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwoTests/PawnTestCase.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "136"
+            endingLineNumber = "136"
+            landmarkName = "testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "13F0464A-4591-47F6-838D-9806D85B47EE - 15ea4ba7c412051d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ChessForTwoTests.PawnTestCase.testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves() -&gt; ()"
+                  moduleName = "ChessForTwoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwoTests/PawnTestCase.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "137"
+                  endingLineNumber = "137"
+                  offsetFromSymbolStart = "368">
+               </Location>
+               <Location
+                  uuid = "13F0464A-4591-47F6-838D-9806D85B47EE - 15ea4ba7c412057e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ChessForTwoTests.PawnTestCase.testGivenBlackIsAt1x7WhiteIsAt2x5_WhenMoveTo1x5AndTo1x6_ThenAreValidMoves() -&gt; ()"
+                  moduleName = "ChessForTwoTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwoTests/PawnTestCase.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "136"
+                  endingLineNumber = "136"
+                  offsetFromSymbolStart = "368">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -61,6 +61,9 @@ extension Rook {
         file = newFile
         rank = newRank
         firstMove = false
+
+        // update total moves count
+        ChessBoard.movesCount += 1
         return true
     }
 

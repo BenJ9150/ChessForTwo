@@ -108,11 +108,7 @@ extension ChessBoard {
     }
 
     static func allPieces() -> [Piece] {
-        var pieces: [Piece] = []
-        for (_, piece) in chessboard {
-            pieces.append(piece)
-        }
-        return pieces
+        return chessboard.map({ $0.1 })
     }
 
     static func removeAllPieces() {

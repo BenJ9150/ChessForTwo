@@ -31,7 +31,6 @@ final class KingTestCase: XCTestCase {
         // update chessboard
         ChessBoard.move(piece: piece, fromPosition: Square(file: startFile, rank: startRank),
                         toPosition: Square(file: newFile, rank: newRank))
-        ChessBoard.movesCount += 1
         return move
     }
 
@@ -46,27 +45,7 @@ final class KingTestCase: XCTestCase {
         blackRookA8 = initPieceAndAddToCB(Rook(), file: 1, rank: 8, withColor: .black)
     }
 
-    // MARK: - Valid move
-/*
-    func testGivenKingIsAt7x6_WhenMovingAt6x5_ThenIsValidMove() {
-        let king = King(initialFile: 7, initialRank: 6, color: .white)
-
-        let valid = king.setNewPosition(atFile: 6, andRank: 5)
-
-        XCTAssertTrue(valid)
-    }
-
-    // MARK: - Not valid move
-
-    func testGivenKingIsAt7x6_WhenMovingAt7x8_ThenIsNotValidMove() {
-        let king = King(initialFile: 7, initialRank: 6, color: .white)
-
-        let valid = king.setNewPosition(atFile: 7, andRank: 8)
-
-        XCTAssertFalse(valid)
-    }*/
-
-    // MARK: - Little Castling
+    // MARK: - Valid Castling
 
     func testGivenKingAndRookNotMoved_WhenLittleCastling_ThenCastlingIsValid() {
         let castling = moveAndUpdateChessBoard(piece: whiteKing, atFile: 7, andRank: 1)
@@ -91,28 +70,29 @@ final class KingTestCase: XCTestCase {
         XCTAssertTrue(castling)
     }
 
-    // MARK: - Big Castling
+    // MARK: - Not valid Castling
 
-    // Roque impossible :
+    func testGivenPieceAtB8_WhenBlackBigCastling_ThenCastlingIsNotValid() {
+        _ = initPieceAndAddToCB(Bishop(), file: 2, rank: 8, withColor: .black)
 
-    // le roi a bougé, roque impossible
-    // le roi est attaqué, roque impossible
-    // la tour a1 a bougé, grand roque blanc impossible
-    // la tour a8 a bougé, petit roque blanc impossible
-    // une pièce est en f1 ou g1, petit roque blanc impossible
-    // une pièce est en b1, c1 ou d1, grand roque blanc impossible
-    // une pièce attaque la case c1 ou d1, grand roque impossible
-    // une pièce attaque la case f1 ou g1, petit roque impossible
+        let castling = moveAndUpdateChessBoard(piece: blackKing, atFile: 3, andRank: 8)
 
-    // Petit roque blanc possible :
-    // le roi n'est pas attaqué
-    // + ni le roi ni la tour h1 n'a bougé
-    // + aucune pièce en f1 et g1
-    // + les cases f1 et g1 ne sont pas attaquées
+        XCTAssertFalse(castling)
+    }
 
-    // Grand roque blanc possible :
-    // le roi n'est pas attaqué
-    // + ni le roi ni la tour a1 n'a bougé
-    // + aucune pièce en b1, c1 et d1
-    // + les cases c1 et d1 ne sont pas attaquées
+    func testGivenWhiteBishopAtG4_WhenBlackBigCastling_ThenCastlingIsNotValid() {
+        _ = initPieceAndAddToCB(Bishop(), file: 7, rank: 4, withColor: .white)
+
+        let castling = moveAndUpdateChessBoard(piece: blackKing, atFile: 3, andRank: 8)
+
+        XCTAssertFalse(castling)
+    }
+
+    func testGivenWhiteQueenAtE3_WhenBlackBigCastling_ThenCastlingIsNotValid() {
+        _ = initPieceAndAddToCB(Queen(), file: 5, rank: 3, withColor: .white)
+
+        let castling = moveAndUpdateChessBoard(piece: blackKing, atFile: 3, andRank: 8)
+
+        XCTAssertFalse(castling)
+    }
 }

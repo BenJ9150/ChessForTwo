@@ -101,9 +101,6 @@ extension Game {
 
         // change who is playing
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
-
-        // update total moves count
-        ChessBoard.movesCount += 1
         return true
     }
 }

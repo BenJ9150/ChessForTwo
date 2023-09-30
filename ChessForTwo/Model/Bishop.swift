@@ -13,6 +13,7 @@ final class Bishop: Piece {
 
     let color: PieceColor
     var movingTwoSquaresAtMove: Int? // just for protocol, use for pawn
+    let hasNotMoved = false // just for protocol, use for pawn, rook and king
 
     var currentFile: Int {
         return file
@@ -22,10 +23,6 @@ final class Bishop: Piece {
         return rank
     }
 
-    var hasNotMoved: Bool {
-        return firstMove
-    }
-
     // initial positions : file, white rank
     static let initialWhitePos = [(3, 1), (6, 1)]
 
@@ -33,7 +30,6 @@ final class Bishop: Piece {
 
     private var file: Int
     private var rank: Int
-    private var firstMove: Bool
 
     // MARK: - Init
 
@@ -41,7 +37,6 @@ final class Bishop: Piece {
         self.file = initialFile
         self.rank = initialRank
         self.color = color
-        self.firstMove = true
     }
 
     convenience init() {
@@ -60,7 +55,9 @@ extension Bishop {
         // valid move
         file = newFile
         rank = newRank
-        firstMove = false
+
+        // update total moves count
+        ChessBoard.movesCount += 1
         return true
     }
 

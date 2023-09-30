@@ -153,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				438F665E2AB05D070032D71F /* ChessBoard.swift */,
+				433AE0682AB1B47800E523BD /* Game.swift */,
 				433AE06C2AB1DE6C00E523BD /* Piece.swift */,
 				438F66432AB056D30032D71F /* Pawn.swift */,
 				438F66492AB057960032D71F /* Rook.swift */,
@@ -160,7 +161,6 @@
 				438F66472AB0578B0032D71F /* Bishop.swift */,
 				438F664B2AB057A10032D71F /* Queen.swift */,
 				438F664D2AB057AD0032D71F /* King.swift */,
-				433AE0682AB1B47800E523BD /* Game.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
