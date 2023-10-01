@@ -33,6 +33,7 @@ protocol Pieces {
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool
     func getAttackedSquares() -> [Square]
+    func getOtherValidMoves() -> [Square]
     func cancelLastMove()
 }
 

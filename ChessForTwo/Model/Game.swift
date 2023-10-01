@@ -35,6 +35,7 @@ final class Game {
     private var whoIsPlaying: PieceColor?
     private var whoIsPlayingBeforePause: PieceColor?
     private var gameState: GameState
+    private var savedPositions: [String] = []
 
     // MARK: - Init
 
@@ -51,6 +52,7 @@ final class Game {
 extension Game {
 
     func start() {
+        savedPositions.removeAll()
         gameState = .isStarted
         whoIsPlaying = .white
     }
@@ -88,10 +90,7 @@ extension Game {
         if !movedPiece.setNewPosition(atFile: endSquare.file, andRank: endSquare.rank) { return false }
 
         // check if king is check after the move
-        if let check = isCheck(whoIsPlaying: playerColor), check == true {
-            movedPiece.cancelLastMove()
-            return false
-        }
+        if let isCheck = isCheck(whoIsPlaying: playerColor, movedPiece: movedPiece), isCheck { return false }
 
         // check if capture
         checkIfCapture(movedPiece: movedPiece, startPos: startSquare, endPos: endSquare)
@@ -99,11 +98,21 @@ extension Game {
         // change pieces position in board
         ChessBoard.moveAfterSetPosition(piece: movedPiece)
 
-        // check if opponent is check mat
-        if let checkMat = opponentIsCheckMat(whoIsPlaying: playerColor), checkMat == true {
-            gameWinByColor(playerColor)
-            return true
+        // check if opponent is checkmate or stalemate
+        if let opponentKingSquare = ChessBoard.getKingSquare(color: (playerColor == .white ? .black : .white)) {
+            let attackedSquares = ChessBoard.attackedSquares(byColor: playerColor)
+            if let opponentKing = ChessBoard.piece(atPosition: opponentKingSquare) {
+                // check if stalemate
+                if checkmate(colorPlay: playerColor, attack: attackedSquares,
+                             opponentKing: opponentKing, isAtSquare: opponentKingSquare) { return true }
+                // check if stalemate
+                if stalemate(colorPlay: playerColor, attack: attackedSquares,
+                             opponentKing: opponentKing, isAtSquare: opponentKingSquare) { return true }
+            }
         }
+
+        // check if draw by repetition
+        if savePositionAndCheckIfDrawByRepetition() { return true }
 
         // change who is playing
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
@@ -114,6 +123,14 @@ extension Game {
 // MARK: - Private methods
 
 extension Game {
+
+    private func draw() {
+        // increment score
+        scores[.one]! += 1
+        scores[.two]! += 1
+        gameState = .isOver
+        whoIsPlaying = nil
+    }
 
     private func gameWinByColor(_ playerColor: PieceColor) {
         let winner: Player
@@ -129,34 +146,95 @@ extension Game {
         whoIsPlaying = nil
     }
 
-    private func opponentIsCheckMat(whoIsPlaying: PieceColor) -> Bool? {
-        // get king square
-        guard let oppKingSquare = ChessBoard.getKingSquare(color: (whoIsPlaying == .white ? .black : .white)) else {
-            return nil
+    private func savePositionAndCheckIfDrawByRepetition() -> Bool {
+        // get current position
+        var position: [String] = []
+        for piece in ChessBoard.allPieces() {
+            position.append("\(piece.color)\(type(of: piece))\(piece.currentFile)\(piece.currentRank);")
         }
+        position.sort()
+        // current position to one string
+        var stringPosition = ""
+        for value in position {
+            stringPosition += value
+        }
+        // add current position to saved positions
+        savedPositions.append(stringPosition)
+
+        // check if 3 repetitions
+        let countedSet = NSCountedSet(array: savedPositions)
+        for value in countedSet where countedSet.count(for: value) == 3 {
+            draw()
+            return true
+        }
+        return false
+    }
+
+    private func stalemate(colorPlay: PieceColor, attack: [Square],
+                           opponentKing: Pieces, isAtSquare opponentKingSquare: Square) -> Bool {
+
+        // DIFF : check if all pieces of opponent can't move (except the king)
+        let opponentPieces = ChessBoard.allPiecesOfColor((colorPlay == .white ? .black : .white))
+        var opponentPiecesMoves: [Square] = []
+        for piece in opponentPieces {
+            if piece is King { continue }
+            if piece is Pawn {
+                opponentPiecesMoves.append(contentsOf: piece.getOtherValidMoves()) // move up
+            } else {
+                opponentPiecesMoves.append(contentsOf: piece.getAttackedSquares())
+            }
+        }
+        if opponentPiecesMoves.count > 0 { return false }
+
         // check if opponent King is check
-        let attackedSquares = ChessBoard.attackedSquares(byColor: whoIsPlaying)
-        if !attackedSquares.contains(oppKingSquare) { return false }
+        if attack.contains(opponentKingSquare) { return false } // DIFF
 
-        // check if opponent King can move, mat if not
-        guard let oppKing = ChessBoard.piece(atPosition: oppKingSquare) else { return nil }
-        let oppKingMoves = oppKing.getAttackedSquares()
-        if oppKingMoves.count <= 0 { return true }
+        // check if opponent King can move, if not: stalemate
+        let oppKingMoves = opponentKing.getAttackedSquares()
+        if oppKingMoves.count <= 0 {
+            draw() // DIFF
+            return true
+        }
 
-        // check if all opponent King moves are attacked, mat if true
-        for square in oppKingMoves where !attackedSquares.contains(square) {
+        // check if all opponent King moves are attacked, stalemate if true
+        for square in oppKingMoves where !attack.contains(square) {
             return false
         }
+        draw() // DIFF
         return true
     }
 
-    private func isCheck(whoIsPlaying: PieceColor) -> Bool? {
+    private func checkmate(colorPlay: PieceColor, attack: [Square],
+                           opponentKing: Pieces, isAtSquare opponentKingSquare: Square) -> Bool {
+
+        // check if opponent King is check
+        if !attack.contains(opponentKingSquare) { return false }
+
+        // check if opponent King can move, mat if not
+        let oppKingMoves = opponentKing.getAttackedSquares()
+        if oppKingMoves.count <= 0 {
+            gameWinByColor(colorPlay)
+            return true
+        }
+
+        // check if all opponent King moves are attacked, mat if true
+        for square in oppKingMoves where !attack.contains(square) {
+            return false
+        }
+        gameWinByColor(colorPlay)
+        return true
+    }
+
+    private func isCheck(whoIsPlaying: PieceColor, movedPiece: Pieces) -> Bool? {
         // get king square
         guard let kingSquare = ChessBoard.getKingSquare(color: whoIsPlaying) else { return nil }
         // get attacked position
-        let attackedSquares = ChessBoard.attackedSquares(byColor: (whoIsPlaying == .white ? .black : .white))
+        let attackedSquaresByOpponent = ChessBoard.attackedSquares(byColor: (whoIsPlaying == .white ? .black : .white))
         // check if King is attacked
-        if attackedSquares.contains(kingSquare) { return true }
+        if attackedSquaresByOpponent.contains(kingSquare) {
+            movedPiece.cancelLastMove()
+            return true
+        }
         return false
     }
 

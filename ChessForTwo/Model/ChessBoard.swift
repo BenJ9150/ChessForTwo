@@ -111,6 +111,14 @@ extension ChessBoard {
         return chessboard.map({ $0.1 })
     }
 
+    static func allPiecesOfColor(_ color: PieceColor) -> [Pieces] {
+        var pieces: [Pieces] = []
+        for piece in allPieces() where piece.color == color {
+            pieces.append(piece)
+        }
+        return pieces
+    }
+
     static func removeAllPieces() {
         chessboard.removeAll()
     }
