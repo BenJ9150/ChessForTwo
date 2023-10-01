@@ -24,9 +24,9 @@ class ChessBoard {
     // MARK: - Private properties
 
     private static let boardSemaphore = DispatchSemaphore(value: 1)
-    private static var safeChessboard: [Square: Piece] = [:]
+    private static var safeChessboard: [Square: Pieces] = [:]
 
-    private static var chessboard: [Square: Piece] {
+    private static var chessboard: [Square: Pieces] {
         get {
             return safeChessboard
         } set {
@@ -37,9 +37,9 @@ class ChessBoard {
     }
 
     private static let captureSemaphore = DispatchSemaphore(value: 1)
-    private static var safeCapturedPieces: [Piece] = []
+    private static var safeCapturedPieces: [Pieces] = []
 
-    private static var capturedPieces: [Piece] {
+    private static var capturedPieces: [Pieces] {
         get {
             return safeCapturedPieces
         } set {
@@ -67,7 +67,7 @@ extension ChessBoard {
         initPiecesType(King())
     }
 
-    private static func initPiecesType<T: Piece>(_: T) {
+    private static func initPiecesType<T: Pieces>(_: T) {
         for (file, whiteRank) in T.initialWhitePos {
             // get black rank
             let blackRank = maxPosition + 1 - whiteRank
@@ -85,11 +85,11 @@ extension ChessBoard {
 
 extension ChessBoard {
 
-    static func add(piece: Piece, atPosition position: Square) {
+    static func add(piece: Pieces, atPosition position: Square) {
         chessboard[position] = piece
     }
 
-    static func piece(atPosition position: Square) -> Piece? {
+    static func piece(atPosition position: Square) -> Pieces? {
         return chessboard[position]
     }
 
@@ -97,17 +97,17 @@ extension ChessBoard {
         return chessboard[position] == nil ? true : false
     }
 
-    static func moveAfterSetPosition(piece: Piece) {
+    static func moveAfterSetPosition(piece: Pieces) {
         chessboard[Square(file: piece.currentFile, rank: piece.currentRank)] = piece
         chessboard.removeValue(forKey: Square(file: piece.oldFile, rank: piece.oldRank))
     }
 
-    static func remove(capturedPiece: Piece, atPosition position: Square) {
+    static func remove(capturedPiece: Pieces, atPosition position: Square) {
         capturedPieces.append(capturedPiece)
         chessboard.removeValue(forKey: position)
     }
 
-    static func allPieces() -> [Piece] {
+    static func allPieces() -> [Pieces] {
         return chessboard.map({ $0.1 })
     }
 
@@ -115,8 +115,15 @@ extension ChessBoard {
         chessboard.removeAll()
     }
 
-    static func allCapturedPieces() -> [Piece] {
+    static func allCapturedPieces() -> [Pieces] {
         return capturedPieces
+    }
+
+    static func getKingSquare(color: PieceColor) -> Square? {
+        guard let element = chessboard.first(where: { $0.value is King && $0.value.color == color }) else {
+            return nil
+        }
+        return Square(file: element.value.currentFile, rank: element.value.currentRank)
     }
 }
 
@@ -128,8 +135,8 @@ extension ChessBoard {
         return file - 1 + (rank - 1) * maxPosition
     }
 
-    static func intToPos(_ int: Int) -> (file: Int, rank: Int) {
-        if int == 0 { return (1, 1) }
+    static func intToSquare(_ int: Int) -> Square {
+        if int == 0 { return Square(file: 1, rank: 1) }
         // get rank
         let rank: Int
         if let optRank = startingRank.firstIndex(where: { $0 > int }) {
@@ -140,7 +147,7 @@ extension ChessBoard {
         }
         // get file
         let file = int - (rank - 1) * maxPosition + 1
-        return (file, rank)
+        return Square(file: file, rank: rank)
     }
 }
 
@@ -148,17 +155,17 @@ extension ChessBoard {
 
 extension ChessBoard {
 
-    static func getAttackedPositions(byColor color: PieceColor) -> [Square] {
+    static func attackedSquares(byColor color: PieceColor) -> [Square] {
         var attackPos: [Square] = []
         let pieces = allPieces()
         switch color {
         case .white:
             for piece in pieces where piece.color == .white {
-                attackPos.append(contentsOf: piece.getAllValidMoves())
+                attackPos.append(contentsOf: piece.getAttackedSquares())
             }
         case .black:
             for piece in pieces where piece.color == .black {
-                attackPos.append(contentsOf: piece.getAllValidMoves())
+                attackPos.append(contentsOf: piece.getAttackedSquares())
             }
         }
         return attackPos

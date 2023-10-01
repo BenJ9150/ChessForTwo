@@ -266,8 +266,8 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "validDownRight(file:rank:color:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -298,24 +298,8 @@
             filePath = "ChessForTwo/Model/Game.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "movePiece(fromInt:toInt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CAF2DE48-6FD6-4DEF-9443-35F73E7C7EF5"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChessForTwo/Model/Game.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "movePiece(fromInt:toInt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -346,9 +330,9 @@
             filePath = "ChessForTwo/Model/ChessBoard.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "154"
-            endingLineNumber = "154"
-            landmarkName = "getAttackedPositions(byColor:)"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "attackedSquares(byColor:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -460,6 +444,86 @@
             startingLineNumber = "102"
             endingLineNumber = "102"
             landmarkName = "setNewPosition(atFile:andRank:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "27D910E1-4FD1-43D7-9218-CA3FAA09E4DD"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwoTests/GameTestCase.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
+            landmarkName = "testGivenBarnesOpening_WhenQueenH4_ThenIsMatBlackWin2PointsGameIsOverAndCurrentColorIsNil()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A4448260-FC11-42FB-A3C7-26A5CFF19AB4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwo/Model/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "movePiece(fromInt:toInt:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A4448260-FC11-42FB-A3C7-26A5CFF19AB4 - a3b951c0c02d9948"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ChessForTwo.Game.movePiece(fromInt: Swift.Int, toInt: Swift.Int) -&gt; Swift.Bool"
+                  moduleName = "ChessForTwo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Game.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "1288">
+               </Location>
+               <Location
+                  uuid = "A4448260-FC11-42FB-A3C7-26A5CFF19AB4 - a3b951c0c02d9948"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ChessForTwo.Game.movePiece(fromInt: Swift.Int, toInt: Swift.Int) -&gt; Swift.Bool"
+                  moduleName = "ChessForTwo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benjamin/Documents/MES%20APPLIS/ChessForTwo/ChessForTwo/Model/Game.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "103"
+                  endingLineNumber = "103"
+                  offsetFromSymbolStart = "1372">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "65E72362-ED22-4E0F-A643-3372786B17FD"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChessForTwo/Model/Game.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "opponentIsCheckMat(whoIsPlaying:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

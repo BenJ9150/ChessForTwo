@@ -10,7 +10,7 @@ import XCTest
 
 final class PawnTestCase: XCTestCase {
 
-    private func initPieceAndAddToCB<T: Piece>(_: T, file: Int, rank: Int, withColor color: PieceColor) -> T {
+    private func initPieceAndAddToCB<T: Pieces>(_: T, file: Int, rank: Int, withColor color: PieceColor) -> T {
         // init piece
         let piece = T(initialFile: file, initialRank: rank, color: color)
         // add to chessboard
@@ -18,7 +18,7 @@ final class PawnTestCase: XCTestCase {
         return piece
     }
 
-    private func moveAndUpdateChessBoard(piece: Piece, atFile newFile: Int, andRank newRank: Int) -> Bool {
+    private func moveAndUpdateChessBoard(piece: Pieces, atFile newFile: Int, andRank newRank: Int) -> Bool {
         // move piece
         let move = piece.setNewPosition(atFile: newFile, andRank: newRank)
         // update chessboard

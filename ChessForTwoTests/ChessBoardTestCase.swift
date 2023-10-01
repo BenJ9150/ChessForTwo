@@ -134,14 +134,14 @@ final class ChessBoardTestCase: XCTestCase {
     }
 
     func testGivenPositionIs0_WhenCheckingIntToPos_ThenPosIs1x1() {
-        let position = ChessBoard.intToPos(0)
+        let position = ChessBoard.intToSquare(0)
 
         XCTAssertEqual(position.file, 1)
         XCTAssertEqual(position.rank, 1)
     }
 
     func testGivenPositionIs46_WhenCheckingIntToPos_ThenPosIs7x6() {
-        let position = ChessBoard.intToPos(46)
+        let position = ChessBoard.intToSquare(46)
 
         XCTAssertEqual(position.file, 7)
         XCTAssertEqual(position.rank, 6)

@@ -12,7 +12,7 @@ enum PieceColor {
     case black
 }
 
-protocol Piece {
+protocol Pieces {
 
     // MARK: - Public properties
 
@@ -32,12 +32,13 @@ protocol Piece {
     // MARK: - Public methods
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool
-    func getAllValidMoves() -> [Square]
+    func getAttackedSquares() -> [Square]
+    func cancelLastMove()
 }
 
-class Pieces: Piece {
+class Piece: Pieces {
 
-    // MARK: - Public properties
+    // MARK: - Pieces Public properties
 
     let color: PieceColor
 
@@ -73,11 +74,15 @@ class Pieces: Piece {
     // MARK: - Private properties
 
     private var movingTwoSqAtMove: Int?
+    private var oldValueOfMovingTwoSq: Int?
+
     private var file: Int
     private var rank: Int
     private var lastFile: Int
     private var lastRank: Int
+
     private var firstMove: Bool
+    private var oldValueOfFirstMove: Bool
 
     // MARK: - Init
 
@@ -88,7 +93,9 @@ class Pieces: Piece {
         self.lastRank = initialRank
         self.color = color
         self.movingTwoSqAtMove = nil
+        self.oldValueOfMovingTwoSq = nil
         self.firstMove = true
+        self.oldValueOfFirstMove = true
     }
 
     convenience init() {
@@ -98,10 +105,11 @@ class Pieces: Piece {
     // MARK: - Public methods
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
-        let validMoves = getAllValidMoves() + getOtherMoves()
+        let validMoves = getAttackedSquares() + getOtherValidMoves()
         if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move, check if move of 2 squares
+        oldValueOfMovingTwoSq = movingTwoSqAtMove
         if abs(rank - newRank) == 2 {
             movingTwoSqAtMove = ChessBoard.movesCount + 1 // +1 for this new move
         } else {
@@ -113,6 +121,7 @@ class Pieces: Piece {
         lastRank = rank
         file = newFile
         rank = newRank
+        oldValueOfFirstMove = firstMove
         firstMove = false
 
         // update total moves count
@@ -120,15 +129,30 @@ class Pieces: Piece {
         return true
     }
 
-    // MARK: - Public methods to override
+    // MARK: - To override
 
-    func getAllValidMoves() -> [Square] {
+    func getAttackedSquares() -> [Square] {
         let validMoves: [Square] = []
         return validMoves
     }
 
-    func getOtherMoves() -> [Square] {
+    func getOtherValidMoves() -> [Square] {
         let validMoves: [Square] = []
         return validMoves
+    }
+}
+
+// MARK: - Public methods
+
+extension Piece {
+
+    func cancelLastMove() {
+        file = oldFile
+        rank = oldRank
+        movingTwoSqAtMove = oldValueOfMovingTwoSq
+        firstMove = oldValueOfFirstMove
+        if ChessBoard.movesCount > 0 {
+            ChessBoard.movesCount -= 1
+        }
     }
 }

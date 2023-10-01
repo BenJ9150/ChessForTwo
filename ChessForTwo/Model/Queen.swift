@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Queen: Pieces {
+final class Queen: Piece {
 
     // MARK: - Public properties
 
@@ -17,7 +17,7 @@ final class Queen: Pieces {
 
     // MARK: - Public methods
 
-    override func getAllValidMoves() -> [Square] {
+    override func getAttackedSquares() -> [Square] {
         var validMoves: [Square] = []
 
         // vertical

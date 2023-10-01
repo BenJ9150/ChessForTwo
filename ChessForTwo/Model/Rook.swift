@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Rook: Pieces {
+final class Rook: Piece {
 
     // MARK: - Public properties
 
@@ -17,7 +17,7 @@ final class Rook: Pieces {
 
     // MARK: - Public methods
 
-    override func getAllValidMoves() -> [Square] {
+    override func getAttackedSquares() -> [Square] {
         var validMoves: [Square] = []
 
         // vertical

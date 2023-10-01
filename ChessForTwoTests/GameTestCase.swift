@@ -14,6 +14,8 @@ final class GameTestCase: XCTestCase {
 
     private var game = Game(playerOne: "player1", playerTwo: "player2")
 
+    private let sqA2 = (1, 2)
+    private let sqA3 = (1, 3)
     private let sqA7 = (1, 7)
     private let sqA6 = (1, 6)
     private let sqA5 = (1, 5)
@@ -31,6 +33,13 @@ final class GameTestCase: XCTestCase {
     private let sqE5 = (5, 5)
     private let sqE7 = (5, 7)
 
+    private let sqF2 = (6, 2)
+    private let sqF3 = (6, 3)
+    private let sqF8 = (6, 8)
+
+    private let sqG2 = (7, 2)
+    private let sqG4 = (7, 4)
+
     private let sqKg1 = (7, 1)
     private let sqKf3 = (6, 3)
     private let sqKb8 = (2, 8)
@@ -39,7 +48,9 @@ final class GameTestCase: XCTestCase {
     private let sqQd1 = (4, 1)
     private let sqQd3 = (4, 3)
     private let sqQd6 = (4, 6)
+    private let sqQd8 = (4, 8)
     private let sqQh3 = (8, 3)
+    private let sqQh4 = (8, 4)
     private let sqQh5 = (8, 5)
 
     // MARK: - Setup
@@ -64,8 +75,7 @@ final class GameTestCase: XCTestCase {
         _ = movePiece(from: sqE7, to: sqE5) // e5
         _ = movePiece(from: sqKg1, to: sqKf3) // Kf3
         _ = movePiece(from: sqKb8, to: sqKc6) // Kf6
-        _ = movePiece(from: sqD2, to: sqD4) // d4
-        return movePiece(from: sqE5, to: sqD4) // exd4
+        return movePiece(from: sqD2, to: sqD4) // d4
     }
 
     // MARK: - Start and pause
@@ -96,28 +106,16 @@ final class GameTestCase: XCTestCase {
         XCTAssertEqual(game.currentColor, .white)
     }
 
-    // MARK: - Scores and is over
-
-    func testGivenPlayerOneHasWon_WhenMoveE4_ThenScoresAre1To0AndGameIsOverAndCurrentColorIsNil() {
-        game.incrementScore(forPlayer: .one)
-
-        let move = movePiece(from: sqE2, to: sqE4)
-
-        XCTAssertFalse(move)
-        XCTAssertEqual(game.score(ofPlayer: .one), 1)
-        XCTAssertEqual(game.score(ofPlayer: .two), 0)
-        XCTAssertEqual(game.state, .isOver)
-        XCTAssertNil(game.currentColor)
-    }
-
     // MARK: - Valid move
 
-    func testGivenScottishOpeningIsDone_WhenCheckingCapture_ThenOpeningIsValidWithOneCapturedPawnInD4() {
+    func testGivenScottishOpeningIsDone_WhenExD4_ThenOpeningIsValidWithOneCapturedPawnInD4() {
         let opening = scottishOpening()
 
-        let capturedPiece = ChessBoard.allCapturedPieces().first!
+        let capture =  movePiece(from: sqE5, to: sqD4) // exd4
 
+        let capturedPiece = ChessBoard.allCapturedPieces().first!
         XCTAssertTrue(opening)
+        XCTAssertTrue(capture)
         XCTAssertEqual(ChessBoard.allCapturedPieces().count, 1)
         XCTAssertTrue(capturedPiece is Pawn)
         XCTAssertEqual(capturedPiece.currentFile, 4)
@@ -157,4 +155,35 @@ final class GameTestCase: XCTestCase {
 
         XCTAssertFalse(move)
     }
+
+    // MARK: - Check
+
+    func testGivenScottishOpeningAndBishopAtB4_WhenA3_ThenIsNotValidMoveAndA3IsEmpty() {
+        _ = scottishOpening()
+        _ =  movePiece(from: sqF8, to: sqB4)
+
+        let move =  movePiece(from: sqA2, to: sqA3)
+
+        XCTAssertFalse(move)
+        XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 3)))
+    }
+
+    // MARK: - Check mat
+
+    func testGivenBarnesOpening_WhenQueenH4_ThenIsMatBlackWin2PointsGameIsOverAndCurrentColorIsNil() {
+        let whoPlayWithBlack: Player = game.whoPlayWithWhite == .one ? .two : .one
+        _ =  movePiece(from: sqF2, to: sqF3) // f3
+        _ =  movePiece(from: sqE7, to: sqE5) // e5
+        _ =  movePiece(from: sqG2, to: sqG4) // g4
+
+        let move =  movePiece(from: sqQd8, to: sqQh4) // Qh4#
+
+        XCTAssertTrue(move)
+        XCTAssertEqual(game.score(ofPlayer: whoPlayWithBlack), 2)
+        XCTAssertEqual(game.score(ofPlayer: game.whoPlayWithWhite), 0)
+        XCTAssertEqual(game.state, .isOver)
+        XCTAssertNil(game.currentColor)
+    }
+
+    // MARK: - Draw
 }

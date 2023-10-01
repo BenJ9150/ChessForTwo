@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Bishop: Pieces {
+final class Bishop: Piece {
 
     // MARK: - Public properties
 
@@ -17,7 +17,7 @@ final class Bishop: Pieces {
 
     // MARK: - Public methods
 
-    override func getAllValidMoves() -> [Square] {
+    override func getAttackedSquares() -> [Square] {
         var validMoves: [Square] = []
 
         // first diagonal

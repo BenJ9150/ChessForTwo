@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Pawn: Pieces {
+final class Pawn: Piece {
 
     // MARK: - Public properties
 
@@ -17,13 +17,24 @@ final class Pawn: Pieces {
 
     // MARK: - Public methods
 
-    override func getAllValidMoves() -> [Square] {
+    override func getAttackedSquares() -> [Square] {
         let validMoves: [Square]
         switch color {
         case .white:
-            validMoves = getAllWhiteValidMoves()
+            validMoves = getWhiteDiagonalValidMoves()
         case .black:
-            validMoves = getAllBlackValidMoves()
+            validMoves = getBlackDiagonalValidMoves()
+        }
+        return validMoves
+    }
+
+    override func getOtherValidMoves() -> [Square] {
+        let validMoves: [Square]
+        switch color {
+        case .white:
+            validMoves = getWhiteValidMovesUp()
+        case .black:
+            validMoves = getBlackValidMovesDown()
         }
         return validMoves
     }
@@ -32,26 +43,6 @@ final class Pawn: Pieces {
 // MARK: - Private methods for White
 
 extension Pawn {
-
-    private func getAllWhiteValidMoves() -> [Square] {
-        var validMoves: [Square] = []
-
-        // vertical and capture
-        validMoves.append(contentsOf: getWhiteValidMovesUp())
-        validMoves.append(contentsOf: getWhiteDiagonalValidMoves())
-
-        return validMoves
-    }
-
-    private func getAllBlackValidMoves() -> [Square] {
-        var validMoves: [Square] = []
-
-        // vertical and capture
-        validMoves.append(contentsOf: getBlackValidMovesDown())
-        validMoves.append(contentsOf: getBlackDiagonalValidMoves())
-
-        return validMoves
-    }
 
     private func getWhiteValidMovesUp() -> [Square] {
         var validMoves: [Square] = []

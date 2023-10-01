@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Knight: Pieces {
+final class Knight: Piece {
 
     // MARK: - Public properties
 
@@ -17,7 +17,7 @@ final class Knight: Pieces {
 
     // MARK: - Public methods
 
-    override func getAllValidMoves() -> [Square] {
+    override func getAttackedSquares() -> [Square] {
         var validMoves: [Square] = []
 
         validMoves.append(contentsOf: checkValidMoveAt(file: currentFile - 2, rank: currentRank - 1))

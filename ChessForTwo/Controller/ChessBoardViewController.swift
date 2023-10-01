@@ -55,7 +55,7 @@ extension ChessBoardViewController {
         }
     }
 
-    private func load(piece: Piece, atSquare square: Int, viewOfColor: PieceColor) {
+    private func load(piece: Pieces, atSquare square: Int, viewOfColor: PieceColor) {
         let image: UIImageView
         switch piece {
         case is Pawn:
