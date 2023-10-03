@@ -240,7 +240,7 @@ extension Game {
             let defendedSquares = ChessBoard.defendedSquares(byColor: (whoIsPlaying == .white ? .black : .white))
             let emptySquares = ValidMoves.emptySquaresBetween(opponentKing, and: playerPiece)
             for square in emptySquares where defendedSquares[square] != nil {
-                for piece in defendedSquares[square]! where type(of: piece) != type(of: King()) { return true }
+                for piece in defendedSquares[square]! where type(of: piece) != type(of: King()) { return false }
             }
         }
 

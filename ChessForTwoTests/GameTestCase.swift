@@ -13,61 +13,17 @@ final class GameTestCase: XCTestCase {
     // MARK: - Private properties
 
     private var game = Game(playerOne: "player1", playerTwo: "player2")
-
-    private let sqA1 = (1, 1)
-    private let sqA2 = (1, 2)
-    private let sqA3 = (1, 3)
-    private let sqA5 = (1, 5)
-    private let sqA6 = (1, 6)
-    private let sqA7 = (1, 7)
-    private let sqA8 = (1, 8)
-
-    private let sqB1 = (2, 1)
-    private let sqB2 = (2, 2)
-    private let sqB4 = (2, 4)
-    private let sqB5 = (2, 5)
-    private let sqB6 = (2, 6)
-    private let sqB8 = (2, 8)
-
-    private let sqC2 = (3, 2)
-    private let sqC3 = (3, 3)
-    private let sqC4 = (3, 4)
-    private let sqC6 = (3, 6)
-    private let sqC7 = (3, 7)
-
-    private let sqD1 = (4, 1)
-    private let sqD2 = (4, 2)
-    private let sqD3 = (4, 3)
-    private let sqD4 = (4, 4)
-    private let sqD5 = (4, 5)
-    private let sqD6 = (4, 6)
-    private let sqD7 = (4, 7)
-    private let sqD8 = (4, 8)
-
-    private let sqE2 = (5, 2)
-    private let sqE4 = (5, 4)
-    private let sqE5 = (5, 5)
-    private let sqE6 = (5, 6)
-    private let sqE7 = (5, 7)
-
-    private let sqF1 = (6, 1)
-    private let sqF2 = (6, 2)
-    private let sqF3 = (6, 3)
-    private let sqF6 = (6, 6)
-    private let sqF7 = (6, 7)
-    private let sqF8 = (6, 8)
-
-    private let sqG1 = (7, 1)
-    private let sqG2 = (7, 2)
-    private let sqG4 = (7, 4)
-    private let sqG5 = (7, 5)
-    private let sqG8 = (7, 8)
-
-    private let sqH3 = (8, 3)
-    private let sqH4 = (8, 4)
-    private let sqH5 = (8, 5)
-
     private var movesResult = true
+
+    private let sqA1 = (1, 1), sqA2 = (1, 2), sqA3 = (1, 3), sqA5 = (1, 5), sqA6 = (1, 6), sqA7 = (1, 7), sqA8 = (1, 8)
+    private let sqB1 = (2, 1), sqB2 = (2, 2), sqB4 = (2, 4), sqB5 = (2, 5), sqB6 = (2, 6), sqB8 = (2, 8)
+    private let sqC2 = (3, 2), sqC3 = (3, 3), sqC4 = (3, 4), sqC6 = (3, 6), sqC7 = (3, 7)
+    private let sqD1 = (4, 1), sqD2 = (4, 2), sqD3 = (4, 3), sqD4 = (4, 4)
+    private let sqD5 = (4, 5), sqD6 = (4, 6), sqD7 = (4, 7), sqD8 = (4, 8)
+    private let sqE2 = (5, 2), sqE4 = (5, 4), sqE5 = (5, 5), sqE6 = (5, 6), sqE7 = (5, 7), sqE8 = (5, 8)
+    private let sqF1 = (6, 1), sqF2 = (6, 2), sqF3 = (6, 3), sqF6 = (6, 6), sqF7 = (6, 7), sqF8 = (6, 8)
+    private let sqG1 = (7, 1), sqG2 = (7, 2), sqG4 = (7, 4), sqG5 = (7, 5), sqG6 = (7, 6), sqG7 = (7, 7), sqG8 = (7, 8)
+    private let sqH3 = (8, 3), sqH4 = (8, 4), sqH5 = (8, 5)
 
     // MARK: - Setup
 
@@ -103,6 +59,23 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqG1, to: sqF3) // Nf3
         movePiece(from: sqB8, to: sqC6) // Nc6
         movePiece(from: sqD2, to: sqD4) // d4
+    }
+
+    private func scandinavianOpening() {
+        movePiece(from: sqE2, to: sqE4) // e4
+        movePiece(from: sqD7, to: sqD5) // d5
+        movePiece(from: sqE4, to: sqD5) // exd5
+        movePiece(from: sqD8, to: sqD5) // Qxd5
+        movePiece(from: sqB1, to: sqC3) // Nc3
+        movePiece(from: sqD5, to: sqA5) // Qa5
+        movePiece(from: sqB2, to: sqB4) // b4
+        movePiece(from: sqA5, to: sqB4) // Qxb4
+        movePiece(from: sqC3, to: sqB5) // Nb5
+        movePiece(from: sqB4, to: sqA5) // Qa5
+        movePiece(from: sqF1, to: sqC4) // Bc4
+        movePiece(from: sqC7, to: sqC6) // c6
+        movePiece(from: sqC4, to: sqF7) // Bxf7
+        movePiece(from: sqE8, to: sqF7) // Kxf7
     }
 
     // MARK: - Valid move
@@ -157,6 +130,17 @@ final class GameTestCase: XCTestCase {
 
     // MARK: - Check
 
+    func testGivenScandinavianDefense_WhenQh5checkAndg6ToAvoidCheck_gameIsStartedAndWhiteToPlay() {
+        scandinavianOpening()
+
+        movePiece(from: sqD1, to: sqH5) // Qh5 check
+        movePiece(from: sqG7, to: sqG6) // g6
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.currentColor, .white)
+        XCTAssertEqual(game.state, .isStarted)
+    }
+
     func testGivenScottishOpeningAndBishopAtB4_WhenA3_ThenIsNotValidMoveAndA3IsEmpty() {
         scottishOpening()
         movePiece(from: sqF8, to: sqB4)
@@ -190,7 +174,7 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqA7, to: sqA6) // a6
         movePiece(from: sqE4, to: sqD6) // Nd6 check
 
-        movePiece(from: sqE7, to: sqD6) // xd6
+        movePiece(from: sqE7, to: sqD6) // exd6
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.state, .isStarted)
