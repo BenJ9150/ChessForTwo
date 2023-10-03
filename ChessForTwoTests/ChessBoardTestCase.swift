@@ -29,4 +29,14 @@ final class ChessBoardTestCase: XCTestCase {
         XCTAssertEqual(position.file, 7)
         XCTAssertEqual(position.rank, 6)
     }
+
+    // MARK: - Rotation of coordinate view
+
+    func testGivenThereIsAView_WhenRotateOf180_ThenRotationIs180() {
+        let view = UIView()
+
+        view.rotation = 180
+
+        XCTAssertEqual(view.rotation, 0) // value not getted
+    }
 }

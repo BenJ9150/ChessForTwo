@@ -29,6 +29,7 @@ final class GameTestCase: XCTestCase {
     private let sqB6 = (2, 6)
     private let sqB8 = (2, 8)
 
+    private let sqC2 = (3, 2)
     private let sqC3 = (3, 3)
     private let sqC4 = (3, 4)
     private let sqC6 = (3, 6)
@@ -222,10 +223,21 @@ final class GameTestCase: XCTestCase {
         XCTAssertEqual(game.state, .isStarted)
     }
 
-    // MARK: - Checkmat
+    func testGivenBlackKingIsCheck_WhenMoving_ThenIsNotCheckmate() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(King(), at: sqA8, withColor: .black)
+        initPieceAndAddToCB(Rook(), at: sqB1, withColor: .white)
+        movePiece(from: sqB1, to: sqA1)
+
+        movePiece(from: sqA8, to: sqB8)
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.state, .isStarted)
+    }
+
+    // MARK: - Checkmate
 
     func testGivenBarnesOpening_WhenQueenH4_ThenBlackWin2PointsGameIsOverAndCurrentColorIsNil() {
-        let whoPlayWithBlack: Player = game.whoPlayWithWhite == .one ? .two : .one
         movePiece(from: sqF2, to: sqF3) // f3
         movePiece(from: sqE7, to: sqE5) // e5
         movePiece(from: sqG2, to: sqG4) // g4
@@ -233,10 +245,25 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqD8, to: sqH4) // Qh4#
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.score(ofPlayer: whoPlayWithBlack), 2)
-        XCTAssertEqual(game.score(ofPlayer: game.whoPlayWithWhite), 0)
+        XCTAssertEqual(game.score(ofPlayer: .two), 2)
+        XCTAssertEqual(game.score(ofPlayer: .one), 0)
         XCTAssertEqual(game.state, .isOver)
         XCTAssertNil(game.currentColor)
+    }
+
+    func testGivenPlayerOneHasBlack_WhenBackRankMate_ThenBlackWin2Points() {
+        ChessBoard.removeAllPieces()
+        game.whoPlayWithWhite = .two
+
+        initPieceAndAddToCB(King(), at: sqA8, withColor: .white)
+        initPieceAndAddToCB(Rook(), at: sqB1, withColor: .black)
+        initPieceAndAddToCB(Rook(), at: sqC2, withColor: .black)
+        movePiece(from: sqA8, to: sqA7) // Ka7
+        movePiece(from: sqC2, to: sqA2) // Ra2#
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.score(ofPlayer: .two), 0)
+        XCTAssertEqual(game.score(ofPlayer: .one), 2)
     }
 
     func testGivenBlackKingCantMove_WhenIsCheck_ThenGameIsOver() {

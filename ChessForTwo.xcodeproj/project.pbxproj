@@ -36,6 +36,7 @@
 		439C2F752AB0CB5B003DF649 /* RookTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F742AB0CB5B003DF649 /* RookTestCase.swift */; };
 		439C2F772AB0CB7B003DF649 /* QueenTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */; };
 		439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F782AB0CB88003DF649 /* KingTestCase.swift */; };
+		43BC527E2ACC24F3007DEB0C /* PieceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		439C2F742AB0CB5B003DF649 /* RookTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RookTestCase.swift; sourceTree = "<group>"; };
 		439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueenTestCase.swift; sourceTree = "<group>"; };
 		439C2F782AB0CB88003DF649 /* KingTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KingTestCase.swift; sourceTree = "<group>"; };
+		43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceTestCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 				43297C952AB6293A00720C60 /* ChessBoardTestCase.swift */,
 				43233A9B2ACB1F2300F824F7 /* ValidMovesTestCase.swift */,
 				433AE06A2AB1B50100E523BD /* GameTestCase.swift */,
+				43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */,
 				438F665C2AB058CC0032D71F /* PawnTestCase.swift */,
 				439C2F742AB0CB5B003DF649 /* RookTestCase.swift */,
 				439C2F702AB0C7EB003DF649 /* KnightTestCase.swift */,
@@ -352,6 +355,7 @@
 				43297C962AB6293A00720C60 /* ChessBoardTestCase.swift in Sources */,
 				439C2F732AB0CB33003DF649 /* BishopTestCase.swift in Sources */,
 				43233A9C2ACB1F2300F824F7 /* ValidMovesTestCase.swift in Sources */,
+				43BC527E2ACC24F3007DEB0C /* PieceTestCase.swift in Sources */,
 				438F665D2AB058CC0032D71F /* PawnTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

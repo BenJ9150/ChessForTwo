@@ -136,16 +136,15 @@ extension Game {
             ChessBoard.remove(capturedPiece)
             return capturedPiece
         }
-        // check capture in passing
-        if movedPiece is Pawn && movedPiece.oldFile != movedPiece.currentFile {
-            // it's a pawn that has moved on diagonal in empty case: capture in passing
-            let posOfCapPiece = Square(file: movedPiece.currentFile, rank: movedPiece.oldRank)
-            if let capPieceInPass = ChessBoard.piece(atPosition: posOfCapPiece), capPieceInPass is Pawn {
-                ChessBoard.remove(capPieceInPass)
-                return capPieceInPass
-            }
+        // check if capture in passing for pawn
+        if type(of: movedPiece) != type(of: Pawn()) || movedPiece.oldFile == movedPiece.currentFile {
+            return nil
         }
-        return nil
+        // it's a pawn that has moved on diagonal in empty case: capture in passing
+        let posOfCapPiece = Square(file: movedPiece.currentFile, rank: movedPiece.oldRank)
+        let capPieceInPass = ChessBoard.piece(atPosition: posOfCapPiece)
+        ChessBoard.remove(capPieceInPass)
+        return capPieceInPass
     }
 
     private func notifyCapturedPiece(_ capturedPiece: Pieces) {
@@ -187,11 +186,9 @@ extension Game {
     private func checkmate(opponentKing: Pieces, attackedByPlayer: [Square: [Pieces]],
                            attackedByOpponent: [Square: [Pieces]]) -> Bool {
         // get player pieces that attack opponent king
-        if let playerPiecesAttackOppKing = attackedByPlayer[opponentKing.square] {
-            if playerPiecesAttackOppKing.count > 1 {
-                // to much pieces attack opponent king, checkmate!
-                return true
-            }
+        guard let playerPiecesAttackOppKing = attackedByPlayer[opponentKing.square] else { return false }
+
+        if playerPiecesAttackOppKing.count == 1 {
             // one piece attack opponent king, verify if opponent can capture this piece to avoid checkmate
             let playerPiece = playerPiecesAttackOppKing[0]
             if let oppPieces = attackedByOpponent[playerPiece.square] {
@@ -200,50 +197,16 @@ extension Game {
             // verify if opponent can protect king to save checkmate
             let defendedSquares = ChessBoard.defendedSquares(byColor: (whoIsPlaying == .white ? .black : .white))
             let emptySquares = ValidMoves.emptySquaresBetween(opponentKing, and: playerPiece)
-            for square in emptySquares {
-                if let pieces = defendedSquares[square] {
-                    for piece in pieces where type(of: piece) != type(of: King()) {
-                        return false
-                    }
-                }
+            for square in emptySquares where defendedSquares[square] != nil {
+                for piece in defendedSquares[square]! where type(of: piece) != type(of: King()) { return true }
             }
-        } else {
-            // opponent King is not check
-            return false
-        }
-
-        // check if opponent King can move, mat if not
-        let oppKingMoves = opponentKing.getValidMoves()
-        if oppKingMoves.count <= 0 {
-            gameWinByColor()
-            return true
         }
 
         // check if there is one possible move or attack for opponent king
-        for endSquare in oppKingMoves {
-            let move = moveAndCapture(opponentKing, square: endSquare, updateGame: false)
-            if !move.valid { continue }
-            // valid move, no checkmate, delete simulation
-            opponentKing.cancelLastMove()
-            // delete modification on chess board
-            ChessBoard.removePiece(atSquare: endSquare)
-            ChessBoard.add(opponentKing)
-            ChessBoard.add(move.capture)
-            return false
-        }
-        /*
-        // check if all opponent King moves are attacked, mat if true
-        for square in oppKingMoves where !attackedByPlayer.contains(where: { $0.key == square }) {
-            return false
-        }*/
-        gameWinByColor()
-        return true
+        return opponentKingHasNoValidMove(opponentKing: opponentKing)
     }
 
     private func validAttackToAvoidMate(playerPiece: Pieces, oppPieces: [Pieces]) -> Bool {
-        // get opponent pieces that attack player piece
-        if oppPieces.count <= 0 { return false }
-
         // simulation of opponent capture, remove player piece
         let endSquare = Square(file: playerPiece.currentFile, rank: playerPiece.currentRank)
         for movedPiece in oppPieces {
@@ -258,6 +221,23 @@ extension Game {
             return true
         }
         return false
+    }
+
+    private func opponentKingHasNoValidMove(opponentKing: Pieces) -> Bool {
+        for endSquare in opponentKing.getValidMoves() {
+            let move = moveAndCapture(opponentKing, square: endSquare, updateGame: false)
+            if !move.valid { continue }
+            // valid move, no checkmate, delete simulation
+            opponentKing.cancelLastMove()
+            // delete modification on chess board
+            ChessBoard.removePiece(atSquare: endSquare)
+            ChessBoard.add(opponentKing)
+            ChessBoard.add(move.capture)
+            return false
+        }
+        // checkmate!
+        gameWinByColor()
+        return true
     }
 
     private func gameWinByColor() {
@@ -289,15 +269,8 @@ extension Game {
         // check if opponent King is check
         if attackedByPlayer.contains(where: { $0.key == opponentKing.square }) { return false }
 
-        // check if opponent King can move, if not: stalemate
-        let oppKingMoves = opponentKing.getValidMoves()
-        if oppKingMoves.count <= 0 {
-            thatIsDraw()
-            return true
-        }
-
         // check if all opponent King moves are attacked, stalemate if true
-        for square in oppKingMoves where !attackedByPlayer.contains(where: { $0.key == square }) {
+        for square in opponentKing.getValidMoves() where !attackedByPlayer.contains(where: { $0.key == square }) {
             return false
         }
         thatIsDraw()

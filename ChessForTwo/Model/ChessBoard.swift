@@ -102,8 +102,10 @@ extension ChessBoard {
         chessboard.removeValue(forKey: Square(file: piece.oldFile, rank: piece.oldRank))
     }
 
-    static func remove(_ piece: Pieces) {
-        chessboard.removeValue(forKey: piece.square)
+    static func remove(_ piece: Pieces?) {
+        if let removedPiece = piece {
+            chessboard.removeValue(forKey: removedPiece.square)
+        }
     }
 
     static func removePiece(atSquare square: Square) {

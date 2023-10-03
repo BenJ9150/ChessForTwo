@@ -11,6 +11,7 @@ import UIKit
 // MARK: - Notification.Name
 
 extension Notification.Name {
+
     // piece moved
     static let whiteMoved = Notification.Name("WhiteMoved")
     static let blackMoved = Notification.Name("BlackMoved")
@@ -19,6 +20,7 @@ extension Notification.Name {
 }
 
 extension UIView {
+
     @IBInspectable
     var rotation: Int {
         get {
