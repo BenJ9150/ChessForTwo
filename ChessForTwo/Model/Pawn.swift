@@ -17,26 +17,19 @@ final class Pawn: Piece {
 
     // MARK: - Public methods
 
-    override func getAttackedSquares() -> [Square] {
+    override func getValidMoves() -> [Square] {
         let validMoves: [Square]
         switch color {
         case .white:
-            validMoves = getWhiteDiagonalValidMoves()
+            validMoves = getWhiteDiagonalValidMoves() + getWhiteValidMovesUp()
         case .black:
-            validMoves = getBlackDiagonalValidMoves()
+            validMoves = getBlackDiagonalValidMoves() + getBlackValidMovesDown()
         }
         return validMoves
     }
 
-    override func getOtherValidMoves() -> [Square] {
-        let validMoves: [Square]
-        switch color {
-        case .white:
-            validMoves = getWhiteValidMovesUp()
-        case .black:
-            validMoves = getBlackValidMovesDown()
-        }
-        return validMoves
+    override func getAttackedSquares() -> [Square] {
+        return color == .white ? getWhiteDiagonalAttack() : getBlackDiagonalAttack()
     }
 }
 
@@ -69,6 +62,19 @@ extension Pawn {
         }
         return validMoves
     }
+
+    private func getWhiteDiagonalAttack() -> [Square] {
+        var validMoves: [Square] = []
+        // Left - Up
+        if currentRank < ChessBoard.maxPosition && currentFile > ChessBoard.minPosition {
+            validMoves.append(Square(file: currentFile - 1, rank: currentRank + 1))
+        }
+        // Right - Up
+        if currentRank < ChessBoard.maxPosition && currentFile < ChessBoard.maxPosition {
+            validMoves.append(Square(file: currentFile + 1, rank: currentRank + 1))
+        }
+        return validMoves
+    }
 }
 
 // MARK: - Private methods for Black
@@ -97,6 +103,19 @@ extension Pawn {
         // Right - Down
         if currentRank > ChessBoard.minPosition && currentFile < ChessBoard.maxPosition {
             validMoves.append(contentsOf: squaresIfCaptureAt(newFile: currentFile + 1, newRank: currentRank - 1))
+        }
+        return validMoves
+    }
+
+    private func getBlackDiagonalAttack() -> [Square] {
+        var validMoves: [Square] = []
+        // Left - Down
+        if currentRank > ChessBoard.minPosition && currentFile > ChessBoard.minPosition {
+            validMoves.append(Square(file: currentFile - 1, rank: currentRank - 1))
+        }
+        // Right - Down
+        if currentRank > ChessBoard.minPosition && currentFile < ChessBoard.maxPosition {
+            validMoves.append(Square(file: currentFile + 1, rank: currentRank - 1))
         }
         return validMoves
     }

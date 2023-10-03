@@ -17,18 +17,22 @@ final class GameTestCase: XCTestCase {
     private let sqA1 = (1, 1)
     private let sqA2 = (1, 2)
     private let sqA3 = (1, 3)
-    private let sqA7 = (1, 7)
-    private let sqA6 = (1, 6)
     private let sqA5 = (1, 5)
+    private let sqA6 = (1, 6)
+    private let sqA7 = (1, 7)
     private let sqA8 = (1, 8)
 
+    private let sqB1 = (2, 1)
     private let sqB2 = (2, 2)
     private let sqB4 = (2, 4)
     private let sqB5 = (2, 5)
     private let sqB6 = (2, 6)
     private let sqB8 = (2, 8)
 
+    private let sqC3 = (3, 3)
+    private let sqC4 = (3, 4)
     private let sqC6 = (3, 6)
+    private let sqC7 = (3, 7)
 
     private let sqD1 = (4, 1)
     private let sqD2 = (4, 2)
@@ -41,16 +45,21 @@ final class GameTestCase: XCTestCase {
     private let sqE2 = (5, 2)
     private let sqE4 = (5, 4)
     private let sqE5 = (5, 5)
+    private let sqE6 = (5, 6)
     private let sqE7 = (5, 7)
 
+    private let sqF1 = (6, 1)
     private let sqF2 = (6, 2)
     private let sqF3 = (6, 3)
+    private let sqF6 = (6, 6)
+    private let sqF7 = (6, 7)
     private let sqF8 = (6, 8)
 
     private let sqG1 = (7, 1)
     private let sqG2 = (7, 2)
     private let sqG4 = (7, 4)
     private let sqG5 = (7, 5)
+    private let sqG8 = (7, 8)
 
     private let sqH3 = (8, 3)
     private let sqH4 = (8, 4)
@@ -73,7 +82,7 @@ final class GameTestCase: XCTestCase {
         // init piece
         let piece = T(initialFile: pos.file, initialRank: pos.rank, color: color)
         // add to chessboard
-        ChessBoard.add(piece: piece, atPosition: Square(file: pos.file, rank: pos.rank))
+        ChessBoard.add(piece)
     }
 
     private func movePiece(from: (file: Int, rank: Int), to end: (file: Int, rank: Int)) {
@@ -89,8 +98,8 @@ final class GameTestCase: XCTestCase {
     private func scottishOpening() {
         movePiece(from: sqE2, to: sqE4) // e4
         movePiece(from: sqE7, to: sqE5) // e5
-        movePiece(from: sqG1, to: sqF3) // Kf3
-        movePiece(from: sqB8, to: sqC6) // Kc6
+        movePiece(from: sqG1, to: sqF3) // Nf3
+        movePiece(from: sqB8, to: sqC6) // Nc6
         movePiece(from: sqD2, to: sqD4) // d4
     }
 
@@ -184,6 +193,35 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 3)))
     }
 
+    func testGivenBlackKingIsCheck_WhenE7_ThenIsValidMove() {
+        movePiece(from: sqE2, to: sqE4) // e4
+        movePiece(from: sqE7, to: sqE5) // e5
+        movePiece(from: sqD1, to: sqG4) // Qg4
+        movePiece(from: sqA7, to: sqA6) // a6
+        movePiece(from: sqG4, to: sqE6) // Qe6
+
+        movePiece(from: sqG8, to: sqE7) // Ne7
+
+        XCTAssertTrue(movesResult)
+    }
+
+    func testGivenBlackKingCantMove_WhenIsCheck_ThenCaptureOpponentPieceToSaveCheckmate() {
+        movePiece(from: sqB1, to: sqC3) // Nc3
+        movePiece(from: sqC7, to: sqC6) // c6
+        movePiece(from: sqE2, to: sqE4) // e4
+        movePiece(from: sqG8, to: sqF6) // Nf6
+        movePiece(from: sqD1, to: sqG4) // Qg4
+        movePiece(from: sqF6, to: sqE4) // Nxe4
+        movePiece(from: sqC3, to: sqE4) // Nxe4
+        movePiece(from: sqA7, to: sqA6) // a6
+        movePiece(from: sqE4, to: sqD6) // Nd6 check
+
+        movePiece(from: sqE7, to: sqD6) // xd6
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.state, .isStarted)
+    }
+
     // MARK: - Checkmat
 
     func testGivenBarnesOpening_WhenQueenH4_ThenBlackWin2PointsGameIsOverAndCurrentColorIsNil() {
@@ -199,6 +237,38 @@ final class GameTestCase: XCTestCase {
         XCTAssertEqual(game.score(ofPlayer: game.whoPlayWithWhite), 0)
         XCTAssertEqual(game.state, .isOver)
         XCTAssertNil(game.currentColor)
+    }
+
+    func testGivenBlackKingCantMove_WhenIsCheck_ThenGameIsOver() {
+        movePiece(from: sqB1, to: sqC3) // Nc3
+        movePiece(from: sqC7, to: sqC6) // c6
+        movePiece(from: sqE2, to: sqE4) // e4
+        movePiece(from: sqG8, to: sqF6) // Nf6
+        movePiece(from: sqD1, to: sqE2) // Qe2
+        movePiece(from: sqF6, to: sqE4) // Nxe4
+        movePiece(from: sqC3, to: sqE4) // Nxe4
+        movePiece(from: sqA7, to: sqA6) // a6
+
+        movePiece(from: sqE4, to: sqD6) // Nd6#
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.state, .isOver)
+    }
+
+    func testGivenBlackKingIsCheck_WhenQf7_ThenGameIsOver() {
+        movePiece(from: sqE2, to: sqE4) // e4
+        movePiece(from: sqE7, to: sqE5) // e5
+        movePiece(from: sqD1, to: sqG4) // Qg4
+        movePiece(from: sqA7, to: sqA6) // a6
+        movePiece(from: sqG4, to: sqE6) // Qe6
+        movePiece(from: sqG8, to: sqE7) // Ne7
+        movePiece(from: sqF1, to: sqC4) // Bc4
+        movePiece(from: sqA6, to: sqA5) // a5
+
+        movePiece(from: sqE6, to: sqF7) // Qf7#
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.state, .isOver)
     }
 
     // MARK: - Draw per repetition

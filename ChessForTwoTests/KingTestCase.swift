@@ -19,7 +19,7 @@ final class KingTestCase: XCTestCase {
         // init piece
         let piece = T(initialFile: file, initialRank: rank, color: color)
         // add to chessboard
-        ChessBoard.add(piece: piece, atPosition: Square(file: file, rank: rank))
+        ChessBoard.add(piece)
         return piece
     }
 

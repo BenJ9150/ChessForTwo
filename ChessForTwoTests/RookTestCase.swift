@@ -10,6 +10,13 @@ import XCTest
 
 final class RookTestCase: XCTestCase {
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.removeAllPieces()
+    }
+
     // MARK: - Valid move
 
     func testGivenRookIsAt1x1_WhenMovingAt7x1_ThenIsValidMove() {

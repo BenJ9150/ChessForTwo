@@ -13,7 +13,7 @@ struct Square: Hashable {
     var rank: Int
 }
 
-class ChessBoard {
+struct ChessBoard {
 
     // MARK: - Public static properties
 
@@ -21,12 +21,7 @@ class ChessBoard {
     static let minPosition = 1
     static let maxPosition = 8
 
-    // MARK: - Private properties
-
-    private static let boardSemaphore = DispatchSemaphore(value: 1)
-    private static var safeChessboard: [Square: Pieces] = [:]
-
-    private static var chessboard: [Square: Pieces] {
+    static var chessboard: [Square: Pieces] {
         get {
             return safeChessboard
         } set {
@@ -36,10 +31,7 @@ class ChessBoard {
         }
     }
 
-    private static let captureSemaphore = DispatchSemaphore(value: 1)
-    private static var safeCapturedPieces: [Pieces] = []
-
-    private static var capturedPieces: [Pieces] {
+    static var capturedPieces: [Pieces] {
         get {
             return safeCapturedPieces
         } set {
@@ -49,6 +41,12 @@ class ChessBoard {
         }
     }
 
+    // MARK: - Private properties
+
+    private static let boardSemaphore = DispatchSemaphore(value: 1)
+    private static var safeChessboard: [Square: Pieces] = [:]
+    private static let captureSemaphore = DispatchSemaphore(value: 1)
+    private static var safeCapturedPieces: [Pieces] = []
     private static let startingRank = [0, 8, 16, 24, 32, 40, 48, 56]
 }
 
@@ -59,6 +57,7 @@ extension ChessBoard {
     static func initChessBoard() {
         movesCount = 0
         chessboard.removeAll()
+        capturedPieces.removeAll()
         initPiecesType(Pawn())
         initPiecesType(Rook())
         initPiecesType(Knight())
@@ -73,10 +72,10 @@ extension ChessBoard {
             let blackRank = maxPosition + 1 - whiteRank
             // white
             let white = T(initialFile: file, initialRank: whiteRank, color: .white)
-            chessboard[Square(file: file, rank: whiteRank)] = white
+            chessboard[white.square] = white
             // black
             let black = T(initialFile: file, initialRank: blackRank, color: .black)
-            chessboard[Square(file: file, rank: blackRank)] = black
+            chessboard[black.square] = black
         }
     }
 }
@@ -85,8 +84,9 @@ extension ChessBoard {
 
 extension ChessBoard {
 
-    static func add(piece: Pieces, atPosition position: Square) {
-        chessboard[position] = piece
+    static func add(_ piece: Pieces?) {
+        guard let newPiece = piece else { return }
+        chessboard[newPiece.square] = newPiece
     }
 
     static func piece(atPosition position: Square) -> Pieces? {
@@ -98,13 +98,20 @@ extension ChessBoard {
     }
 
     static func moveAfterSetPosition(piece: Pieces) {
-        chessboard[Square(file: piece.currentFile, rank: piece.currentRank)] = piece
+        chessboard[piece.square] = piece
         chessboard.removeValue(forKey: Square(file: piece.oldFile, rank: piece.oldRank))
     }
 
-    static func remove(capturedPiece: Pieces, atPosition position: Square) {
+    static func remove(_ piece: Pieces) {
+        chessboard.removeValue(forKey: piece.square)
+    }
+
+    static func removePiece(atSquare square: Square) {
+        chessboard.removeValue(forKey: square)
+    }
+
+    static func addToCapturedPieces(_ capturedPiece: Pieces) {
         capturedPieces.append(capturedPiece)
-        chessboard.removeValue(forKey: position)
     }
 
     static func allPieces() -> [Pieces] {
@@ -125,13 +132,6 @@ extension ChessBoard {
 
     static func allCapturedPieces() -> [Pieces] {
         return capturedPieces
-    }
-
-    static func getKingSquare(color: PieceColor) -> Square? {
-        guard let element = chessboard.first(where: { $0.value is King && $0.value.color == color }) else {
-            return nil
-        }
-        return Square(file: element.value.currentFile, rank: element.value.currentRank)
     }
 }
 
@@ -163,200 +163,54 @@ extension ChessBoard {
 
 extension ChessBoard {
 
+    static func defendedSquares(byColor color: PieceColor) -> [Square: [Pieces]] {
+        var attackedSquares: [Square: [Pieces]] = [:]
+        let pieces = allPiecesOfColor(color)
+        // check attacked squares for each pieces
+        for piece in pieces {
+            let attackedSquaresByPiece: [Square]
+            if piece is Pawn {
+                attackedSquaresByPiece = piece.getValidMoves()
+            } else {
+                attackedSquaresByPiece = piece.getAttackedSquares()
+            }
+            // add squares to result
+            for square in attackedSquaresByPiece {
+                if attackedSquares.contains(where: { $0.key == square }) {
+                    attackedSquares[square]?.append(piece)
+                } else {
+                    attackedSquares[square] = [piece]
+                }
+            }
+        }
+        return attackedSquares
+    }
+
+    static func attackedSquaresByPieces(byColor color: PieceColor) -> [Square: [Pieces]] {
+        var attackedSquares: [Square: [Pieces]] = [:]
+        let pieces = allPiecesOfColor(color)
+        // check attacked squares for each pieces
+        for piece in pieces {
+            let attackedSquaresByPiece = piece.getAttackedSquares()
+            // add squares to result
+            for square in attackedSquaresByPiece {
+                if attackedSquares.contains(where: { $0.key == square }) {
+                    attackedSquares[square]?.append(piece)
+                } else {
+                    attackedSquares[square] = [piece]
+                }
+            }
+        }
+        return attackedSquares
+    }
+
     static func attackedSquares(byColor color: PieceColor) -> [Square] {
-        var attackPos: [Square] = []
-        let pieces = allPieces()
-        switch color {
-        case .white:
-            for piece in pieces where piece.color == .white {
-                attackPos.append(contentsOf: piece.getAttackedSquares())
-            }
-        case .black:
-            for piece in pieces where piece.color == .black {
-                attackPos.append(contentsOf: piece.getAttackedSquares())
-            }
+        var attackedSquares: [Square] = []
+        let pieces = allPiecesOfColor(color)
+        // check attacked squares for each pieces
+        for piece in pieces {
+            attackedSquares.append(contentsOf: piece.getAttackedSquares())
         }
-        return attackPos
-    }
-}
-
-// MARK: - Valid moves: diagonal
-
-extension ChessBoard {
-
-    static func validUpLeft(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if rank < maxPosition && file > minPosition {
-            var rankIndex = rank + 1
-            var fileIndex = file - 1
-
-            while rankIndex <= maxPosition && fileIndex >= minPosition {
-                let chessBoard = Square(file: fileIndex, rank: rankIndex)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                rankIndex += 1
-                fileIndex -= 1
-            }
-        }
-        return validMoves
-    }
-
-    static func validDownRight(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if rank > minPosition && file < maxPosition {
-            var rankIndex = rank - 1
-            var fileIndex = file + 1
-
-            while rankIndex >= minPosition && fileIndex <= maxPosition {
-                let chessBoard = Square(file: fileIndex, rank: rankIndex)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                rankIndex -= 1
-                fileIndex += 1
-            }
-        }
-        return validMoves
-    }
-
-    static func validUpRight(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if rank < maxPosition && file < maxPosition {
-            var rankIndex = rank + 1
-            var fileIndex = file + 1
-
-            while rankIndex <= maxPosition && fileIndex <= maxPosition {
-                let chessBoard = Square(file: fileIndex, rank: rankIndex)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                rankIndex += 1
-                fileIndex += 1
-            }
-        }
-        return validMoves
-    }
-
-    static func validDownLeft(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if rank > minPosition && file > minPosition {
-            var rankIndex = rank - 1
-            var fileIndex = file - 1
-
-            while rankIndex >= minPosition && fileIndex >= minPosition {
-                let chessBoard = Square(file: fileIndex, rank: rankIndex)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                rankIndex -= 1
-                fileIndex -= 1
-            }
-        }
-        return validMoves
-    }
-}
-
-// MARK: - Valid moves: vertical
-
-extension ChessBoard {
-    static func validUp(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if rank < maxPosition {
-            var index = rank + 1
-
-            while index <= maxPosition {
-                let chessBoard = Square(file: file, rank: index)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                index += 1
-            }
-        }
-        return validMoves
-    }
-
-    static func validRight(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if file < maxPosition {
-            var index = file + 1
-
-            while index <= maxPosition {
-                let chessBoard = Square(file: index, rank: rank)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                index += 1
-            }
-        }
-        return validMoves
-    }
-}
-
-// MARK: - Valid moves: horizontal
-
-extension ChessBoard {
-    static func validDown(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if rank > minPosition {
-            var index = rank - 1
-
-            while index >= minPosition {
-                let chessBoard = Square(file: file, rank: index)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                index -= 1
-            }
-        }
-        return validMoves
-    }
-
-    static func validLeft(file: Int, rank: Int, color: PieceColor) -> [Square] {
-        var validMoves: [Square] = []
-        if file > minPosition {
-            var index = file - 1
-
-            while index >= minPosition {
-                let chessBoard = Square(file: index, rank: rank)
-                // check if there is a piece
-                if let piece = chessboard[chessBoard] {
-                    if piece.color != color { validMoves.append(chessBoard) }
-                    break
-                }
-                // empty square, add and continue
-                validMoves.append(chessBoard)
-                index -= 1
-            }
-        }
-        return validMoves
+        return attackedSquares
     }
 }

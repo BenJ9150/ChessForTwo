@@ -17,6 +17,7 @@ protocol Pieces {
     // MARK: - Public properties
 
     var color: PieceColor { get }
+    var square: Square { get }
     var currentFile: Int { get }
     var currentRank: Int { get }
     var oldFile: Int { get }
@@ -32,8 +33,8 @@ protocol Pieces {
     // MARK: - Public methods
 
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool
+    func getValidMoves() -> [Square]
     func getAttackedSquares() -> [Square]
-    func getOtherValidMoves() -> [Square]
     func cancelLastMove()
 }
 
@@ -45,6 +46,10 @@ class Piece: Pieces {
 
     var movingTwoSquaresAtMove: Int? {
         return movingTwoSqAtMove
+    }
+
+    var square: Square {
+        return Square(file: file, rank: rank)
     }
 
     var currentFile: Int {
@@ -105,8 +110,22 @@ class Piece: Pieces {
 
     // MARK: - Public methods
 
+    func getValidMoves() -> [Square] {
+        let validMoves: [Square] = []
+        return validMoves
+    }
+
+    func getAttackedSquares() -> [Square] {
+        return getValidMoves()
+    }
+}
+
+// MARK: - Public methods not overrided
+
+extension Piece {
+
     func setNewPosition(atFile newFile: Int, andRank newRank: Int) -> Bool {
-        let validMoves = getAttackedSquares() + getOtherValidMoves()
+        let validMoves = getValidMoves()
         if !validMoves.contains(Square(file: newFile, rank: newRank)) { return false }
 
         // valid move, check if move of 2 squares
@@ -129,23 +148,6 @@ class Piece: Pieces {
         ChessBoard.movesCount += 1
         return true
     }
-
-    // MARK: - To override
-
-    func getAttackedSquares() -> [Square] {
-        let validMoves: [Square] = []
-        return validMoves
-    }
-
-    func getOtherValidMoves() -> [Square] {
-        let validMoves: [Square] = []
-        return validMoves
-    }
-}
-
-// MARK: - Public methods
-
-extension Piece {
 
     func cancelLastMove() {
         file = oldFile

@@ -10,6 +10,13 @@ import XCTest
 
 final class BishopTestCase: XCTestCase {
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.removeAllPieces()
+    }
+
     // MARK: - Valid move
 
     func testGivenBishopIsAt7x6_WhenMovingAt4x3_ThenIsValidMove() {

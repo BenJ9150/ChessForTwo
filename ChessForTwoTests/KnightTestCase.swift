@@ -10,6 +10,13 @@ import XCTest
 
 final class KnightTestCase: XCTestCase {
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.removeAllPieces()
+    }
+
     // MARK: - Valid move
 
     func testGivenKnightIsAt4x5_WhenMovingAt5x7_ThenIsValidMove() {

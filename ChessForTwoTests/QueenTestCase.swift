@@ -10,6 +10,13 @@ import XCTest
 
 final class QueenTestCase: XCTestCase {
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.removeAllPieces()
+    }
+
     // MARK: - Valid move
 
     func testGivenQueenIsAt7x6_WhenMovingAt2x6_ThenIsValidMove() {

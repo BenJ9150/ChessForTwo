@@ -17,42 +17,55 @@ final class King: Piece {
 
     // MARK: - Public methods
 
+    override func getValidMoves() -> [Square] {
+        return getValidMovesWithoutCastling() + getMovesForCastling()
+    }
+
     override func getAttackedSquares() -> [Square] {
+        return getValidMovesWithoutCastling()
+    }
+}
+
+// MARK: - Private methods
+
+extension King {
+
+    private func getValidMovesWithoutCastling() -> [Square] {
         var validMoves: [Square] = []
 
         // vertical
-        if let move = ChessBoard.validUp(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validUp(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validDown(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validDown(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // horizontal
-        if let move = ChessBoard.validLeft(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validLeft(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validRight(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validRight(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // first diagonal
-        if let move = ChessBoard.validUpRight(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validUpRight(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validDownLeft(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validDownLeft(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // second diagonal
-        if let move = ChessBoard.validUpLeft(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validUpLeft(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ChessBoard.validDownRight(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ValidMoves.validDownRight(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
 
         return validMoves
     }
 
-    override func getOtherValidMoves() -> [Square] {
+    private func getMovesForCastling() -> [Square] {
         var validMoves: [Square] = []
         // check for castling
         if let leftCastlingPos = validMoveForCastling(atLeft: true) {
@@ -63,11 +76,6 @@ final class King: Piece {
         }
         return validMoves
     }
-}
-
-// MARK: - Private methods
-
-extension King {
 
     private func validMoveForCastling(atLeft leftMoves: Bool) -> Square? {
         // check if king has moved
@@ -88,9 +96,9 @@ extension King {
         // check if left squares are empty
         let moves: [Square]
         if leftMoves {
-            moves = ChessBoard.validLeft(file: currentFile, rank: currentRank, color: color)
+            moves = ValidMoves.validLeft(file: currentFile, rank: currentRank, color: color)
         } else {
-            moves = ChessBoard.validRight(file: currentFile, rank: currentRank, color: color)
+            moves = ValidMoves.validRight(file: currentFile, rank: currentRank, color: color)
         }
         if moves.count != (leftMoves ? 3 : 2) { return nil }
 
@@ -98,7 +106,7 @@ extension King {
         let attackedSquares = ChessBoard.attackedSquares(byColor: (color == .white ? .black : .white))
 
         // check if King is attacked
-        if attackedSquares.contains(Square(file: currentFile, rank: currentRank)) { return nil }
+        if attackedSquares.contains(square) { return nil }
 
         // check if 2 left empty squares are attacked
         if attackedSquares.contains(moves[0]) || attackedSquares.contains(moves[1]) { return nil }
