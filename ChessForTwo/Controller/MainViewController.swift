@@ -20,7 +20,8 @@ class MainViewController: UIViewController {
 
     // MARK: - Private properties
 
-    let game = Game(playerOne: "", playerTwo: "")
+    private let game = Game(playerOne: "", playerTwo: "")
+    private var promotionPosition: Int?
 
     private lazy var whiteChessBoardVC: ChessBoardViewController = {
         return instantiateChessBoardVC(container: whiteContainer, withColor: .white)
@@ -71,6 +72,9 @@ extension MainViewController {
         // notification captured piece
         NotificationCenter.default.addObserver(self, selector: #selector(capturedPieceAtPosition(_:)),
                                                name: .capturedPieceAtPosition, object: nil)
+        // notification waiting promotion
+        NotificationCenter.default.addObserver(self, selector: #selector(promotion(_:)),
+                                               name: .promotion, object: nil)
     }
 }
 
@@ -176,15 +180,44 @@ extension MainViewController {
 
     @objc private func capturedPieceAtPosition(_ notif: NSNotification) {
         guard let position = notif.object as? Int else { return }
-        removeCapturedPiece(atPosition: position, onChessBoardColor: .white)
-        removeCapturedPiece(atPosition: position, onChessBoardColor: .black)
+        removePiece(atPosition: position, onChessBoardColor: .white)
+        removePiece(atPosition: position, onChessBoardColor: .black)
     }
 
-    private func removeCapturedPiece(atPosition position: Int, onChessBoardColor color: PieceColor) {
+    private func removePiece(atPosition position: Int, onChessBoardColor color: PieceColor) {
         let chessBoardVC = getChessBoardVC(forColor: color)
         // delete
         if chessBoardVC.chessBoardView.squaresView[position].subviews.count > 0 {
             chessBoardVC.chessBoardView.squaresView[position].subviews[0].removeFromSuperview()
         }
+    }
+}
+
+// MARK: - Promotion
+
+extension MainViewController {
+
+    @objc private func promotion(_ notif: NSNotification) {
+        guard let position = notif.object as? Int else { return }
+        promotionPosition = position
+        // display piece choice for promotion
+        // TODO........
+        promotionChoice(Queen())
+    }
+
+    private func promotionChoice(_ piece: Pieces) {
+        guard let position = promotionPosition else { return }
+        game.promotion(chosenPiece: piece)
+        // remove old pieces
+        removePiece(atPosition: position, onChessBoardColor: .white)
+        removePiece(atPosition: position, onChessBoardColor: .black)
+        // load new pieces
+        loadNewPiece(piece, atPosition: position, onChessBoardColor: .white)
+        loadNewPiece(piece, atPosition: position, onChessBoardColor: .black)
+    }
+
+    private func loadNewPiece(_ piece: Pieces, atPosition position: Int, onChessBoardColor color: PieceColor) {
+        let chessBoardVC = getChessBoardVC(forColor: color)
+        chessBoardVC.load(piece: piece, atSquare: position)
     }
 }

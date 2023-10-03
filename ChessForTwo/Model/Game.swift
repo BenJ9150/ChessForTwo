@@ -35,7 +35,7 @@ final class Game {
     private var whoIsPlaying: PieceColor?
     private var whoIsPlayingBeforePause: PieceColor?
     private var gameState: GameState
-    private var savedPositions: [String] = []
+    private var pieceAwaitingPromotion: Pieces?
 
     // MARK: - Init
 
@@ -52,7 +52,6 @@ final class Game {
 extension Game {
 
     func start() {
-        savedPositions.removeAll()
         gameState = .isStarted
         whoIsPlaying = .white
     }
@@ -92,7 +91,47 @@ extension Game {
             notifyCapturedPiece(capturedPiece)
             ChessBoard.addToCapturedPieces(capturedPiece)
         }
+
+        // check if promotion
+        pauseIfWaitingPromotion(movedPiece: movedPiece, atSquare: endSquare)
         return true
+    }
+
+    func promotion(chosenPiece: Pieces) {
+        setBoardAfterPromotionChoice(chosenPiece: chosenPiece)
+    }
+}
+
+// MARK: - Private Promotion methods
+
+extension Game {
+
+    private func setBoardAfterPromotionChoice<T: Pieces>(chosenPiece: T) {
+        // who is playing before pause
+        if let oldPiece = pieceAwaitingPromotion {
+            // remove old piece
+            ChessBoard.remove(oldPiece)
+            // add new Piece
+            let new = T(initialFile: oldPiece.currentFile, initialRank: oldPiece.currentRank, color: oldPiece.color)
+            ChessBoard.add(new)
+            pieceAwaitingPromotion = nil
+            unpause()
+        }
+    }
+
+    private func pauseIfWaitingPromotion(movedPiece: Pieces, atSquare square: Square) {
+        switch movedPiece.color {
+        case .black:
+            if square.rank != ChessBoard.minPosition { return }
+        case .white:
+            if square.rank != ChessBoard.maxPosition { return }
+        }
+        // promotion
+        pieceAwaitingPromotion = movedPiece
+        // get position in Int for notif
+        let positionToInt = ChessBoard.posToInt(file: movedPiece.currentFile, rank: movedPiece.currentRank)
+        NotificationCenter.default.post(name: .promotion, object: positionToInt)
+        pause()
     }
 }
 
@@ -177,7 +216,10 @@ extension Game {
         }
 
         // verify if draw by repetition
-        if savePositionAndCheckIfDrawByRepetition() { return }
+        if ChessBoard.savePositionAndCheckIfdrawByRepetition() {
+            itsDraw()
+            return
+        }
 
         // change who is playing
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
@@ -273,39 +315,15 @@ extension Game {
         for square in opponentKing.getValidMoves() where !attackedByPlayer.contains(where: { $0.key == square }) {
             return false
         }
-        thatIsDraw()
+        itsDraw()
         return true
     }
 
-    private func thatIsDraw() {
+    private func itsDraw() {
         // increment score
         scores[.one]! += 1
         scores[.two]! += 1
         gameState = .isOver
         whoIsPlaying = nil
-    }
-
-    private func savePositionAndCheckIfDrawByRepetition() -> Bool {
-        // get current position
-        var position: [String] = []
-        for piece in ChessBoard.allPieces() {
-            position.append("\(piece.color)\(type(of: piece))\(piece.currentFile)\(piece.currentRank);")
-        }
-        position.sort()
-        // current position to one string
-        var stringPosition = ""
-        for value in position {
-            stringPosition += value
-        }
-        // add current position to saved positions
-        savedPositions.append(stringPosition)
-
-        // check if 3 repetitions
-        let countedSet = NSCountedSet(array: savedPositions)
-        for value in countedSet where countedSet.count(for: value) == 3 {
-            thatIsDraw()
-            return true
-        }
-        return false
     }
 }

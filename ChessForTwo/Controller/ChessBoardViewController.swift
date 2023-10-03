@@ -39,9 +39,7 @@ extension ChessBoardViewController {
 
         // load piece
         for piece in ChessBoard.allPieces() {
-            load(piece: piece,
-                 atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank),
-                 viewOfColor: viewOfColor)
+            load(piece: piece, atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank))
         }
 
         // hide or hidden coordinates
@@ -55,7 +53,7 @@ extension ChessBoardViewController {
         }
     }
 
-    private func load(piece: Pieces, atSquare square: Int, viewOfColor: PieceColor) {
+    func load(piece: Pieces, atSquare square: Int) {
         let image: UIImageView
         switch piece {
         case is Pawn:

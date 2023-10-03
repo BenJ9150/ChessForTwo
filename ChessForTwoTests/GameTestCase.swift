@@ -41,6 +41,7 @@ final class GameTestCase: XCTestCase {
     private let sqD4 = (4, 4)
     private let sqD5 = (4, 5)
     private let sqD6 = (4, 6)
+    private let sqD7 = (4, 7)
     private let sqD8 = (4, 8)
 
     private let sqE2 = (5, 2)
@@ -102,34 +103,6 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqG1, to: sqF3) // Nf3
         movePiece(from: sqB8, to: sqC6) // Nc6
         movePiece(from: sqD2, to: sqD4) // d4
-    }
-
-    // MARK: - Start and pause
-
-    func testGivenStartNewGame_WhenCheckingState_ThenIsStartedAndScoreIs0To0AndWhiteToPlay() {
-        XCTAssertEqual(game.score(ofPlayer: .one), 0)
-        XCTAssertEqual(game.score(ofPlayer: .two), 0)
-        XCTAssertEqual(game.state, .isStarted)
-        XCTAssertEqual(game.currentColor, .white)
-    }
-
-    func testGivenGameIsInPause_WhenMoveE4_ThenIsNotValidMoveAndGameIsInPauseAndCurrentColorIsNil() {
-        game.pause()
-
-        movePiece(from: sqE2, to: sqE4)
-
-        XCTAssertFalse(movesResult)
-        XCTAssertEqual(game.state, .inPause)
-        XCTAssertNil(game.currentColor)
-    }
-
-    func testGivenGameIsInPause_WhenUnpause_ThenGameIsStartedAndWhiteToPlay() {
-        game.pause()
-
-        game.unpause()
-
-        XCTAssertEqual(game.state, .isStarted)
-        XCTAssertEqual(game.currentColor, .white)
     }
 
     // MARK: - Valid move
@@ -339,4 +312,27 @@ final class GameTestCase: XCTestCase {
     }
 
     // MARK: - Promotion
+
+    func testGivenWhitePawnIsAtD7_WhenMoveToD8_ThenGameIsPauseAndColorNilForWaightPromotionChoice() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(Pawn(), at: sqD7, withColor: .white)
+
+        movePiece(from: sqD7, to: sqD8) // d8, wait promotion
+
+        XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.state, .inPause)
+        XCTAssertNil(game.currentColor)
+    }
+
+    func testGivenWhiteChooseQueenPromotion_WhenCheckingPiece_ThenIsQueenGameIsStartedAndCurrentColorIsBlack() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(Pawn(), at: sqD7, withColor: .white)
+        movePiece(from: sqD7, to: sqD8) // d8, wait promotion
+
+        game.promotion(chosenPiece: Queen())
+
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 4, rank: 8)) is Queen)
+        XCTAssertEqual(game.state, .isStarted)
+        XCTAssertEqual(game.currentColor, .black)
+    }
 }

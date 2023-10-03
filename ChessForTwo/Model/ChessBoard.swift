@@ -48,6 +48,7 @@ struct ChessBoard {
     private static let captureSemaphore = DispatchSemaphore(value: 1)
     private static var safeCapturedPieces: [Pieces] = []
     private static let startingRank = [0, 8, 16, 24, 32, 40, 48, 56]
+    private static var savedPositions: [String] = []
 }
 
 // MARK: - Init Chessboard
@@ -58,6 +59,7 @@ extension ChessBoard {
         movesCount = 0
         chessboard.removeAll()
         capturedPieces.removeAll()
+        savedPositions.removeAll()
         initPiecesType(Pawn())
         initPiecesType(Rook())
         initPiecesType(Knight())
@@ -71,12 +73,38 @@ extension ChessBoard {
             // get black rank
             let blackRank = maxPosition + 1 - whiteRank
             // white
-            let white = T(initialFile: file, initialRank: whiteRank, color: .white)
-            chessboard[white.square] = white
+            add(T(initialFile: file, initialRank: whiteRank, color: .white))
             // black
-            let black = T(initialFile: file, initialRank: blackRank, color: .black)
-            chessboard[black.square] = black
+            add(T(initialFile: file, initialRank: blackRank, color: .black))
         }
+    }
+}
+
+// MARK: - draw by repetition
+
+extension ChessBoard {
+
+    static func savePositionAndCheckIfdrawByRepetition() -> Bool {
+        // get current position
+        var position: [String] = []
+        for piece in allPieces() {
+            position.append("\(piece.color)\(type(of: piece))\(piece.currentFile)\(piece.currentRank);")
+        }
+        position.sort()
+        // current position to one string
+        var stringPosition = ""
+        for value in position {
+            stringPosition += value
+        }
+        // add current position to saved positions
+        savedPositions.append(stringPosition)
+
+        // check if 3 repetitions
+        let countedSet = NSCountedSet(array: savedPositions)
+        for value in countedSet where countedSet.count(for: value) == 3 {
+            return true
+        }
+        return false
     }
 }
 
@@ -130,6 +158,7 @@ extension ChessBoard {
 
     static func removeAllPieces() {
         chessboard.removeAll()
+        savedPositions.removeAll()
     }
 
     static func allCapturedPieces() -> [Pieces] {

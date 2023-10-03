@@ -17,6 +17,8 @@ extension Notification.Name {
     static let blackMoved = Notification.Name("BlackMoved")
     // captured piece
     static let capturedPieceAtPosition = Notification.Name("CapturedPieceAtPosition")
+    // promotion
+    static let promotion = Notification.Name("Promotion")
 }
 
 extension UIView {
