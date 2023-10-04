@@ -22,6 +22,8 @@ class MainViewController: UIViewController {
 
     private let game = Game(playerOne: "", playerTwo: "")
     private var promotionPosition: Int?
+    private var currentMove: (start: Int?, end: Int?)
+    private var oldMove: (start: Int?, end: Int?)
 
     private lazy var whiteChessBoardVC: ChessBoardViewController = {
         return instantiateChessBoardVC(container: whiteContainer, withColor: .white)
@@ -63,12 +65,9 @@ extension MainViewController {
 extension MainViewController {
 
     private func addObserverForNotification() {
-        // notification player one moved
-        NotificationCenter.default.addObserver(self, selector: #selector(whiteMoved(_:)),
-                                               name: .whiteMoved, object: nil)
-        // notification player two moved
-        NotificationCenter.default.addObserver(self, selector: #selector(blackMoved(_:)),
-                                               name: .blackMoved, object: nil)
+        // notification player move done
+        NotificationCenter.default.addObserver(self, selector: #selector(moveDone(_:)),
+                                               name: .moveDone, object: nil)
         // notification captured piece
         NotificationCenter.default.addObserver(self, selector: #selector(capturedPieceAtPosition(_:)),
                                                name: .capturedPieceAtPosition, object: nil)
@@ -116,33 +115,30 @@ extension MainViewController {
 
 extension MainViewController {
 
-    @objc private func whiteMoved(_ notif: NSNotification) {
-        pieceMoved(notif, pieceColor: .white)
-    }
+    @objc private func moveDone(_ notif: NSNotification) {
+        // get notification object
+        guard let move = notif.object as? (start: Int?, end: Int?) else { return }
+        currentMove = move
 
-    @objc private func blackMoved(_ notif: NSNotification) {
-        pieceMoved(notif, pieceColor: .black)
-    }
-
-    private func pieceMoved(_ notif: NSNotification, pieceColor: PieceColor) {
-        guard let movement = notif.object as? (start: Int?, end: Int?) else { return }
         // get start and end movement
-        guard let start = movement.start else { return }
-        guard let end = movement.end else { return }
+        guard let start = move.start, let end = move.end else { return }
+
+        // who is playing
+        guard let player = game.currentColor else { return}
 
         // check validity
         if !game.movePiece(fromInt: start, toInt: end) {
-            cancelMove(fromEnd: end, toStart: start, onChessBoardColor: pieceColor)
+            cancelMove(fromEnd: end, toStart: start, onBoard: player)
             return
         }
+        // change view of current player
+        updatePlayerUI(onBoard: player)
 
         // change view of second player
-        switch pieceColor {
-        case .white:
-            updateMove(fromStart: start, toEnd: end, onChessBoardColor: .black)
-        case .black:
-            updateMove(fromStart: start, toEnd: end, onChessBoardColor: .white)
-        }
+        updateOpponentUI(startingSq: start, endingSq: end, onBoard: (player == .white ? .black : .white))
+
+        // save movement for later UI update (to do after UI boards update)
+        oldMove = move
 
         // update who is playing
         updateWhoIsPlaying()
@@ -157,20 +153,39 @@ extension MainViewController {
         }
     }
 
-    private func cancelMove(fromEnd end: Int, toStart start: Int, onChessBoardColor color: PieceColor) {
+    private func cancelMove(fromEnd end: Int, toStart start: Int, onBoard color: PieceColor) {
         let chessBoardVC = getChessBoardVC(forColor: color)
         // cancel
-        guard let image = chessBoardVC.chessBoardView.squaresView[end].subviews.last else { return }
+        guard let image = chessBoardVC.getLastAddedPiece(atPosition: end) else { return }
         image.removeFromSuperview()
-        chessBoardVC.chessBoardView.squaresView[start].addSubview(image)
+        chessBoardVC.addPiece(image, atPosition: start)
+        chessBoardVC.chessBoardView.hiddenMove(startSquare: start, endSquare: end)
     }
 
-    private func updateMove(fromStart start: Int, toEnd end: Int, onChessBoardColor color: PieceColor) {
+    private func updatePlayerUI(onBoard color: PieceColor) {
         let chessBoardVC = getChessBoardVC(forColor: color)
-        // update
-        guard let image = chessBoardVC.chessBoardView.squaresView[start].subviews.last else { return }
+        // hidden last move
+        if oldMove.end == currentMove.end {
+            chessBoardVC.chessBoardView.hiddenMove(startSquare: oldMove.start, endSquare: nil)
+        } else {
+            chessBoardVC.chessBoardView.hiddenMove(startSquare: oldMove.start, endSquare: oldMove.end)
+        }
+    }
+
+    private func updateOpponentUI(startingSq: Int, endingSq: Int, onBoard color: PieceColor) {
+        let chessBoardVC = getChessBoardVC(forColor: color)
+        // update move
+        guard let image = chessBoardVC.getLastAddedPiece(atPosition: startingSq) else { return }
         image.removeFromSuperview()
-        chessBoardVC.chessBoardView.squaresView[end].addSubview(image)
+        chessBoardVC.addPiece(image, atPosition: endingSq)
+        // show move
+        chessBoardVC.chessBoardView.showMove(startSquare: startingSq, endSquare: endingSq)
+        // hidden last move
+        if oldMove.end == currentMove.end {
+            chessBoardVC.chessBoardView.hiddenMove(startSquare: oldMove.start, endSquare: nil)
+        } else {
+            chessBoardVC.chessBoardView.hiddenMove(startSquare: oldMove.start, endSquare: oldMove.end)
+        }
     }
 }
 
@@ -186,10 +201,7 @@ extension MainViewController {
 
     private func removePiece(atPosition position: Int, onChessBoardColor color: PieceColor) {
         let chessBoardVC = getChessBoardVC(forColor: color)
-        // delete
-        if chessBoardVC.chessBoardView.squaresView[position].subviews.count > 0 {
-            chessBoardVC.chessBoardView.squaresView[position].subviews[0].removeFromSuperview()
-        }
+        chessBoardVC.removeFirstAddedPiece(atPosition: position)
     }
 }
 

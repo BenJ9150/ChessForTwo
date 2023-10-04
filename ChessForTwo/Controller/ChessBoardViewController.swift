@@ -29,12 +29,33 @@ extension ChessBoardViewController {
     }
 }
 
+// MARK: - Public methods
+
+extension ChessBoardViewController {
+
+    func addPiece(_ image: UIImageView, atPosition position: Int) {
+        chessBoardView.squaresView[position].addSubview(image)
+    }
+
+    func getLastAddedPiece(atPosition position: Int) -> UIImageView? {
+        return chessBoardView.squaresView[position].subviews.last as? UIImageView
+    }
+
+    func removeFirstAddedPiece(atPosition position: Int) {
+        if position < chessBoardView.squaresView.count {
+            if chessBoardView.squaresView[position].subviews.count > 0 {
+                // remove first view (last view may be the new piece)
+                chessBoardView.squaresView[position].subviews[0].removeFromSuperview()
+            }
+        }
+    }
+}
+
 // MARK: - Init board
 
 extension ChessBoardViewController {
 
     private func initBoard() {
-        guard let viewOfColor = viewOfColor else { return }
         chessBoardView.viewOfColor = viewOfColor // for notification of move
 
         // load piece
@@ -43,11 +64,10 @@ extension ChessBoardViewController {
         }
 
         // hide or hidden coordinates
-        switch viewOfColor {
-        case .white:
+        if viewOfColor == .white {
             chessBoardView.whiteCoordinates.isHidden = false
             chessBoardView.blackCoordinates.isHidden = true
-        case .black:
+        } else {
             chessBoardView.blackCoordinates.isHidden = false
             chessBoardView.whiteCoordinates.isHidden = true
         }

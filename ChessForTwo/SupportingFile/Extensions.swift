@@ -13,8 +13,7 @@ import UIKit
 extension Notification.Name {
 
     // piece moved
-    static let whiteMoved = Notification.Name("WhiteMoved")
-    static let blackMoved = Notification.Name("BlackMoved")
+    static let moveDone = Notification.Name("MoveDone")
     // captured piece
     static let capturedPieceAtPosition = Notification.Name("CapturedPieceAtPosition")
     // promotion
