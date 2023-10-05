@@ -17,6 +17,7 @@ class MainViewController: UIViewController {
     @IBOutlet weak var whiteLosedPieces: UIStackView!
     @IBOutlet weak var blackCapturedPieces: UIStackView!
     @IBOutlet weak var blackLosedPieces: UIStackView!
+    @IBOutlet weak var containersEqualWidthsConstraint: NSLayoutConstraint!
 
     // MARK: - Private properties
 
@@ -32,6 +33,10 @@ class MainViewController: UIViewController {
     private lazy var blackChessBoardVC: ChessBoardViewController = {
         return instantiateChessBoardVC(container: blackContainer, withColor: .black)
     }()
+
+    private var equalWidth: NSLayoutConstraint?
+    private var whiteWidthUp: NSLayoutConstraint?
+    private var blackWidthUp: NSLayoutConstraint?
 }
 
 // MARK: - View did load
@@ -56,6 +61,25 @@ extension MainViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        equalWidth = NSLayoutConstraint(item: blackContainer!, attribute: .width, relatedBy: .equal,
+                                                    toItem: whiteContainer!, attribute: .width,
+                                                    multiplier: 1, constant: 0)
+
+        whiteWidthUp = NSLayoutConstraint(item: blackContainer!, attribute: .width, relatedBy: .equal,
+                                                    toItem: whiteContainer!, attribute: .width,
+                                          multiplier: 0.9, constant: 0)
+
+        blackWidthUp = NSLayoutConstraint(item: blackContainer!, attribute: .width, relatedBy: .equal,
+                                                    toItem: whiteContainer!, attribute: .width,
+                                          multiplier: 1.1, constant: 0)
+
+        containersEqualWidthsConstraint.isActive = false
+        equalWidth!.isActive = true
+        whiteWidthUp!.isActive = false
+        blackWidthUp!.isActive = false
+        view.addConstraints([equalWidth!, whiteWidthUp!, blackWidthUp!])
+
         startNewGame() // in view did appear to have correct frames dimensions
     }
 }
@@ -74,6 +98,12 @@ extension MainViewController {
         // notification waiting promotion
         NotificationCenter.default.addObserver(self, selector: #selector(promotion(_:)),
                                                name: .promotion, object: nil)
+        // notification promotion has chosen
+        NotificationCenter.default.addObserver(self, selector: #selector(promotionHasChosen(_:)),
+                                               name: .promotionHasChosen, object: nil)
+        // TODO: notification pour faire les roques
+        // TODO: notification partie gagnée
+        // TODO: notification partie nul
     }
 }
 
@@ -108,6 +138,34 @@ extension MainViewController {
     private func updateWhoIsPlaying() {
         whiteChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
         blackChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
+
+        switch game.currentColor {
+        case .white:
+            equalWidth?.isActive = false
+            whiteWidthUp?.isActive = true
+            blackWidthUp?.isActive = false
+        case .black:
+            equalWidth?.isActive = false
+            whiteWidthUp?.isActive = false
+            blackWidthUp?.isActive = true
+        default:
+            equalWidth?.isActive = true
+            whiteWidthUp?.isActive = false
+            blackWidthUp?.isActive = false
+        }
+
+        view.layoutIfNeeded()
+        // update frame of pieces
+        for square in whiteChessBoardVC.chessBoardView.squaresView {
+            for subview in square.subviews {
+                subview.frame = square.bounds
+            }
+        }
+        for square in blackChessBoardVC.chessBoardView.squaresView {
+            for subview in square.subviews {
+                subview.frame = square.bounds
+            }
+        }
     }
 }
 
@@ -210,22 +268,35 @@ extension MainViewController {
 extension MainViewController {
 
     @objc private func promotion(_ notif: NSNotification) {
-        guard let position = notif.object as? Int else { return }
-        promotionPosition = position
+        guard let object = notif.object as? (color: PieceColor, position: Int) else { return }
+        promotionPosition = object.position
         // display piece choice for promotion
-        // TODO........
-        promotionChoice(Queen())
+        let chessBoardVC = getChessBoardVC(forColor: object.color)
+        chessBoardVC.promotionChoose.isHidden = false
+    }
+
+    @objc private func promotionHasChosen(_ notif: NSNotification) {
+        guard let pieces = notif.object as? Pieces else { return }
+        promotionChoice(pieces)
     }
 
     private func promotionChoice(_ piece: Pieces) {
         guard let position = promotionPosition else { return }
         game.promotion(chosenPiece: piece)
-        // remove old pieces
+
+        // get player color (game is restarted)
+        guard let playerColor = game.currentColor else { return }
+
+        // remove old and load new
         removePiece(atPosition: position, onChessBoardColor: .white)
         removePiece(atPosition: position, onChessBoardColor: .black)
-        // load new pieces
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .white)
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .black)
+
+        // hide piece choice for promotion and update who is playing
+        let chessBoardVC = getChessBoardVC(forColor: playerColor == .white ? .black : .white)
+        chessBoardVC.promotionChoose.isHidden = true
+        updateWhoIsPlaying()
     }
 
     private func loadNewPiece(_ piece: Pieces, atPosition position: Int, onChessBoardColor color: PieceColor) {

@@ -17,6 +17,29 @@ class ChessBoardViewController: UIViewController {
     // MARK: - IBOutlet
 
     @IBOutlet var chessBoardView: ChessBoardView!
+    @IBOutlet weak var promotionChoose: UIView!
+    @IBOutlet weak var promotionQueen: UIButton!
+    @IBOutlet weak var promotionRook: UIButton!
+    @IBOutlet weak var promotionBishop: UIButton!
+    @IBOutlet weak var promotionKnight: UIButton!
+
+    // MARK: - IBAction
+
+    @IBAction func promotionQueenTap() {
+        NotificationCenter.default.post(name: .promotionHasChosen, object: Queen(viewOfColor))
+    }
+
+    @IBAction func promotionRookTap() {
+        NotificationCenter.default.post(name: .promotionHasChosen, object: Rook(viewOfColor))
+    }
+
+    @IBAction func promotionBishopTap() {
+        NotificationCenter.default.post(name: .promotionHasChosen, object: Bishop(viewOfColor))
+    }
+
+    @IBAction func promotionKnightTap() {
+        NotificationCenter.default.post(name: .promotionHasChosen, object: Knight(viewOfColor))
+    }
 }
 
 // MARK: - View did appear
@@ -26,6 +49,7 @@ extension ChessBoardViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         initBoard() // in view did appear to have correct frames dimensions
+        updatePromotionButtons()
     }
 }
 
@@ -51,27 +75,9 @@ extension ChessBoardViewController {
     }
 }
 
-// MARK: - Init board
+// MARK: - Public methods
 
 extension ChessBoardViewController {
-
-    private func initBoard() {
-        chessBoardView.viewOfColor = viewOfColor // for notification of move
-
-        // load piece
-        for piece in ChessBoard.allPieces() {
-            load(piece: piece, atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank))
-        }
-
-        // hide or hidden coordinates
-        if viewOfColor == .white {
-            chessBoardView.whiteCoordinates.isHidden = false
-            chessBoardView.blackCoordinates.isHidden = true
-        } else {
-            chessBoardView.blackCoordinates.isHidden = false
-            chessBoardView.whiteCoordinates.isHidden = true
-        }
-    }
 
     func load(piece: Pieces, atSquare square: Int) {
         let image: UIImageView
@@ -98,5 +104,44 @@ extension ChessBoardViewController {
             image.image = image.image?.rotate()
         }
         chessBoardView.squaresView[square].addSubview(image)
+    }
+}
+
+// MARK: - Init board
+
+extension ChessBoardViewController {
+
+    private func initBoard() {
+        chessBoardView.viewOfColor = viewOfColor // for notification of move
+
+        // load piece
+        for piece in ChessBoard.allPieces() {
+            load(piece: piece, atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank))
+        }
+
+        // hide or hidden coordinates
+        if viewOfColor == .white {
+            chessBoardView.whiteCoordinates.isHidden = false
+            chessBoardView.blackCoordinates.isHidden = true
+        } else {
+            chessBoardView.blackCoordinates.isHidden = false
+            chessBoardView.whiteCoordinates.isHidden = true
+        }
+    }
+
+    private func updatePromotionButtons() {
+        guard let color = viewOfColor else { return }
+        switch color {
+        case .white:
+            promotionQueen.setBackgroundImage(UIImage(named: "ic_whiteQueen"), for: .normal)
+            promotionRook.setBackgroundImage(UIImage(named: "ic_whiteRook"), for: .normal)
+            promotionBishop.setBackgroundImage(UIImage(named: "ic_whiteBishop"), for: .normal)
+            promotionKnight.setBackgroundImage(UIImage(named: "ic_whiteKnight"), for: .normal)
+        case .black:
+            promotionQueen.setBackgroundImage(UIImage(named: "ic_blackQueen")?.rotate(), for: .normal)
+            promotionRook.setBackgroundImage(UIImage(named: "ic_blackRook")?.rotate(), for: .normal)
+            promotionBishop.setBackgroundImage(UIImage(named: "ic_blackBishop")?.rotate(), for: .normal)
+            promotionKnight.setBackgroundImage(UIImage(named: "ic_blackKnight")?.rotate(), for: .normal)
+        }
     }
 }

@@ -29,6 +29,10 @@ final class Game {
         return gameState
     }
 
+    var currentColorBeforePause: PieceColor? {
+        return whoIsPlayingBeforePause
+    }
+
     // MARK: - Private properties
 
     private var scores = [Player.one: 0, Player.two: 0]
@@ -91,9 +95,6 @@ extension Game {
             notifyCapturedPiece(capturedPiece)
             ChessBoard.addToCapturedPieces(capturedPiece)
         }
-
-        // check if promotion
-        pauseIfWaitingPromotion(movedPiece: movedPiece, atSquare: endSquare)
         return true
     }
 
@@ -107,7 +108,7 @@ extension Game {
 extension Game {
 
     private func setBoardAfterPromotionChoice<T: Pieces>(chosenPiece: T) {
-        // who is playing before pause
+        // get olg piece to promute
         if let oldPiece = pieceAwaitingPromotion {
             // remove old piece
             ChessBoard.remove(oldPiece)
@@ -116,22 +117,29 @@ extension Game {
             ChessBoard.add(new)
             pieceAwaitingPromotion = nil
             unpause()
+
+            // update game
+            let attackByOpp = ChessBoard.attackedSquaresByPieces(byColor: (oldPiece.color == .white ? .black : .white))
+            updateGameAfterMove(playerColor: oldPiece.color, attackedByOpponent: attackByOpp)
         }
     }
 
-    private func pauseIfWaitingPromotion(movedPiece: Pieces, atSquare square: Square) {
+    private func pauseIfWaitingPromotion(movedPiece: Pieces, atSquare square: Square) -> Bool {
+        if type(of: movedPiece) != type(of: Pawn()) { return false }
+        // check good rank
         switch movedPiece.color {
         case .black:
-            if square.rank != ChessBoard.minPosition { return }
+            if square.rank != ChessBoard.minPosition { return false }
         case .white:
-            if square.rank != ChessBoard.maxPosition { return }
+            if square.rank != ChessBoard.maxPosition { return false }
         }
         // promotion
         pieceAwaitingPromotion = movedPiece
         // get position in Int for notif
         let positionToInt = ChessBoard.posToInt(file: movedPiece.currentFile, rank: movedPiece.currentRank)
-        NotificationCenter.default.post(name: .promotion, object: positionToInt)
+        NotificationCenter.default.post(name: .promotion, object: (color: movedPiece.color, position: positionToInt))
         pause()
+        return true
     }
 }
 
@@ -163,7 +171,12 @@ extension Game {
             }
         }
 
-        // update game after move is finish and validate
+        // move is validate, check if promotion
+        if pauseIfWaitingPromotion(movedPiece: piece, atSquare: square) {
+            return (true, capturedPieceResult)
+        }
+
+        // update game
         if updateGame {
             updateGameAfterMove(playerColor: piece.color, attackedByOpponent: attackedByOpponent)
         }

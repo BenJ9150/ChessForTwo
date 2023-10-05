@@ -108,6 +108,14 @@ class Piece: Pieces {
         self.init(initialFile: 0, initialRank: 0, color: .white)
     }
 
+    convenience init(_ color: PieceColor?) {
+        if let pieceColor = color {
+            self.init(initialFile: 0, initialRank: 0, color: pieceColor)
+        } else {
+            self.init()
+        }
+    }
+
     // MARK: - Public methods
 
     func getValidMoves() -> [Square] {

@@ -56,27 +56,6 @@ extension ChessBoardView {
 
 extension ChessBoardView {
 
-    private func touchLocation(_ touches: Set<UITouch>) -> CGPoint {
-        touch = touches.first! as UITouch
-        return touch.location(in: self)
-    }
-
-    private func getCurrentSquare(forPoint currentPoint: CGPoint) -> UIView? {
-        for square in squaresView {
-            guard let squareStack = square.superview else { continue }
-
-            // frame of square in view origin
-            let size = square.frame.size
-            let origin = CGPoint(x: Double(square.frame.origin.x),
-                                 y: Double(squareStack.frame.origin.y))
-
-            if frame(forAlignmentRect: CGRect(origin: origin, size: size)).contains(currentPoint) {
-                return square
-            }
-        }
-        return nil
-    }
-
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !canPlay() { return }
 
@@ -93,15 +72,8 @@ extension ChessBoardView {
 
         // get piece image in current square view
         if let pieceImage = currentSquare.subviews.last {
-            // new frame of moved piece
-            var newFrame = pieceImage.frame
-            newFrame.size.width = pieceImage.bounds.width
-            newFrame.size.height = pieceImage.bounds.height
-            newFrame.origin.x = currentSquare.frame.origin.x
-            newFrame.origin.y = currentSquare.superview!.frame.origin.y
-            pieceImage.frame = newFrame
-
             // add piece to view
+            pieceImage.frame = getFrameForGlobalView(piece: pieceImage, atSquare: currentSquare)
             currentPiece = pieceImage
             addSubview(currentPiece!)
 
@@ -148,9 +120,16 @@ extension ChessBoardView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !canPlay() { return }
 
-        // get point, image and starting square
+        // get point and image
         let currentPoint = touchLocation(touches)
-        guard let pieceImage = currentPiece, let start = move.start else {
+        guard let pieceImage = currentPiece else {
+            cleanMove()
+            return
+        }
+
+        // get starting square
+        guard let start = move.start else {
+            pieceImage.transform = .identity
             cleanMove()
             return
         }
@@ -158,6 +137,7 @@ extension ChessBoardView {
         // get current square
         guard let currentSquare = getCurrentSquare(forPoint: currentPoint) else {
             // out of board, replace the piece
+            pieceImage.transform = .identity
             pieceImage.frame = squaresView[start].bounds
             squaresView[start].addSubview(pieceImage)
             cleanMove()
@@ -168,6 +148,10 @@ extension ChessBoardView {
         move.end = squaresView.firstIndex(of: currentSquare)
         if move.start == move.end {
             startingChoice = move.start
+            // delete transform and replace piece if dragged
+            pieceImage.transform = .identity
+            pieceImage.frame = squaresView[start].bounds
+            squaresView[start].addSubview(pieceImage)
             return
         }
 
@@ -203,20 +187,34 @@ extension ChessBoardView {
     }
 
     private func endAnimationAfterTap(piece pieceImage: UIView, atSquare currentSquare: UIView) {
-        // just in case, cancel transfom
-        pieceImage.transform = .identity
+        // get starting square
+        guard let start = move.start, start < squaresView.count else {
+            endOfMove(piece: pieceImage, atSquare: currentSquare)
+            return
+        }
+        // get starting piece
+        guard let startingPiece = squaresView[start].subviews.last else {
+            endOfMove(piece: pieceImage, atSquare: currentSquare)
+            return
+        }
+        // add piece to view
+        startingPiece.frame = getFrameForGlobalView(piece: startingPiece, atSquare: squaresView[start])
+        addSubview(startingPiece)
 
         // animation
-        UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut) {
+        UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseInOut) {
             // center piece on square and return to identity
-            pieceImage.frame.origin.x = currentSquare.frame.origin.x
-            pieceImage.frame.origin.y = currentSquare.superview!.frame.origin.y
+            startingPiece.frame.origin.x = currentSquare.frame.origin.x
+            startingPiece.frame.origin.y = currentSquare.superview!.frame.origin.y
         } completion: { _ in
-            self.endOfMove(piece: pieceImage, atSquare: currentSquare)
+            self.endOfMove(piece: startingPiece, atSquare: currentSquare)
         }
     }
 
     private func endOfMove(piece pieceImage: UIView, atSquare currentSquare: UIView) {
+        // just in case, delete transfom
+        pieceImage.transform = .identity
+
         // add image to current square
         pieceImage.frame = currentSquare.bounds
         currentSquare.addSubview(pieceImage)
@@ -227,6 +225,42 @@ extension ChessBoardView {
         // notify controller and reinit properties
         NotificationCenter.default.post(name: .moveDone, object: move)
         reinitProperties()
+    }
+}
+
+
+// MARK: - Get square or frame
+
+extension ChessBoardView {
+
+    private func touchLocation(_ touches: Set<UITouch>) -> CGPoint {
+        touch = touches.first! as UITouch
+        return touch.location(in: self)
+    }
+
+    private func getCurrentSquare(forPoint currentPoint: CGPoint) -> UIView? {
+        for square in squaresView {
+            guard let squareStack = square.superview else { continue }
+
+            // frame of square in view origin
+            let origin = CGPoint(x: Double(square.frame.origin.x),
+                                 y: Double(squareStack.frame.origin.y))
+
+            if frame(forAlignmentRect: CGRect(origin: origin, size: square.frame.size)).contains(currentPoint) {
+                return square
+            }
+        }
+        return nil
+    }
+
+    private func getFrameForGlobalView(piece pieceImage: UIView, atSquare square: UIView) -> CGRect {
+        // new frame of piece in global view
+        var newFrame = pieceImage.frame
+        newFrame.size.width = pieceImage.bounds.width
+        newFrame.size.height = pieceImage.bounds.height
+        newFrame.origin.x = square.frame.origin.x
+        newFrame.origin.y = square.superview!.frame.origin.y
+        return newFrame
     }
 }
 

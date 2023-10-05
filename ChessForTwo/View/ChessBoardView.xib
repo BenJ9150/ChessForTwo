@@ -11,6 +11,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChessBoardViewController" customModule="ChessForTwo" customModuleProvider="target">
             <connections>
                 <outlet property="chessBoardView" destination="i5M-Pr-FkT" id="rdb-lp-1dU"/>
+                <outlet property="promotionBishop" destination="0i8-BM-Elf" id="W9m-Di-STm"/>
+                <outlet property="promotionChoose" destination="DD2-wN-K4I" id="vSZ-sf-p5C"/>
+                <outlet property="promotionKnight" destination="alS-Ws-tka" id="s62-d4-PwM"/>
+                <outlet property="promotionQueen" destination="M86-lV-0hX" id="MNd-6u-sVx"/>
+                <outlet property="promotionRook" destination="hOz-wU-c9T" id="URd-2s-jsc"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -1773,9 +1778,93 @@
                         </stackView>
                     </subviews>
                 </stackView>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DD2-wN-K4I">
+                    <rect key="frame" x="0.0" y="59" width="393" height="393"/>
+                    <subviews>
+                        <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rzk-dv-r5i">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="393"/>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ngo-cT-3mu">
+                            <rect key="frame" x="98.333333333333329" y="98.333333333333329" width="196.33333333333337" height="196.33333333333337"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="jPb-mw-mp0">
+                                    <rect key="frame" x="16" y="16" width="164.33333333333334" height="164.33333333333334"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="M1b-hi-d8V">
+                                            <rect key="frame" x="0.0" y="0.0" width="164.33333333333334" height="74.333333333333329"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M86-lV-0hX">
+                                                    <rect key="frame" x="0.0" y="0.0" width="74.333333333333329" height="74.333333333333329"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" backgroundImage="ic_whiteQueen"/>
+                                                    <connections>
+                                                        <action selector="promotionQueenTap" destination="-1" eventType="touchUpInside" id="7n4-mH-UWz"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hOz-wU-c9T">
+                                                    <rect key="frame" x="90.333333333333329" y="0.0" width="73.999999999999986" height="74.333333333333329"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" backgroundImage="ic_whiteRook"/>
+                                                    <connections>
+                                                        <action selector="promotionRookTap" destination="-1" eventType="touchUpInside" id="hj2-9O-QQh"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </stackView>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="1zS-gz-yXJ">
+                                            <rect key="frame" x="0.0" y="90.333333333333343" width="164.33333333333334" height="74"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0i8-BM-Elf">
+                                                    <rect key="frame" x="0.0" y="0.0" width="74.333333333333329" height="74"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" backgroundImage="ic_whiteBishop"/>
+                                                    <connections>
+                                                        <action selector="promotionBishopTap" destination="-1" eventType="touchUpInside" id="SlL-Dw-XOj"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="alS-Ws-tka">
+                                                    <rect key="frame" x="90.333333333333329" y="0.0" width="73.999999999999986" height="74"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" backgroundImage="ic_whiteKnight"/>
+                                                    <connections>
+                                                        <action selector="promotionKnightTap" destination="-1" eventType="touchUpInside" id="y7c-xq-gQI"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <color key="backgroundColor" name="color_selectedSquare"/>
+                            <constraints>
+                                <constraint firstItem="jPb-mw-mp0" firstAttribute="leading" secondItem="ngo-cT-3mu" secondAttribute="leading" constant="16" id="B2K-MB-ih5"/>
+                                <constraint firstAttribute="trailing" secondItem="jPb-mw-mp0" secondAttribute="trailing" constant="16" id="XFg-sl-6yy"/>
+                                <constraint firstItem="jPb-mw-mp0" firstAttribute="top" secondItem="ngo-cT-3mu" secondAttribute="top" constant="16" id="aIN-t5-B9b"/>
+                                <constraint firstAttribute="bottom" secondItem="jPb-mw-mp0" secondAttribute="bottom" constant="16" id="kc0-BO-Ja6"/>
+                                <constraint firstAttribute="width" secondItem="ngo-cT-3mu" secondAttribute="height" multiplier="1:1" id="tIo-Oy-EeF"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
+                                    <integer key="value" value="8"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="ngo-cT-3mu" firstAttribute="centerX" secondItem="DD2-wN-K4I" secondAttribute="centerX" id="7jT-xS-kGq"/>
+                        <constraint firstItem="ngo-cT-3mu" firstAttribute="width" secondItem="DD2-wN-K4I" secondAttribute="width" multiplier="0.5" id="IsK-y8-D39"/>
+                        <constraint firstItem="Rzk-dv-r5i" firstAttribute="top" secondItem="DD2-wN-K4I" secondAttribute="top" id="ZWX-Yk-6Nn"/>
+                        <constraint firstAttribute="bottom" secondItem="Rzk-dv-r5i" secondAttribute="bottom" id="fOX-Ae-ifc"/>
+                        <constraint firstAttribute="trailing" secondItem="Rzk-dv-r5i" secondAttribute="trailing" id="fds-pv-3wm"/>
+                        <constraint firstItem="ngo-cT-3mu" firstAttribute="centerY" secondItem="DD2-wN-K4I" secondAttribute="centerY" id="mcD-Wq-tGg"/>
+                        <constraint firstItem="Rzk-dv-r5i" firstAttribute="leading" secondItem="DD2-wN-K4I" secondAttribute="leading" id="piA-6I-9Pc"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <constraints>
+                <constraint firstItem="DD2-wN-K4I" firstAttribute="trailing" secondItem="VJT-9S-ng9" secondAttribute="trailing" id="04q-Wq-R5A"/>
                 <constraint firstItem="lxv-eO-SQc" firstAttribute="leading" secondItem="VJT-9S-ng9" secondAttribute="leading" id="0pR-ZZ-XJy"/>
                 <constraint firstItem="lxv-eO-SQc" firstAttribute="bottom" secondItem="VJT-9S-ng9" secondAttribute="bottom" id="1zP-2k-64r"/>
                 <constraint firstItem="4ih-8e-rLU" firstAttribute="bottom" secondItem="VJT-9S-ng9" secondAttribute="bottom" id="9G7-WW-yU9"/>
@@ -1785,12 +1874,15 @@
                 <constraint firstItem="lxv-eO-SQc" firstAttribute="trailing" secondItem="VJT-9S-ng9" secondAttribute="trailing" id="HrJ-dG-JZr"/>
                 <constraint firstItem="VJT-9S-ng9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Ihe-nA-1Fi"/>
                 <constraint firstItem="Due-au-lDv" firstAttribute="bottom" secondItem="VJT-9S-ng9" secondAttribute="bottom" id="IqX-Ne-pLP"/>
+                <constraint firstItem="DD2-wN-K4I" firstAttribute="leading" secondItem="VJT-9S-ng9" secondAttribute="leading" id="T7E-r7-wCi"/>
                 <constraint firstItem="lxv-eO-SQc" firstAttribute="top" secondItem="VJT-9S-ng9" secondAttribute="top" id="Uzq-QB-miS"/>
                 <constraint firstItem="4ih-8e-rLU" firstAttribute="leading" secondItem="VJT-9S-ng9" secondAttribute="leading" id="VcB-YE-Vcg"/>
                 <constraint firstItem="4ih-8e-rLU" firstAttribute="top" secondItem="VJT-9S-ng9" secondAttribute="top" id="Vcu-rO-gK9"/>
+                <constraint firstItem="DD2-wN-K4I" firstAttribute="top" secondItem="VJT-9S-ng9" secondAttribute="top" id="iBs-qY-4YD"/>
                 <constraint firstItem="4ih-8e-rLU" firstAttribute="trailing" secondItem="VJT-9S-ng9" secondAttribute="trailing" id="pGg-bZ-zHe"/>
                 <constraint firstItem="Due-au-lDv" firstAttribute="top" secondItem="VJT-9S-ng9" secondAttribute="top" id="pLG-RB-dFh"/>
                 <constraint firstItem="Due-au-lDv" firstAttribute="leading" secondItem="VJT-9S-ng9" secondAttribute="leading" id="t2k-Hk-H8a"/>
+                <constraint firstItem="DD2-wN-K4I" firstAttribute="bottom" secondItem="VJT-9S-ng9" secondAttribute="bottom" id="vAm-QZ-L1f"/>
             </constraints>
             <connections>
                 <outlet property="blackCoordinates" destination="Due-au-lDv" id="KVB-9a-rFn"/>
@@ -1864,6 +1956,10 @@
         </view>
     </objects>
     <resources>
+        <image name="ic_whiteBishop" width="72" height="72"/>
+        <image name="ic_whiteKnight" width="72" height="72"/>
+        <image name="ic_whiteQueen" width="72" height="72"/>
+        <image name="ic_whiteRook" width="72" height="72"/>
         <namedColor name="color_blackSquare">
             <color red="0.44299998879432678" green="0.60000002384185791" blue="0.70999997854232788" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
