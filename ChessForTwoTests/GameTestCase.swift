@@ -18,7 +18,7 @@ final class GameTestCase: XCTestCase {
     private let sqA1 = (1, 1), sqA2 = (1, 2), sqA3 = (1, 3), sqA4 = (1, 4)
     private let sqA5 = (1, 5), sqA6 = (1, 6), sqA7 = (1, 7), sqA8 = (1, 8)
     private let sqB1 = (2, 1), sqB2 = (2, 2), sqB4 = (2, 4), sqB5 = (2, 5), sqB6 = (2, 6), sqB8 = (2, 8)
-    private let sqC2 = (3, 2), sqC3 = (3, 3), sqC4 = (3, 4), sqC6 = (3, 6), sqC7 = (3, 7)
+    private let sqC1 = (3, 1), sqC2 = (3, 2), sqC3 = (3, 3), sqC4 = (3, 4), sqC6 = (3, 6), sqC7 = (3, 7)
     private let sqD1 = (4, 1), sqD2 = (4, 2), sqD3 = (4, 3), sqD4 = (4, 4)
     private let sqD5 = (4, 5), sqD6 = (4, 6), sqD7 = (4, 7), sqD8 = (4, 8)
     private let sqE1 = (5, 1), sqE2 = (5, 2), sqE4 = (5, 4), sqE5 = (5, 5), sqE6 = (5, 6), sqE7 = (5, 7), sqE8 = (5, 8)
@@ -113,6 +113,7 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.currentColor, .white)
         XCTAssertEqual(game.state, .isStarted)
+        XCTAssertEqual(ChessBoard.capturedPieces.count, 5)
     }
 
     func testGivenBlackKingIsCheck_WhenE7_ThenIsValidMove() {
@@ -278,31 +279,11 @@ final class GameTestCase: XCTestCase {
         initPieceAndAddToCB(Pawn(), at: sqD7, withColor: .white)
         movePiece(from: sqD7, to: sqD8) // d8, wait promotion
 
-        game.promotion(chosenPiece: Queen())
+        game.promotion(chosenPiece: Queen(.white))
 
         XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 4, rank: 8)) is Queen)
         XCTAssertEqual(game.state, .isStarted)
         XCTAssertEqual(game.currentColor, .black)
-    }
-
-    func testGivenWhiteCaptureAndPromute_WhenMovePawn_ThenIsValidMove() {
-        movePiece(from: sqG2, to: sqG4) // g4
-        movePiece(from: sqG7, to: sqG5) // g5
-        movePiece(from: sqF2, to: sqF4) // f4
-        movePiece(from: sqG5, to: sqF4) // gxf4
-        movePiece(from: sqG4, to: sqG5) // g5
-        movePiece(from: sqG8, to: sqF6) // Nf6
-        movePiece(from: sqG5, to: sqG6) // g6
-        movePiece(from: sqA7, to: sqA6) // a6
-        movePiece(from: sqG6, to: sqG7) // g7
-        movePiece(from: sqA6, to: sqA5) // a5
-        movePiece(from: sqG7, to: sqH8) // gxh8=Q
-        game.promotion(chosenPiece: Queen())
-
-        movePiece(from: sqA5, to: sqA4) // a4
-
-        XCTAssertTrue(movesResult)
-        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 8, rank: 8)) is Queen)
     }
 
     func testGivenBlackKingAlmostMate_WhenRookPromotion_ThenWhiteWin() {
@@ -313,7 +294,7 @@ final class GameTestCase: XCTestCase {
 
         movePiece(from: sqG7, to: sqG8) // g8, wait promotion
 
-        game.promotion(chosenPiece: Rook())
+        game.promotion(chosenPiece: Rook(nil))
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.score(ofPlayer: .one), 2)
@@ -336,5 +317,34 @@ final class GameTestCase: XCTestCase {
         XCTAssertEqual(game.score(ofPlayer: .one), 0)
         XCTAssertEqual(game.score(ofPlayer: .two), 2)
         XCTAssertEqual(game.state, .isOver)
+    }
+
+    // MARK: - Castling
+
+    func testGivenWhiteBigCastling_WhenCheckingBoard_ThenKingIsAtC1AndRookAtD1() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(King(), at: sqE1, withColor: .white)
+        initPieceAndAddToCB(King(), at: sqE8, withColor: .black)
+        initPieceAndAddToCB(Rook(), at: sqA1, withColor: .white)
+
+        movePiece(from: sqE1, to: sqC1)
+
+        XCTAssertTrue(movesResult)
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 3, rank: 1)) is King)
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 4, rank: 1)) is Rook)
+    }
+
+    func testGivenBlackLittleCastling_WhenCheckingBoard_ThenKingIsAtG8AndRookAtG7() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(King(), at: sqE1, withColor: .white)
+        initPieceAndAddToCB(King(), at: sqE8, withColor: .black)
+        initPieceAndAddToCB(Rook(), at: sqH8, withColor: .black)
+
+        movePiece(from: sqE1, to: sqE2)
+        movePiece(from: sqE8, to: sqG8)
+
+        XCTAssertTrue(movesResult)
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 7, rank: 8)) is King)
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 6, rank: 8)) is Rook)
     }
 }

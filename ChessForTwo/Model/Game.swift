@@ -103,47 +103,7 @@ extension Game {
     }
 }
 
-// MARK: - Private Promotion methods
-
-extension Game {
-
-    private func setBoardAfterPromotionChoice<T: Pieces>(chosenPiece: T) {
-        // get olg piece to promute
-        if let oldPiece = pieceAwaitingPromotion {
-            // remove old piece
-            ChessBoard.remove(oldPiece)
-            // add new Piece
-            let new = T(initialFile: oldPiece.currentFile, initialRank: oldPiece.currentRank, color: oldPiece.color)
-            ChessBoard.add(new)
-            pieceAwaitingPromotion = nil
-            unpause()
-
-            // update game
-            let attackByOpp = ChessBoard.attackedSquaresByPieces(byColor: (oldPiece.color == .white ? .black : .white))
-            updateGameAfterMove(playerColor: oldPiece.color, attackedByOpponent: attackByOpp)
-        }
-    }
-
-    private func pauseIfWaitingPromotion(movedPiece: Pieces, atSquare square: Square) -> Bool {
-        if type(of: movedPiece) != type(of: Pawn()) { return false }
-        // check good rank
-        switch movedPiece.color {
-        case .black:
-            if square.rank != ChessBoard.minPosition { return false }
-        case .white:
-            if square.rank != ChessBoard.maxPosition { return false }
-        }
-        // promotion
-        pieceAwaitingPromotion = movedPiece
-        // get position in Int for notif
-        let positionToInt = ChessBoard.posToInt(file: movedPiece.currentFile, rank: movedPiece.currentRank)
-        NotificationCenter.default.post(name: .promotion, object: (color: movedPiece.color, position: positionToInt))
-        pause()
-        return true
-    }
-}
-
-// MARK: - Private methods for move
+// MARK: - Private methods for move and capture
 
 extension Game {
 
@@ -172,9 +132,12 @@ extension Game {
         }
 
         // move is validate, check if promotion
-        if pauseIfWaitingPromotion(movedPiece: piece, atSquare: square) {
+        if pauseIfWaitingPromotion(pawn: piece, atSquare: square) {
             return (true, capturedPieceResult)
         }
+
+        // check if castling
+        checkIfCastling(piece, square: square)
 
         // update game
         if updateGame {
@@ -203,6 +166,80 @@ extension Game {
         // get position in Int for notif
         let positionToInt = ChessBoard.posToInt(file: capturedPiece.currentFile, rank: capturedPiece.currentRank)
         NotificationCenter.default.post(name: .capturedPieceAtPosition, object: positionToInt)
+    }
+}
+
+// MARK: - Private methods for castling
+
+extension Game {
+
+    private func checkIfCastling(_ king: Pieces, square: Square) {
+        if type(of: king) != type(of: King()) { return }
+
+        // check if big castling
+        if king.currentFile - king.oldFile == -2 {
+            castling(king, startRookFile: 1, endRookFile: 4)
+        }
+        // check if little castling
+        if king.currentFile - king.oldFile == 2 {
+            castling(king, startRookFile: 8, endRookFile: 6)
+        }
+    }
+
+    private func castling(_ king: Pieces, startRookFile: Int, endRookFile: Int) {
+        if let rook = ChessBoard.piece(atPosition: Square(file: startRookFile, rank: king.currentRank)) {
+            // remove king of board to move rook
+            ChessBoard.remove(king)
+            // move rook (safe, already test in King class)
+            _ = rook.setNewPosition(atFile: endRookFile, andRank: king.currentRank)
+            // change rook position in board and add king
+            ChessBoard.moveAfterSetPosition(piece: rook)
+            ChessBoard.add(king)
+            // notify controller
+            let startingSq = ChessBoard.posToInt(file: rook.oldFile, rank: rook.oldRank)
+            let endingSq = ChessBoard.posToInt(file: rook.currentFile, rank: rook.currentRank)
+            NotificationCenter.default.post(name: .castling, object: (start: startingSq, end: endingSq))
+        }
+    }
+}
+
+// MARK: - Private methods for promotion
+
+extension Game {
+
+    private func setBoardAfterPromotionChoice<T: Pieces>(chosenPiece: T) {
+        // get olg piece to promute
+        if let oldPiece = pieceAwaitingPromotion {
+            // remove old piece
+            ChessBoard.remove(oldPiece)
+            // add new Piece
+            let new = T(initialFile: oldPiece.currentFile, initialRank: oldPiece.currentRank, color: oldPiece.color)
+            ChessBoard.add(new)
+            pieceAwaitingPromotion = nil
+            unpause()
+
+            // update game
+            let attackByOpp = ChessBoard.attackedSquaresByPieces(byColor: (oldPiece.color == .white ? .black : .white))
+            updateGameAfterMove(playerColor: oldPiece.color, attackedByOpponent: attackByOpp)
+        }
+    }
+
+    private func pauseIfWaitingPromotion(pawn: Pieces, atSquare square: Square) -> Bool {
+        if type(of: pawn) != type(of: Pawn()) { return false }
+        // check good rank
+        switch pawn.color {
+        case .black:
+            if square.rank != ChessBoard.minPosition { return false }
+        case .white:
+            if square.rank != ChessBoard.maxPosition { return false }
+        }
+        // promotion
+        pieceAwaitingPromotion = pawn
+        // get position in Int for notif
+        let positionToInt = ChessBoard.posToInt(file: pawn.currentFile, rank: pawn.currentRank)
+        NotificationCenter.default.post(name: .promotion, object: (color: pawn.color, position: positionToInt))
+        pause()
+        return true
     }
 }
 
@@ -237,6 +274,11 @@ extension Game {
         // change who is playing
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
     }
+}
+
+// MARK: - Private methods for checkmate
+
+extension Game {
 
     private func checkmate(opponentKing: Pieces, attackedByPlayer: [Square: [Pieces]],
                            attackedByOpponent: [Square: [Pieces]]) -> Bool {
@@ -310,6 +352,11 @@ extension Game {
             whoIsPlaying = nil
         }
     }
+}
+
+// MARK: - Private methods for stalemate
+
+extension Game {
 
     private func stalemate(opponentKing: Pieces, attackedByPlayer: [Square: [Pieces]]) -> Bool {
         // check if all pieces of opponent can't move (except the king)

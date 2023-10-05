@@ -160,10 +160,6 @@ extension ChessBoard {
         chessboard.removeAll()
         savedPositions.removeAll()
     }
-
-    static func allCapturedPieces() -> [Pieces] {
-        return capturedPieces
-    }
 }
 
 // MARK: - Convert position

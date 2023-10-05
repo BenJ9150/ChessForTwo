@@ -19,6 +19,8 @@ extension Notification.Name {
     // promotion
     static let promotion = Notification.Name("Promotion")
     static let promotionHasChosen = Notification.Name("PromotionHasChosen")
+    // castling
+    static let castling = Notification.Name("Castling")
 }
 
 extension UIView {

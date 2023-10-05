@@ -228,7 +228,6 @@ extension ChessBoardView {
     }
 }
 
-
 // MARK: - Get square or frame
 
 extension ChessBoardView {
