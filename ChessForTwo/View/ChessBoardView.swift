@@ -17,13 +17,18 @@ class ChessBoardView: UIView {
     // MARK: Private properties
 
     private var touch: UITouch!
-    private var oldPoint = CGPoint()
-    private var dragging = false
+    private var startingPoint = CGPoint()
+    private var lastPoint = CGPoint()
     private var currentPiece: UIView?
     private var move: (start: Int?, end: Int?)
     private var currentHoveredSquare: Int?
     private var lastHoveredSquare: Int?
+    private var startingChoice: Int?
+
     private let selectionAlpha = 0.7
+    private let dragZoom = 2.75
+    private let dragOffset: CGFloat = 16 // to see piece under finger
+    private let minDrag: CGFloat = 8 // min move to known if tap or drag
 
     // MARK: - IBOutlet
 
@@ -74,79 +79,79 @@ extension ChessBoardView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !canPlay() { return }
-        cleanSelectedSquares()
 
-        // get touch
+        // get current point and square
         let currentPoint = touchLocation(touches)
         guard let currentSquare = getCurrentSquare(forPoint: currentPoint) else { return }
 
+        // update points
+        startingPoint = currentPoint
+        lastPoint = currentPoint
+
+        // check if already choice for start
+        if startingChoice != nil { return }
+
+        // get piece image in current square view
         if let pieceImage = currentSquare.subviews.last {
             // new frame of moved piece
-            var frame = pieceImage.frame
-
-            // zoom to see the piece under the user's finger
-            let zoom = 2.75
-            frame.size.width = pieceImage.bounds.width * zoom
-            frame.size.height = pieceImage.bounds.height * zoom
-
-            // change origin to center piece on the tap
-            frame.origin.x = currentPoint.x - pieceImage.bounds.width * zoom/2
-            if viewOfColor == .white {
-                frame.origin.y = currentPoint.y - pieceImage.bounds.height * zoom * 2/3
-            } else {
-                frame.origin.y = currentPoint.y - pieceImage.bounds.height * zoom * 1/3
-            }
+            var newFrame = pieceImage.frame
+            newFrame.size.width = pieceImage.bounds.width
+            newFrame.size.height = pieceImage.bounds.height
+            newFrame.origin.x = currentSquare.frame.origin.x
+            newFrame.origin.y = currentSquare.superview!.frame.origin.y
+            pieceImage.frame = newFrame
 
             // add piece to view
-            pieceImage.frame = frame
             currentPiece = pieceImage
             addSubview(currentPiece!)
 
-            // drag is on
-            move.start = squaresView.firstIndex(of: currentSquare)
-            oldPoint = currentPoint
-            dragging = true
-
             // save start square and add selected background
+            move.start = squaresView.firstIndex(of: currentSquare)
             currentHoveredSquare = move.start
             selectSquare(atPosition: move.start)
-            return
         }
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if !canPlay() || !dragging { return }
+        if !canPlay() { return }
 
-        // get touch and piece
+        // get current point and check if dragging
         let currentPoint = touchLocation(touches)
+        if abs(currentPoint.x - startingPoint.x) < minDrag && abs(currentPoint.y - startingPoint.y) < minDrag {
+            return
+        }
+
+        // get current piece
         guard let pieceView = currentPiece else {return}
-
-        // change origin
-        var frame = pieceView.frame
-        frame.origin.x = pieceView.frame.origin.x + currentPoint.x - oldPoint.x
-        frame.origin.y = pieceView.frame.origin.y + currentPoint.y - oldPoint.y
-        pieceView.frame = frame
-
-        // update old point
-        oldPoint = currentPoint
 
         // add selected background to hovered square
         guard let currentSquare = getCurrentSquare(forPoint: currentPoint) else { return }
         showSelectedHoveredSquare(currentSquare)
+
+        // new frame of moved piece
+        var newFrame = pieceView.frame
+        newFrame.origin.x = pieceView.frame.origin.x + currentPoint.x - lastPoint.x
+        newFrame.origin.y = pieceView.frame.origin.y + currentPoint.y - lastPoint.y
+        pieceView.frame = newFrame
+
+        // zoom to see the piece under the user's finger
+        let zoom = CGAffineTransform(scaleX: dragZoom, y: dragZoom)
+        let offset = CGAffineTransform(translationX: 0, y: (viewOfColor == .white ? -dragOffset : dragOffset))
+        UIView.animate(withDuration: 0.15, delay: 0.0) {
+            pieceView.transform = CGAffineTransformConcat(zoom, offset)
+        }
+
+        // update last point
+        lastPoint = currentPoint
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if !canPlay() || !dragging { return }
+        if !canPlay() { return }
 
-        // get touch
+        // get point, image and starting square
         let currentPoint = touchLocation(touches)
-
-        // drag is off
-        dragging = false
-
-        // get piece image and starting position in Int
         guard let pieceImage = currentPiece, let start = move.start else {
-            cleanSelectedSquares()
+            cleanMove()
             return
         }
 
@@ -155,26 +160,73 @@ extension ChessBoardView {
             // out of board, replace the piece
             pieceImage.frame = squaresView[start].bounds
             squaresView[start].addSubview(pieceImage)
-            cleanSelectedSquares()
+            cleanMove()
             return
         }
-        move.end = squaresView.firstIndex(of: currentSquare)
 
+        // check if same position at start
+        move.end = squaresView.firstIndex(of: currentSquare)
+        if move.start == move.end {
+            startingChoice = move.start
+            return
+        }
+
+        // end of move with animation
+        if startingChoice == nil {
+            endAnimationAfterDrag(piece: pieceImage, atSquare: currentSquare)
+        } else {
+            endAnimationAfterTap(piece: pieceImage, atSquare: currentSquare)
+        }
+    }
+}
+
+// MARK: - End of move animation
+
+extension ChessBoardView {
+
+    private func endAnimationAfterDrag(piece pieceImage: UIView, atSquare currentSquare: UIView) {
+        // get offset to center piece on ending square
+        let xOffset = (pieceImage.bounds.width * self.dragZoom - currentSquare.bounds.width)/2
+        let yOffset = xOffset - (viewOfColor == .white ? -dragOffset : dragOffset)
+
+        // animation
+        UIView.animate(withDuration: 0.15, delay: 0.0,
+                       usingSpringWithDamping: 0.1, initialSpringVelocity: 0.1,
+                       options: .curveEaseIn) {
+            // center piece on square and return to identity
+            pieceImage.frame.origin.x = currentSquare.frame.origin.x - xOffset
+            pieceImage.frame.origin.y = currentSquare.superview!.frame.origin.y - yOffset
+            pieceImage.transform = .identity
+        } completion: { _ in
+            self.endOfMove(piece: pieceImage, atSquare: currentSquare)
+        }
+    }
+
+    private func endAnimationAfterTap(piece pieceImage: UIView, atSquare currentSquare: UIView) {
+        // just in case, cancel transfom
+        pieceImage.transform = .identity
+
+        // animation
+        UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseInOut) {
+            // center piece on square and return to identity
+            pieceImage.frame.origin.x = currentSquare.frame.origin.x
+            pieceImage.frame.origin.y = currentSquare.superview!.frame.origin.y
+        } completion: { _ in
+            self.endOfMove(piece: pieceImage, atSquare: currentSquare)
+        }
+    }
+
+    private func endOfMove(piece pieceImage: UIView, atSquare currentSquare: UIView) {
         // add image to current square
         pieceImage.frame = currentSquare.bounds
         currentSquare.addSubview(pieceImage)
 
-        // reinit current piece
-        currentPiece = nil
+        // select ending square
+        selectSquare(atPosition: move.end)
 
-        // check if same position at start
-        if move.start == move.end {
-            cleanSelectedSquares()
-            return
-        }
-
-        // notify controller
+        // notify controller and reinit properties
         NotificationCenter.default.post(name: .moveDone, object: move)
+        reinitProperties()
     }
 }
 
@@ -187,6 +239,7 @@ extension ChessBoardView {
         return playerColor == boardColor
     }
 }
+
 // MARK: - Background selections
 
 extension ChessBoardView {
@@ -208,28 +261,42 @@ extension ChessBoardView {
     }
 
     private func showSelectedHoveredSquare(_ currentSquare: UIView) {
-        DispatchQueue.main.async {
-            if self.currentHoveredSquare != self.squaresView.firstIndex(of: currentSquare) {
-                self.currentHoveredSquare = self.squaresView.firstIndex(of: currentSquare)
+        if self.currentHoveredSquare != self.squaresView.firstIndex(of: currentSquare) {
+            self.currentHoveredSquare = self.squaresView.firstIndex(of: currentSquare)
 
-                // add background to current
-                self.setBackgroundAlpha(alpha: self.selectionAlpha, atPosition: self.currentHoveredSquare)
+            // add background to current
+            self.selectSquare(atPosition: self.currentHoveredSquare)
 
-                // remove background of last
-                if self.lastHoveredSquare != self.move.start {
-                    self.setBackgroundAlpha(alpha: 1, atPosition: self.lastHoveredSquare)
-                }
-                // update last hovered square
-                self.lastHoveredSquare = self.squaresView.firstIndex(of: currentSquare)
+            // remove background of last
+            if self.lastHoveredSquare != self.move.start {
+                self.unselectSquare(atPosition: self.lastHoveredSquare)
             }
+            // update last hovered square
+            self.lastHoveredSquare = self.squaresView.firstIndex(of: currentSquare)
         }
     }
+}
 
-    private func cleanSelectedSquares() {
+// MARK: - Clear move
+
+extension ChessBoardView {
+
+    private func cleanMove() {
         unselectSquare(atPosition: move.start)
         unselectSquare(atPosition: move.end)
         unselectSquare(atPosition: currentHoveredSquare)
+        reinitProperties()
+    }
+
+    private func reinitProperties() {
+        touch = nil
+        startingPoint = CGPoint()
+        lastPoint = CGPoint()
+        currentPiece = nil
+        move.start = nil
+        move.end = nil
         currentHoveredSquare = nil
         lastHoveredSquare = nil
+        startingChoice = nil
     }
 }

@@ -95,7 +95,7 @@ extension ChessBoardViewController {
         image.frame = chessBoardView.squaresView[0].bounds
         // add piece to view
         if viewOfColor == .black {
-            image.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+            image.image = image.image?.rotate()
         }
         chessBoardView.squaresView[square].addSubview(image)
     }
