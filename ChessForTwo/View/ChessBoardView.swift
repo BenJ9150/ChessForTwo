@@ -70,11 +70,14 @@ extension ChessBoardView {
 
         // get piece image in current square view
         if let pieceImage = currentSquare.subviews.last {
+            // remove background if exist
+            if pieceImage.backgroundColor != .clear {
+                pieceImage.backgroundColor = .clear
+            }
             // add piece to view
             pieceImage.frame = getFrameForGlobalView(piece: pieceImage, atSquare: currentSquare)
             currentPiece = pieceImage
             addSubview(currentPiece!)
-
             // save start square and add selected background
             move.start = squaresView.firstIndex(of: currentSquare)
             currentHoveredSquare = move.start

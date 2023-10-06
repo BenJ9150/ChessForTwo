@@ -98,13 +98,13 @@ final class GameTestCase: XCTestCase {
         initPieceAndAddToCB(Queen(), at: sqD1, withColor: .white)
         initPieceAndAddToCB(Pawn(), at: sqG7, withColor: .black)
         movePiece(from: sqD1, to: sqH5) // Qh5 check
-        XCTAssertEqual(game.kingState.king!.color, .black)
-        XCTAssertEqual(game.kingState.state, .isCheck)
+        XCTAssertEqual(game.whiteKingState.state, .isFree)
+        XCTAssertEqual(game.blackKingState.state, .isCheck)
 
         movePiece(from: sqG7, to: sqG6) // g6
 
         XCTAssertTrue(movesResult)
-        XCTAssertNil(game.kingState.king)
+        XCTAssertEqual(game.blackKingState.state, .isFree)
         XCTAssertEqual(game.currentColor, .white)
         XCTAssertEqual(game.state, .isStarted)
     }
@@ -159,8 +159,8 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqD8, to: sqH4) // Qh4#
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.kingState.king!.color, .white)
-        XCTAssertEqual(game.kingState.state, .isCheckmate)
+        XCTAssertEqual(game.whiteKingState.state, .isCheckmate)
+        XCTAssertEqual(game.blackKingState.state, .isFree)
         XCTAssertEqual(game.score(ofPlayer: .two), 2)
         XCTAssertEqual(game.score(ofPlayer: .one), 0)
         XCTAssertEqual(game.state, .isOver)

@@ -22,7 +22,6 @@ class ChessBoardViewController: UIViewController {
     @IBOutlet weak var promotionRook: UIButton!
     @IBOutlet weak var promotionBishop: UIButton!
     @IBOutlet weak var promotionKnight: UIButton!
-    @IBOutlet weak var selectedSquareColor: UIView!
 
     // MARK: - IBAction
 
@@ -91,19 +90,20 @@ extension ChessBoardViewController {
         }
     }
 
-    func updateColorOfSelectedSquares(king: Pieces?, state: KingState?) {
-        guard let kingPiece = king, let kingState = state else {
-            selectedSquareColor.backgroundColor = UIColor.selectedSquare
-            return
-        }
-        // change selected squares color
-        switch kingState {
+    func updateStateOfKing(atPosition position: Int?, state: KingState) {
+        guard let pos = position, pos < chessBoardView.squaresView.count else { return }
+        if chessBoardView.squaresView[pos].subviews.count != 1 { return }
+        // get king with position
+        let king = chessBoardView.squaresView[pos].subviews[0]
+        // update background
+        switch state {
+        case .isFree:
+            king.backgroundColor = .clear
         case .isCheck:
-            selectedSquareColor.backgroundColor = UIColor.kingIsCheck
+            king.backgroundColor = .kingIsCheck
         case .isCheckmate:
-            selectedSquareColor.backgroundColor = UIColor.kingIsCheckmate
+            king.backgroundColor = .kingIsCheckmate
         }
-        // TODO: select king square
     }
 }
 

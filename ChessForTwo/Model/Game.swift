@@ -10,13 +10,11 @@ import Foundation
 enum Player {
     case one, two
 }
-
 enum GameState {
     case isOver, isStarted, inPause
 }
-
 enum KingState {
-    case isCheck, isCheckmate
+    case isFree, isCheck, isCheckmate
 }
 
 final class Game {
@@ -25,20 +23,21 @@ final class Game {
 
     let names: [Player: String]
     var whoPlayWithWhite: Player
+
     var currentColor: PieceColor? {
         return whoIsPlaying
     }
-
     var state: GameState {
         return gameState
     }
-
     var currentColorBeforePause: PieceColor? {
         return whoIsPlayingBeforePause
     }
-
-    var kingState: (king: Pieces?, state: KingState?) {
-        return oppKingState
+    var whiteKingState: (position: Int?, state: KingState) {
+        return whiteKing
+    }
+    var blackKingState: (position: Int?, state: KingState) {
+        return blackKing
     }
 
     // MARK: - Private properties
@@ -48,7 +47,8 @@ final class Game {
     private var whoIsPlayingBeforePause: PieceColor?
     private var gameState: GameState
     private var pieceAwaitingPromotion: Pieces?
-    private var oppKingState: (king: Pieces?, state: KingState?)
+    private var whiteKing: (position: Int?, state: KingState)
+    private var blackKing: (position: Int?, state: KingState)
 
     // MARK: - Init
 
@@ -59,7 +59,8 @@ final class Game {
         self.whoIsPlaying = nil
         self.whoIsPlayingBeforePause = nil
         self.pieceAwaitingPromotion = nil
-        self.oppKingState = (nil, nil)
+        self.whiteKing = (nil, .isFree)
+        self.blackKing = (nil, .isFree)
         ChessBoard.initChessBoard()
     }
 }
@@ -94,10 +95,8 @@ extension Game {
         let endSquare = ChessBoard.intToSquare(end)
         guard let movedPiece = ChessBoard.piece(atPosition: startSquare) else { return false }
 
-        // check good color played
+        // check good move
         if movedPiece.color != whoIsPlaying { return false }
-
-        // move piece
         let move = moveAndCapture(movedPiece, square: endSquare, updateGame: true)
         if !move.valid { return false }
 
@@ -109,8 +108,19 @@ extension Game {
         return true
     }
 
-    func promotion(chosenPiece: Pieces) {
-        setBoardAfterPromotionChoice(chosenPiece: chosenPiece)
+    func promotion<T: Pieces>(chosenPiece: T) {
+        // get olg piece to promute
+        if let oldPiece = pieceAwaitingPromotion {
+            // remove old and add new piece
+            ChessBoard.remove(oldPiece)
+            let new = T(initialFile: oldPiece.currentFile, initialRank: oldPiece.currentRank, color: oldPiece.color)
+            ChessBoard.add(new)
+            // update game
+            pieceAwaitingPromotion = nil
+            unpause()
+            let attackByOpp = ChessBoard.attackedSquaresByPieces(byColor: (oldPiece.color == .white ? .black : .white))
+            updateGameAfterMove(playerColor: oldPiece.color, attackedByOpponent: attackByOpp)
+        }
     }
 }
 
@@ -140,6 +150,7 @@ extension Game {
                 ChessBoard.add(capturedPieceResult)
                 return (false, nil)
             }
+            setKingState(king: element.value, state: .isFree)
         }
 
         // move is validate, check if promotion
@@ -216,22 +227,6 @@ extension Game {
 
 extension Game {
 
-    private func setBoardAfterPromotionChoice<T: Pieces>(chosenPiece: T) {
-        // get olg piece to promute
-        if let oldPiece = pieceAwaitingPromotion {
-            // remove old piece
-            ChessBoard.remove(oldPiece)
-            // add new Piece
-            let new = T(initialFile: oldPiece.currentFile, initialRank: oldPiece.currentRank, color: oldPiece.color)
-            ChessBoard.add(new)
-            // update game
-            pieceAwaitingPromotion = nil
-            unpause()
-            let attackByOpp = ChessBoard.attackedSquaresByPieces(byColor: (oldPiece.color == .white ? .black : .white))
-            updateGameAfterMove(playerColor: oldPiece.color, attackedByOpponent: attackByOpp)
-        }
-    }
-
     private func pauseIfWaitingPromotion(pawn: Pieces, atSquare square: Square) -> Bool {
         if type(of: pawn) != type(of: Pawn()) { return false }
         // check good rank
@@ -288,10 +283,10 @@ extension Game {
                            attackedByOpponent: [Square: [Pieces]]) -> Bool {
         // get player pieces that attack opponent king
         guard let playerPiecesAttackOppKing = attackedByPlayer[opponentKing.square] else {
-            oppKingState = (nil, nil)
+            setKingState(king: opponentKing, state: .isFree)
             return false
         }
-        oppKingState = (opponentKing, .isCheck)
+        setKingState(king: opponentKing, state: .isCheck)
 
         if playerPiecesAttackOppKing.count == 1 {
             // one piece attack opponent king, verify if opponent can capture this piece to avoid checkmate
@@ -357,7 +352,16 @@ extension Game {
             scores[winner]! += 2
             gameState = .isOver
             whoIsPlaying = nil
-            oppKingState = (opponentKing, .isCheckmate)
+            setKingState(king: opponentKing, state: .isCheckmate)
+        }
+    }
+
+    private func setKingState(king: Pieces, state: KingState) {
+        switch king.color {
+        case .white:
+            whiteKing = (ChessBoard.posToInt(file: king.currentFile, rank: king.currentRank), state)
+        case .black:
+            blackKing = (ChessBoard.posToInt(file: king.currentFile, rank: king.currentRank), state)
         }
     }
 }

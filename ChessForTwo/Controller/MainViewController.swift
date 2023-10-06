@@ -186,6 +186,7 @@ extension MainViewController {
         // check validity
         if !game.movePiece(fromInt: start, toInt: end) {
             cancelMove(fromEnd: end, toStart: start, onBoard: player)
+            showKingState()
             return
         }
         // change view of current player
@@ -198,7 +199,7 @@ extension MainViewController {
         oldMove = move
 
         // show king state
-        showKingState(king: game.kingState.king, state: game.kingState.state)
+        showKingState()
 
         // update who is playing
         updateWhoIsPlaying()
@@ -286,7 +287,7 @@ extension MainViewController {
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .black)
 
         // show king state
-        showKingState(king: game.kingState.king, state: game.kingState.state)
+        showKingState()
 
         // hide piece choice for promotion and update who is playing
         let chessBoardVC = getChessBoardVC(forColor: playerColor == .white ? .black : .white)
@@ -309,7 +310,7 @@ extension MainViewController {
         movePiece(startingSq: rookMove.start, endingSq: rookMove.end, onBoard: .white, showMove: false)
         movePiece(startingSq: rookMove.start, endingSq: rookMove.end, onBoard: .black, showMove: false)
         // show king state
-        showKingState(king: game.kingState.king, state: game.kingState.state)
+        showKingState()
     }
 }
 
@@ -317,8 +318,12 @@ extension MainViewController {
 
 extension MainViewController {
 
-    private func showKingState(king: Pieces?, state: KingState?) {
-        whiteChessBoardVC.updateColorOfSelectedSquares(king: king, state: state)
-        blackChessBoardVC.updateColorOfSelectedSquares(king: king, state: state)
+    private func showKingState() {
+        // white king
+        whiteChessBoardVC.updateStateOfKing(atPosition: game.whiteKingState.position, state: game.whiteKingState.state)
+        blackChessBoardVC.updateStateOfKing(atPosition: game.whiteKingState.position, state: game.whiteKingState.state)
+        // black king
+        whiteChessBoardVC.updateStateOfKing(atPosition: game.blackKingState.position, state: game.blackKingState.state)
+        blackChessBoardVC.updateStateOfKing(atPosition: game.blackKingState.position, state: game.blackKingState.state)
     }
 }

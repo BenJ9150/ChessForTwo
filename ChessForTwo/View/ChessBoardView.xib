@@ -16,7 +16,6 @@
                 <outlet property="promotionKnight" destination="alS-Ws-tka" id="s62-d4-PwM"/>
                 <outlet property="promotionQueen" destination="M86-lV-0hX" id="MNd-6u-sVx"/>
                 <outlet property="promotionRook" destination="hOz-wU-c9T" id="URd-2s-jsc"/>
-                <outlet property="selectedSquareColor" destination="4ih-8e-rLU" id="jte-6r-5Xy"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
