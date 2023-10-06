@@ -150,7 +150,7 @@ extension Game {
                 ChessBoard.add(capturedPieceResult)
                 return (false, nil)
             }
-            setKingState(king: element.value, state: .isFree)
+            if updateGame { setKingState(king: element.value, state: .isFree) }
         }
 
         // move is validate, check if promotion

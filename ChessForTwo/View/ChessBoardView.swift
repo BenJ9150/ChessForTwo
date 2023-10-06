@@ -21,6 +21,7 @@ class ChessBoardView: UIView {
     private var lastPoint = CGPoint()
     private var currentPiece: UIView?
     private var move: (start: Int?, end: Int?)
+    private var firstDraggingSquare: Int?
     private var currentHoveredSquare: Int?
     private var lastHoveredSquare: Int?
     private var startingChoice: Int?
@@ -69,36 +70,55 @@ extension ChessBoardView {
         if startingChoice != nil { return }
 
         // get piece image in current square view
-        if let pieceImage = currentSquare.subviews.last {
-            // remove background if exist
-            if pieceImage.backgroundColor != .clear {
-                pieceImage.backgroundColor = .clear
-            }
-            // add piece to view
-            pieceImage.frame = getFrameForGlobalView(piece: pieceImage, atSquare: currentSquare)
-            currentPiece = pieceImage
-            addSubview(currentPiece!)
-            // save start square and add selected background
-            move.start = squaresView.firstIndex(of: currentSquare)
-            currentHoveredSquare = move.start
-            selectSquare(atPosition: move.start)
+        if !setCurrentPieceFromSquare(currentSquare) {
+            cleanMove()
         }
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !canPlay() { return }
 
-        // get current point and check if dragging
+        // get current point, start and square
         let currentPoint = touchLocation(touches)
+        guard let startingSq = move.start else { return }
+        guard let currentSquare = getCurrentSquare(forPoint: currentPoint) else { return }
+
+        // check if dragging
         if abs(currentPoint.x - startingPoint.x) < minDrag && abs(currentPoint.y - startingPoint.y) < minDrag {
+            // little move, maybe a tap
             return
+        } else if firstDraggingSquare == nil {
+            firstDraggingSquare = squaresView.firstIndex(of: currentSquare)
+        }
+        // at the start of the drag, check if starting dragging square is start move
+        if startingSq != firstDraggingSquare {
+            // not first piece is dragging, replace first piece
+            guard let fistSelectedPiece = currentPiece, startingSq < squaresView.count else {
+                cleanMove()
+                return
+            }
+            // just in case, delete transfom
+            fistSelectedPiece.transform = .identity
+            // add first piece to first square
+            fistSelectedPiece.frame = squaresView[startingSq].bounds
+            squaresView[startingSq].addSubview(fistSelectedPiece)
+            // clean move
+            unselectSquare(atPosition: move.start)
+            cleanMove()
+            firstDraggingSquare = squaresView.firstIndex(of: currentSquare)
+            // New move, update points
+            startingPoint = currentPoint
+            lastPoint = currentPoint
+            // get piece image in current square view
+            if !setCurrentPieceFromSquare(currentSquare) {
+                cleanMove()
+            }
         }
 
         // get current piece
         guard let pieceView = currentPiece else {return}
 
         // add selected background to hovered square
-        guard let currentSquare = getCurrentSquare(forPoint: currentPoint) else { return }
         showSelectedHoveredSquare(currentSquare)
 
         // new frame of moved piece
@@ -149,6 +169,7 @@ extension ChessBoardView {
         move.end = squaresView.firstIndex(of: currentSquare)
         if move.start == move.end {
             startingChoice = move.start
+            firstDraggingSquare = nil // to check if an other square will drag
             // delete transform and replace piece if dragged
             pieceImage.transform = .identity
             pieceImage.frame = squaresView[start].bounds
@@ -229,7 +250,7 @@ extension ChessBoardView {
     }
 }
 
-// MARK: - Get square or frame
+// MARK: - Get piece, square or frame
 
 extension ChessBoardView {
 
@@ -251,6 +272,34 @@ extension ChessBoardView {
             }
         }
         return nil
+    }
+
+    private func setCurrentPieceFromSquare(_ square: UIView) -> Bool {
+        // get piece image in current square view
+        if let pieceImage = square.subviews.last {
+            // check if good color
+            guard let pieceImageView = pieceImage as? UIImageView else { return false }
+            guard let imageAsset = pieceImageView.image?.imageAsset else { return false }
+            guard let imageName = imageAsset.value(forKey: "assetName") as? String else { return false }
+            guard let playerColor = whoIsPlaying else { return false }
+            // check image name
+            if imageName.lowercased().contains("\(playerColor.rawValue.lowercased())") {
+                // remove background if exist
+                if pieceImage.backgroundColor != .clear {
+                    pieceImage.backgroundColor = .clear
+                }
+                // add piece to view
+                pieceImage.frame = getFrameForGlobalView(piece: pieceImage, atSquare: square)
+                currentPiece = pieceImage
+                addSubview(currentPiece!)
+                // save start square and add selected background
+                move.start = squaresView.firstIndex(of: square)
+                currentHoveredSquare = move.start
+                selectSquare(atPosition: move.start)
+                return true
+            }
+        }
+        return false
     }
 
     private func getFrameForGlobalView(piece pieceImage: UIView, atSquare square: UIView) -> CGRect {
@@ -321,6 +370,7 @@ extension ChessBoardView {
         currentPiece = nil
         move.start = nil
         move.end = nil
+        firstDraggingSquare = nil
         currentHoveredSquare = nil
         lastHoveredSquare = nil
         startingChoice = nil

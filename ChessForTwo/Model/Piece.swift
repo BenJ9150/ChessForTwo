@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PieceColor {
+enum PieceColor: String {
     case white
     case black
 }
