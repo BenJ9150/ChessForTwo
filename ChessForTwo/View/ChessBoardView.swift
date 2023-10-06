@@ -25,7 +25,7 @@ class ChessBoardView: UIView {
     private var lastHoveredSquare: Int?
     private var startingChoice: Int?
 
-    private let selectionAlpha = 0.7
+    private let selectionAlpha = 0.6
     private let dragZoom = 2.75
     private let dragOffset: CGFloat = 16 // to see piece under finger
     private let minDrag: CGFloat = 8 // min move to known if tap or drag
@@ -41,14 +41,12 @@ class ChessBoardView: UIView {
 
 extension ChessBoardView {
 
-    func showMove(startSquare: Int, endSquare: Int) {
-        selectSquare(atPosition: startSquare)
-        selectSquare(atPosition: endSquare)
+    func selectSquare(atPosition position: Int?) {
+        setBackgroundAlpha(alpha: selectionAlpha, atPosition: position)
     }
 
-    func hiddenMove(startSquare: Int?, endSquare: Int?) {
-        unselectSquare(atPosition: startSquare)
-        unselectSquare(atPosition: endSquare)
+    func unselectSquare(atPosition position: Int?) {
+        setBackgroundAlpha(alpha: 1, atPosition: position)
     }
 }
 
@@ -276,14 +274,6 @@ extension ChessBoardView {
 // MARK: - Background selections
 
 extension ChessBoardView {
-
-    private func selectSquare(atPosition position: Int?) {
-        setBackgroundAlpha(alpha: selectionAlpha, atPosition: position)
-    }
-
-    private func unselectSquare(atPosition position: Int?) {
-        setBackgroundAlpha(alpha: 1, atPosition: position)
-    }
 
     private func setBackgroundAlpha(alpha: CGFloat, atPosition position: Int?) {
         guard let pos = position, pos < squaresView.count else { return }

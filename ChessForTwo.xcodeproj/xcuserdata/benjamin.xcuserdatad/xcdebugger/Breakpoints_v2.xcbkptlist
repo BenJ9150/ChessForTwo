@@ -14,8 +14,8 @@
             filePath = "ChessForTwo/Controller/MainViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "278"
-            endingLineNumber = "278"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
             landmarkName = "promotion(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "ChessForTwo/Controller/MainViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "305"
-            endingLineNumber = "305"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
             landmarkName = "promotionChoice(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "ChessForTwo/Controller/MainViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "292"
-            endingLineNumber = "292"
+            startingLineNumber = "274"
+            endingLineNumber = "274"
             landmarkName = "promotionChoice(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "ChessForTwo/View/ChessBoardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "271"
-            endingLineNumber = "271"
+            startingLineNumber = "269"
+            endingLineNumber = "269"
             landmarkName = "canPlay()"
             landmarkType = "7">
             <Locations>
@@ -126,8 +126,8 @@
             filePath = "ChessForTwo/View/ChessBoardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "210"
-            endingLineNumber = "210"
+            startingLineNumber = "208"
+            endingLineNumber = "208"
             landmarkName = "endAnimationAfterTap(piece:atSquare:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "ChessForTwo/View/ChessBoardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "endAnimationAfterDrag(piece:atSquare:)"
             landmarkType = "7">
             <Locations>
@@ -190,8 +190,8 @@
             filePath = "ChessForTwo/View/ChessBoardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "touchesEnded(_:with:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,8 +206,8 @@
             filePath = "ChessForTwo/View/ChessBoardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "touchesMoved(_:with:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "ChessForTwo/View/ChessBoardView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
             landmarkName = "touchesEnded(_:with:)"
             landmarkType = "7">
          </BreakpointContent>

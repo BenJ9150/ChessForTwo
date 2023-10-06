@@ -53,7 +53,7 @@ extension ChessBoardViewController {
     }
 }
 
-// MARK: - Public methods
+// MARK: - Public methods for chessBoardView
 
 extension ChessBoardViewController {
 
@@ -73,9 +73,25 @@ extension ChessBoardViewController {
             }
         }
     }
+
+    func showMove(start: Int, end: Int) {
+        chessBoardView.selectSquare(atPosition: start)
+        chessBoardView.selectSquare(atPosition: end)
+    }
+
+    func hideMove(start: Int?, end: Int?) {
+        chessBoardView.unselectSquare(atPosition: start)
+        chessBoardView.unselectSquare(atPosition: end)
+    }
+
+    func updatePieceframes() {
+        for square in chessBoardView.squaresView where square.subviews.count > 0 {
+            square.subviews[0].frame = square.bounds
+        }
+    }
 }
 
-// MARK: - Public methods
+// MARK: - Public methods: load piece
 
 extension ChessBoardViewController {
 
