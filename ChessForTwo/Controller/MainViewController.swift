@@ -197,6 +197,9 @@ extension MainViewController {
         // save movement for later UI update (to do after UI boards update)
         oldMove = move
 
+        // show king state
+        showKingState(king: game.kingState.king, state: game.kingState.state)
+
         // update who is playing
         updateWhoIsPlaying()
     }
@@ -282,6 +285,9 @@ extension MainViewController {
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .white)
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .black)
 
+        // show king state
+        showKingState(king: game.kingState.king, state: game.kingState.state)
+
         // hide piece choice for promotion and update who is playing
         let chessBoardVC = getChessBoardVC(forColor: playerColor == .white ? .black : .white)
         chessBoardVC.promotionChoose.isHidden = true
@@ -302,5 +308,17 @@ extension MainViewController {
         guard let rookMove = notif.object as? (start: Int, end: Int) else { return }
         movePiece(startingSq: rookMove.start, endingSq: rookMove.end, onBoard: .white, showMove: false)
         movePiece(startingSq: rookMove.start, endingSq: rookMove.end, onBoard: .black, showMove: false)
+        // show king state
+        showKingState(king: game.kingState.king, state: game.kingState.state)
+    }
+}
+
+// MARK: - check or checkmate
+
+extension MainViewController {
+
+    private func showKingState(king: Pieces?, state: KingState?) {
+        whiteChessBoardVC.updateColorOfSelectedSquares(king: king, state: state)
+        blackChessBoardVC.updateColorOfSelectedSquares(king: king, state: state)
     }
 }

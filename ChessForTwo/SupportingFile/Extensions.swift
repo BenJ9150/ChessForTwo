@@ -23,6 +23,8 @@ extension Notification.Name {
     static let castling = Notification.Name("Castling")
 }
 
+// MARK: - UIView
+
 extension UIView {
 
     @IBInspectable
@@ -35,6 +37,8 @@ extension UIView {
         }
     }
 }
+
+// MARK: - UIImage
 
 extension UIImage {
 
@@ -53,4 +57,13 @@ extension UIImage {
 
         return newImage
     }
+}
+
+// MARK: - UIColor
+
+extension UIColor {
+
+    static let kingIsCheck = UIColor(named: "color_KingIsCheck")!
+    static let kingIsCheckmate = UIColor(named: "color_kingIsCheckmate")!
+    static let selectedSquare = UIColor(named: "color_selectedSquare")!
 }

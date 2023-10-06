@@ -91,31 +91,23 @@ final class GameTestCase: XCTestCase {
 
     // MARK: - Check
 
-    func testGivenScandinavianDefense_WhenQh5checkAndg6ToAvoidCheck_gameIsStartedAndWhiteToPlay() {
-        movePiece(from: sqE2, to: sqE4) // e4
-        movePiece(from: sqD7, to: sqD5) // d5
-        movePiece(from: sqE4, to: sqD5) // exd5
-        movePiece(from: sqD8, to: sqD5) // Qxd5
-        movePiece(from: sqB1, to: sqC3) // Nc3
-        movePiece(from: sqD5, to: sqA5) // Qa5
-        movePiece(from: sqB2, to: sqB4) // b4
-        movePiece(from: sqA5, to: sqB4) // Qxb4
-        movePiece(from: sqC3, to: sqB5) // Nb5
-        movePiece(from: sqB4, to: sqA5) // Qa5
-        movePiece(from: sqF1, to: sqC4) // Bc4
-        movePiece(from: sqC7, to: sqC6) // c6
-        movePiece(from: sqC4, to: sqF7) // Bxf7
-        movePiece(from: sqE8, to: sqF7) // Kxf7
-
+    func testGivenQh5AndCheck_WhenG6ToAvoidCheck_gameIsStartedAndWhiteToPlay() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(King(), at: sqE1, withColor: .white)
+        initPieceAndAddToCB(King(), at: sqE8, withColor: .black)
+        initPieceAndAddToCB(Queen(), at: sqD1, withColor: .white)
+        initPieceAndAddToCB(Pawn(), at: sqG7, withColor: .black)
         movePiece(from: sqD1, to: sqH5) // Qh5 check
+        XCTAssertEqual(game.kingState.king!.color, .black)
+        XCTAssertEqual(game.kingState.state, .isCheck)
+
         movePiece(from: sqG7, to: sqG6) // g6
 
         XCTAssertTrue(movesResult)
+        XCTAssertNil(game.kingState.king)
         XCTAssertEqual(game.currentColor, .white)
         XCTAssertEqual(game.state, .isStarted)
-        XCTAssertEqual(ChessBoard.capturedPieces.count, 5)
     }
-
     func testGivenBlackKingIsCheck_WhenE7_ThenIsValidMove() {
         movePiece(from: sqE2, to: sqE4) // e4
         movePiece(from: sqE7, to: sqE5) // e5
@@ -167,6 +159,8 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqD8, to: sqH4) // Qh4#
 
         XCTAssertTrue(movesResult)
+        XCTAssertEqual(game.kingState.king!.color, .white)
+        XCTAssertEqual(game.kingState.state, .isCheckmate)
         XCTAssertEqual(game.score(ofPlayer: .two), 2)
         XCTAssertEqual(game.score(ofPlayer: .one), 0)
         XCTAssertEqual(game.state, .isOver)

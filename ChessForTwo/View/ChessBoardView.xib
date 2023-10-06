@@ -16,6 +16,7 @@
                 <outlet property="promotionKnight" destination="alS-Ws-tka" id="s62-d4-PwM"/>
                 <outlet property="promotionQueen" destination="M86-lV-0hX" id="MNd-6u-sVx"/>
                 <outlet property="promotionRook" destination="hOz-wU-c9T" id="URd-2s-jsc"/>
+                <outlet property="selectedSquareColor" destination="4ih-8e-rLU" id="jte-6r-5Xy"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -1964,7 +1965,7 @@
             <color red="0.44299998879432678" green="0.60000002384185791" blue="0.70999997854232788" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="color_selectedSquare">
-            <color red="0.33333334329999997" green="0.69411766529999996" blue="0.69803923369999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.33300000429153442" green="0.6940000057220459" blue="0.69800001382827759" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="color_whiteSquare">
             <color red="0.85100001096725464" green="0.88599997758865356" blue="0.9100000262260437" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
