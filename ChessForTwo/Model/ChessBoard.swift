@@ -21,6 +21,247 @@ struct ChessBoard {
     static let minPosition = 1
     static let maxPosition = 8
 
+    static var chessboard: [Pieces] {
+        get {
+            return safeChessboard
+        } set {
+            boardSemaphore.wait()
+            safeChessboard = newValue
+            boardSemaphore.signal()
+        }
+    }
+
+    static var capturedPieces: [Pieces] {
+        get {
+            return safeCapturedPieces
+        } set {
+            captureSemaphore.wait()
+            safeCapturedPieces = newValue
+            captureSemaphore.signal()
+        }
+    }
+
+    // MARK: - Private properties
+
+    private static let boardSemaphore = DispatchSemaphore(value: 1)
+    private static var safeChessboard: [Pieces] = []
+    private static let captureSemaphore = DispatchSemaphore(value: 1)
+    private static var safeCapturedPieces: [Pieces] = []
+    private static let startingRank = [0, 8, 16, 24, 32, 40, 48, 56]
+    private static var savedPositions: [String] = []
+}
+
+// MARK: - Init Chessboard
+
+extension ChessBoard {
+
+    static func initChessBoard() {
+        movesCount = 0
+        chessboard.removeAll()
+        capturedPieces.removeAll()
+        savedPositions.removeAll()
+        initPiecesType(Pawn())
+        initPiecesType(Rook())
+        initPiecesType(Knight())
+        initPiecesType(Bishop())
+        initPiecesType(Queen())
+        initPiecesType(King())
+    }
+
+    private static func initPiecesType<T: Pieces>(_: T) {
+        for (file, whiteRank) in T.initialWhitePos {
+            // get black rank
+            let blackRank = maxPosition + 1 - whiteRank
+            // white
+            add(T(initialFile: file, initialRank: whiteRank, color: .white))
+            // black
+            add(T(initialFile: file, initialRank: blackRank, color: .black))
+        }
+    }
+}
+
+// MARK: - draw by repetition
+
+extension ChessBoard {
+
+    static func savePositionAndCheckIfdrawByRepetition() -> Bool {
+        // get current position
+        var position: [String] = []
+        for piece in chessboard {
+            position.append("\(piece.color)\(type(of: piece))\(piece.currentFile)\(piece.currentRank);")
+        }
+        position.sort()
+        // current position to one string
+        var stringPosition = ""
+        for value in position {
+            stringPosition += value
+        }
+        // add current position to saved positions
+        savedPositions.append(stringPosition)
+
+        // check if 3 repetitions
+        let countedSet = NSCountedSet(array: savedPositions)
+        for value in countedSet where countedSet.count(for: value) == 3 {
+            return true
+        }
+        return false
+    }
+}
+
+// MARK: - piece edition
+
+extension ChessBoard {
+
+    static func add(_ piece: Pieces?) {
+        guard let newPiece = piece else { return }
+        chessboard.append(newPiece)
+    }
+
+    static func piece(atPosition position: Square) -> Pieces? {
+        if let index = chessboard.firstIndex(where: { $0.square == position }), index < chessboard.count {
+            return chessboard[index]
+        }
+        return nil
+    }
+
+    static func piece(atPosition position: Square, ofColor color: PieceColor?) -> Pieces? {
+        guard let pieceColor = color else { return nil }
+        if let index = chessboard.firstIndex(where: { $0.square == position
+            && $0.color == pieceColor }), index < chessboard.count {
+            return chessboard[index]
+        }
+        return nil
+    }
+
+    static func isEmpty(atPosition position: Square) -> Bool {
+        if let index = chessboard.firstIndex(where: { $0.square == position }), index < chessboard.count {
+            return false
+        }
+        return true
+    }
+
+    static func remove(_ piece: Pieces?) {
+        guard let removedPiece = piece else { return }
+        if let index = chessboard.firstIndex(where: { $0.square == removedPiece.square
+            && $0.color == removedPiece.color }), index < chessboard.count {
+            chessboard.remove(at: index)
+        }
+    }
+
+    static func removePiece(atSquare square: Square) {
+        if let index = chessboard.firstIndex(where: { $0.square == square }), index < chessboard.count {
+            chessboard.remove(at: index)
+        }
+    }
+
+    static func addToCapturedPieces(_ capturedPiece: Pieces) {
+        capturedPieces.append(capturedPiece)
+    }
+
+    static func allPieces() -> [Pieces] {
+        return chessboard
+    }
+
+    static func allPiecesOfColor(_ color: PieceColor) -> [Pieces] {
+        var pieces: [Pieces] = []
+        for piece in chessboard where piece.color == color {
+            pieces.append(piece)
+        }
+        return pieces
+    }
+
+    static func removeAllPieces() {
+        chessboard.removeAll()
+        savedPositions.removeAll()
+    }
+}
+
+// MARK: - Convert position
+
+extension ChessBoard {
+
+    static func posToInt(file: Int, rank: Int) -> Int {
+        return file - 1 + (rank - 1) * maxPosition
+    }
+
+    static func intToSquare(_ int: Int) -> Square {
+        if int == 0 { return Square(file: 1, rank: 1) }
+        // get rank
+        let rank: Int
+        if let optRank = startingRank.firstIndex(where: { $0 > int }) {
+            rank = optRank
+        } else {
+            // up to 56
+            rank = 8
+        }
+        // get file
+        let file = int - (rank - 1) * maxPosition + 1
+        return Square(file: file, rank: rank)
+    }
+}
+
+// MARK: - Attaqued position
+
+extension ChessBoard {
+
+    static func defendedSquares(byColor color: PieceColor) -> [Square: [Pieces]] {
+        var attackedSquares: [Square: [Pieces]] = [:]
+        // check attacked squares for each pieces
+        for piece in allPiecesOfColor(color) {
+            let attackedSquaresByPiece: [Square]
+            if piece is Pawn {
+                attackedSquaresByPiece = piece.getValidMoves()
+            } else {
+                attackedSquaresByPiece = piece.getAttackedSquares()
+            }
+            // add squares to result
+            for square in attackedSquaresByPiece {
+                if attackedSquares.contains(where: { $0.key == square }) {
+                    attackedSquares[square]?.append(piece)
+                } else {
+                    attackedSquares[square] = [piece]
+                }
+            }
+        }
+        return attackedSquares
+    }
+
+    static func attackedSquaresByPieces(byColor color: PieceColor) -> [Square: [Pieces]] {
+        var attackedSquares: [Square: [Pieces]] = [:]
+        // check attacked squares for each pieces
+        for piece in allPiecesOfColor(color) {
+            let attackedSquaresByPiece = piece.getAttackedSquares()
+            // add squares to result
+            for square in attackedSquaresByPiece {
+                if attackedSquares.contains(where: { $0.key == square }) {
+                    attackedSquares[square]?.append(piece)
+                } else {
+                    attackedSquares[square] = [piece]
+                }
+            }
+        }
+        return attackedSquares
+    }
+
+    static func attackedSquares(byColor color: PieceColor) -> [Square] {
+        var attackedSquares: [Square] = []
+        // check attacked squares for each pieces
+        for piece in allPiecesOfColor(color) {
+            attackedSquares.append(contentsOf: piece.getAttackedSquares())
+        }
+        return attackedSquares
+    }
+}
+
+/*
+struct ChessBoard {
+
+    // MARK: - Public static properties
+
+    static var movesCount = 0
+    static let minPosition = 1
+    static let maxPosition = 8
+
     static var chessboard: [Square: Pieces] {
         get {
             return safeChessboard
@@ -241,3 +482,4 @@ extension ChessBoard {
         return attackedSquares
     }
 }
+*/

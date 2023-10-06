@@ -37,6 +37,7 @@
 		439C2F772AB0CB7B003DF649 /* QueenTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */; };
 		439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F782AB0CB88003DF649 /* KingTestCase.swift */; };
 		43BC527E2ACC24F3007DEB0C /* PieceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */; };
+		43D125092AD03E7B009123BB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D125082AD03E7B009123BB /* StartViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueenTestCase.swift; sourceTree = "<group>"; };
 		439C2F782AB0CB88003DF649 /* KingTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KingTestCase.swift; sourceTree = "<group>"; };
 		43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceTestCase.swift; sourceTree = "<group>"; };
+		43D125082AD03E7B009123BB /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +151,7 @@
 		438F66402AB056340032D71F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				43D125082AD03E7B009123BB /* StartViewController.swift */,
 				438F662F2AB055D00032D71F /* MainViewController.swift */,
 				430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */,
 			);
@@ -335,6 +338,7 @@
 				438F664C2AB057A10032D71F /* Queen.swift in Sources */,
 				433AE0692AB1B47800E523BD /* Game.swift in Sources */,
 				430F6C792AB591BF00A2176D /* ChessBoardViewController.swift in Sources */,
+				43D125092AD03E7B009123BB /* StartViewController.swift in Sources */,
 				438F662E2AB055D00032D71F /* SceneDelegate.swift in Sources */,
 				4325101C2AB6F53100EEF9FF /* Extensions.swift in Sources */,
 				433AE06D2AB1DE6C00E523BD /* Piece.swift in Sources */,

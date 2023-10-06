@@ -63,7 +63,7 @@ extension UIImage {
 
 extension UIColor {
 
-    static let kingIsCheck = UIColor(named: "color_KingIsCheck")!
+    static let kingIsCheck = UIColor(named: "color_kingIsCheck")!
     static let kingIsCheckmate = UIColor(named: "color_kingIsCheckmate")!
     static let selectedSquare = UIColor(named: "color_selectedSquare")!
 }

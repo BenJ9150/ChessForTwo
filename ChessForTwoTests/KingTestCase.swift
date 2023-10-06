@@ -26,8 +26,6 @@ final class KingTestCase: XCTestCase {
     private func moveAndUpdateChessBoard(piece: Pieces, atFile newFile: Int, andRank newRank: Int) -> Bool {
         // move piece
         let move = piece.setNewPosition(atFile: newFile, andRank: newRank)
-        // update chessboard
-        ChessBoard.moveAfterSetPosition(piece: piece)
         return move
     }
 

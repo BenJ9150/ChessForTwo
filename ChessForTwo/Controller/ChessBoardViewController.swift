@@ -91,7 +91,6 @@ extension ChessBoardViewController {
     }
 
     func updateStateOfKing(atPosition position: Int?, state: KingState) {
-        testBoard()
         guard let pos = position, pos < chessBoardView.squaresView.count else { return }
         if chessBoardView.squaresView[pos].subviews.count != 1 { return }
         // get king with position
@@ -104,28 +103,6 @@ extension ChessBoardViewController {
             king.backgroundColor = .kingIsCheck
         case .isCheckmate:
             king.backgroundColor = .kingIsCheckmate
-        }
-    }
-
-    private func testBoard() { // TODO: A Supprimer, juste pour vérifier si pièce au bon endroit
-        for piece in ChessBoard.allPieces() {
-            let position = ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank)
-            let imageAtPosition = chessBoardView.squaresView[position].subviews[0]
-            if imageAtPosition is UIImageView {
-                if let pieceImageView = imageAtPosition as? UIImageView {
-                    if let imageAsset = pieceImageView.image?.imageAsset {
-                        if let imageName = imageAsset.value(forKey: "assetName") as? String {
-                            if imageName == "ic_\(piece.color)\(type(of: piece))" {
-                                continue
-                            }
-                        }
-                    }
-                }
-            }
-            print("PIECE AT NOT GOOD SQUARE !!!!!!!")
-            for square in chessBoardView.squaresView {
-                square.backgroundColor = UIColor.red
-            }
         }
     }
 }

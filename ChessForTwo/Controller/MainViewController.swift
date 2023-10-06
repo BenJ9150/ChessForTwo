@@ -9,6 +9,10 @@ import UIKit
 
 class MainViewController: UIViewController {
 
+    // MARK: - Public properties
+
+    static let storyBoardId = "MainViewController"
+
     // MARK: - IBOutlet
 
     @IBOutlet weak var whiteContainer: UIView!
@@ -19,12 +23,20 @@ class MainViewController: UIViewController {
     @IBOutlet weak var blackLosedPieces: UIStackView!
     @IBOutlet weak var containersEqualWidthsConstraint: NSLayoutConstraint!
 
+    // MARK: - IBAction
+
+    @IBAction func backButton() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+
     // MARK: - Private properties
 
-    private let game = Game(playerOne: "", playerTwo: "")
     private var promotionPosition: Int?
     private var currentMove: (start: Int?, end: Int?)
     private var oldMove: (start: Int?, end: Int?)
+    private var containersEqualWidth: NSLayoutConstraint?
+    private var whiteContainersWidthUp: NSLayoutConstraint?
+    private var blackContainersWidthUp: NSLayoutConstraint?
 
     private lazy var whiteChessBoardVC: ChessBoardViewController = {
         return instantiateChessBoardVC(container: whiteContainer, withColor: .white)
@@ -34,9 +46,13 @@ class MainViewController: UIViewController {
         return instantiateChessBoardVC(container: blackContainer, withColor: .black)
     }()
 
-    private var containersEqualWidth: NSLayoutConstraint?
-    private var whiteContainersWidthUp: NSLayoutConstraint?
-    private var blackContainersWidthUp: NSLayoutConstraint?
+    private var game: Game {
+        get {
+            return StartViewController.currentGame
+        } set {
+            StartViewController.currentGame = newValue
+        }
+    }
 }
 
 // MARK: - View did load
@@ -45,24 +61,24 @@ extension MainViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // reload board view to get good frame dimensions
-        // whiteChessBoardVC.chessBoardView.reloadInputViews()
-        // blackChessBoardVC.chessBoardView.reloadInputViews()
-
         // notifications
         addObserverForNotification()
+        // change containers constraints
+        changeContainersConstraint()
+        // update who is playing
+        updateWhoIsPlaying()
     }
 }
 
-// MARK: - View did appear
+// MARK: - View will disappear
 
 extension MainViewController {
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        changeContainersConstraint()
-        startNewGame() // in view did appear to have correct frames dimensions
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if game.state == .isStarted {
+            game.pause()
+        }
     }
 }
 
@@ -155,11 +171,6 @@ extension MainViewController {
 // MARK: - Game
 
 extension MainViewController {
-
-    private func startNewGame() {
-        game.start()
-        updateWhoIsPlaying()
-    }
 
     private func updateWhoIsPlaying() {
         whiteChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
