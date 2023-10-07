@@ -42,6 +42,8 @@ extension UIView {
 
 extension UIImage {
 
+    static let imageNameKey = "assetName"
+
     public func rotate() -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
         let context = UIGraphicsGetCurrentContext()!

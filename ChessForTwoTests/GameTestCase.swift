@@ -12,12 +12,12 @@ final class GameTestCase: XCTestCase {
 
     // MARK: - Private properties
 
-    private var game = Game(playerOne: "player1", playerTwo: "player2")
+    private var game = Game()
     private var movesResult = true
 
     private let sqA1 = (1, 1), sqA2 = (1, 2), sqA3 = (1, 3), sqA4 = (1, 4)
     private let sqA5 = (1, 5), sqA6 = (1, 6), sqA7 = (1, 7), sqA8 = (1, 8)
-    private let sqB1 = (2, 1), sqB2 = (2, 2), sqB4 = (2, 4), sqB5 = (2, 5), sqB6 = (2, 6), sqB8 = (2, 8)
+    private let sqB1 = (2, 1), sqB2 = (2, 2), sqB4 = (2, 4), sqB5 = (2, 5), sqB6 = (2, 6), sqB7 = (2, 7), sqB8 = (2, 8)
     private let sqC1 = (3, 1), sqC2 = (3, 2), sqC3 = (3, 3), sqC4 = (3, 4), sqC6 = (3, 6), sqC7 = (3, 7)
     private let sqD1 = (4, 1), sqD2 = (4, 2), sqD3 = (4, 3), sqD4 = (4, 4)
     private let sqD5 = (4, 5), sqD6 = (4, 6), sqD7 = (4, 7), sqD8 = (4, 8)
@@ -57,24 +57,28 @@ final class GameTestCase: XCTestCase {
     // MARK: - Capture in passing
 
     func testGivenWhitePawnAtB5_WhenMoveA5AndCaptureInA6_ThenA5IsEmptyAndIsValidMove() {
-        movePiece(from: sqB2, to: sqB4)
-        movePiece(from: sqE7, to: sqE5)
-        movePiece(from: sqB4, to: sqB5)
+        movePiece(from: sqB2, to: sqB4) // b4
+        movePiece(from: sqE7, to: sqE5) // e5
+        movePiece(from: sqB4, to: sqB5) // b5
 
-        movePiece(from: sqA7, to: sqA5)
-        movePiece(from: sqB5, to: sqA6)
+        movePiece(from: sqA7, to: sqA5) // a5
+        movePiece(from: sqB5, to: sqA6) // bxa6 (in passing)
 
         XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 5)))
         XCTAssertTrue(movesResult)
+        XCTAssertEqual(ChessBoard.board.count, 31)
+        XCTAssertEqual(ChessBoard.capture.count, 1)
     }
 
     // MARK: - Not valid move
 
-    func testGivenStartNewGame_WhenMoveD2toD5_ThenIsNotValidMoveAndWhiteToPlay() {
-        movePiece(from: sqD2, to: sqD5)
+    func testGivenStartNewGame_WhenMoveQd7_ThenIsNotValidMoveAndWhiteToPlay() {
+        movePiece(from: sqD1, to: sqD7) // Qd7
 
         XCTAssertFalse(movesResult)
         XCTAssertEqual(game.currentColor, .white)
+        XCTAssertEqual(ChessBoard.board.count, 32)
+        XCTAssertEqual(ChessBoard.capture.count, 0)
     }
 
     func testGivenStartNewGame_WhenMoveD5_ThenIsNotValidMove() {
@@ -89,35 +93,35 @@ final class GameTestCase: XCTestCase {
         XCTAssertFalse(movesResult)
     }
 
+    func testGivenWhiteKingIsCheck_WhenMoveAndCaptureOnAttackedSquare_ThenIsNotValidMove() {
+        ChessBoard.removeAllPieces()
+        initPieceAndAddToCB(King(), at: sqE1, withColor: .white)
+        initPieceAndAddToCB(King(), at: sqF3, withColor: .black)
+        initPieceAndAddToCB(Queen(), at: sqD1, withColor: .white)
+        initPieceAndAddToCB(Pawn(), at: sqF2, withColor: .black)
+
+        movePiece(from: sqE1, to: sqF2) // Kxf2 error
+
+        XCTAssertFalse(movesResult)
+        XCTAssertEqual(ChessBoard.board.count, 4)
+        XCTAssertEqual(ChessBoard.capture.count, 0)
+    }
+
     // MARK: - Check
 
-    func testGivenQh5AndCheck_WhenG6ToAvoidCheck_gameIsStartedAndWhiteToPlay() {
+    func testGivenNg7AndDoubleCheck_WhenD8ToAvoidCheck_ThenIsNotcheckmate() {
         ChessBoard.removeAllPieces()
         initPieceAndAddToCB(King(), at: sqE1, withColor: .white)
         initPieceAndAddToCB(King(), at: sqE8, withColor: .black)
-        initPieceAndAddToCB(Queen(), at: sqD1, withColor: .white)
-        initPieceAndAddToCB(Pawn(), at: sqG7, withColor: .black)
-        movePiece(from: sqD1, to: sqH5) // Qh5 check
-        XCTAssertEqual(game.whiteKingState.state, .isFree)
-        XCTAssertEqual(game.blackKingState.state, .isCheck)
+        initPieceAndAddToCB(Queen(), at: sqE5, withColor: .white)
+        initPieceAndAddToCB(Knight(), at: sqE6, withColor: .white)
+        movePiece(from: sqE6, to: sqG7) // Ng7 check
 
-        movePiece(from: sqG7, to: sqG6) // g6
+        movePiece(from: sqE8, to: sqD8) // Kd8
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.blackKingState.state, .isFree)
-        XCTAssertEqual(game.currentColor, .white)
         XCTAssertEqual(game.state, .isStarted)
-    }
-    func testGivenBlackKingIsCheck_WhenE7_ThenIsValidMove() {
-        movePiece(from: sqE2, to: sqE4) // e4
-        movePiece(from: sqE7, to: sqE5) // e5
-        movePiece(from: sqD1, to: sqG4) // Qg4
-        movePiece(from: sqA7, to: sqA6) // a6
-        movePiece(from: sqG4, to: sqE6) // Qe6
-
-        movePiece(from: sqG8, to: sqE7) // Ne7
-
-        XCTAssertTrue(movesResult)
     }
 
     func testGivenBlackKingCantMove_WhenIsCheck_ThenCaptureOpponentPieceToSaveCheckmate() {
@@ -135,18 +139,23 @@ final class GameTestCase: XCTestCase {
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.state, .isStarted)
+        XCTAssertEqual(ChessBoard.board.count, 29)
+        XCTAssertEqual(ChessBoard.capture.count, 3)
     }
 
     func testGivenBlackKingIsCheck_WhenMoving_ThenIsNotCheckmate() {
         ChessBoard.removeAllPieces()
-        initPieceAndAddToCB(King(), at: sqA8, withColor: .black)
+        initPieceAndAddToCB(King(), at: sqA7, withColor: .black)
         initPieceAndAddToCB(Rook(), at: sqB1, withColor: .white)
+        initPieceAndAddToCB(Pawn(), at: sqB7, withColor: .white)
         movePiece(from: sqB1, to: sqA1)
 
-        movePiece(from: sqA8, to: sqB8)
+        movePiece(from: sqA7, to: sqB7) // Kxb7
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.state, .isStarted)
+        XCTAssertEqual(ChessBoard.board.count, 2)
+        XCTAssertEqual(ChessBoard.capture.count, 1)
     }
 
     // MARK: - Checkmate
@@ -193,22 +202,6 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqA7, to: sqA6) // a6
 
         movePiece(from: sqE4, to: sqD6) // Nd6#
-
-        XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.state, .isOver)
-    }
-
-    func testGivenBlackKingIsCheck_WhenQf7_ThenGameIsOver() {
-        movePiece(from: sqE2, to: sqE4) // e4
-        movePiece(from: sqE7, to: sqE5) // e5
-        movePiece(from: sqD1, to: sqG4) // Qg4
-        movePiece(from: sqA7, to: sqA6) // a6
-        movePiece(from: sqG4, to: sqE6) // Qe6
-        movePiece(from: sqG8, to: sqE7) // Ne7
-        movePiece(from: sqF1, to: sqC4) // Bc4
-        movePiece(from: sqA6, to: sqA5) // a5
-
-        movePiece(from: sqE6, to: sqF7) // Qf7#
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.state, .isOver)

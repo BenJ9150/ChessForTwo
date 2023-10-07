@@ -21,10 +21,9 @@ class ChessBoardView: UIView {
     private var lastPoint = CGPoint()
     private var currentPiece: UIView?
     private var move: (start: Int?, end: Int?)
-    private var firstDraggingSquare: Int?
     private var currentHoveredSquare: Int?
     private var lastHoveredSquare: Int?
-    private var startingChoice: Int?
+    private var startingView: UIView?
 
     private let selectionAlpha = 0.6
     private let dragZoom = 2.75
@@ -66,12 +65,9 @@ extension ChessBoardView {
         startingPoint = currentPoint
         lastPoint = currentPoint
 
-        // check if already choice for start
-        if startingChoice != nil { return }
-
         // get piece image in current square view
         if !setCurrentPieceFromSquare(currentSquare) {
-            cleanMove()
+            if startingView == nil { cleanMove() }
         }
     }
 
@@ -87,32 +83,6 @@ extension ChessBoardView {
         if abs(currentPoint.x - startingPoint.x) < minDrag && abs(currentPoint.y - startingPoint.y) < minDrag {
             // little move, maybe a tap
             return
-        } else if firstDraggingSquare == nil {
-            firstDraggingSquare = squaresView.firstIndex(of: currentSquare)
-        }
-        // at the start of the drag, check if starting dragging square is start move
-        if startingSq != firstDraggingSquare {
-            // not first piece is dragging, replace first piece
-            guard let fistSelectedPiece = currentPiece, startingSq < squaresView.count else {
-                cleanMove()
-                return
-            }
-            // just in case, delete transfom
-            fistSelectedPiece.transform = .identity
-            // add first piece to first square
-            fistSelectedPiece.frame = squaresView[startingSq].bounds
-            squaresView[startingSq].addSubview(fistSelectedPiece)
-            // clean move
-            unselectSquare(atPosition: move.start)
-            cleanMove()
-            firstDraggingSquare = squaresView.firstIndex(of: currentSquare)
-            // New move, update points
-            startingPoint = currentPoint
-            lastPoint = currentPoint
-            // get piece image in current square view
-            if !setCurrentPieceFromSquare(currentSquare) {
-                cleanMove()
-            }
         }
 
         // get current piece
@@ -168,8 +138,7 @@ extension ChessBoardView {
         // check if same position at start
         move.end = squaresView.firstIndex(of: currentSquare)
         if move.start == move.end {
-            startingChoice = move.start
-            firstDraggingSquare = nil // to check if an other square will drag
+            startingView = currentSquare
             // delete transform and replace piece if dragged
             pieceImage.transform = .identity
             pieceImage.frame = squaresView[start].bounds
@@ -178,7 +147,7 @@ extension ChessBoardView {
         }
 
         // end of move with animation
-        if startingChoice == nil {
+        if startingView == nil {
             endAnimationAfterDrag(piece: pieceImage, atSquare: currentSquare)
         } else {
             endAnimationAfterTap(piece: pieceImage, atSquare: currentSquare)
@@ -293,6 +262,9 @@ extension ChessBoardView {
                 currentPiece = pieceImage
                 addSubview(currentPiece!)
                 // save start square and add selected background
+                if move.start != nil {
+                    unselectSquare(atPosition: move.start)
+                }
                 move.start = squaresView.firstIndex(of: square)
                 currentHoveredSquare = move.start
                 selectSquare(atPosition: move.start)
@@ -370,9 +342,8 @@ extension ChessBoardView {
         currentPiece = nil
         move.start = nil
         move.end = nil
-        firstDraggingSquare = nil
         currentHoveredSquare = nil
         lastHoveredSquare = nil
-        startingChoice = nil
+        startingView = nil
     }
 }

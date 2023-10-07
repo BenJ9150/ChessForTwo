@@ -10,6 +10,13 @@ import XCTest
 
 final class ChessBoardTestCase: XCTestCase {
 
+    // MARK: - Setup
+
+    override func setUp() {
+        super.setUp()
+        ChessBoard.initChessBoard()
+    }
+
     // MARK: - Convert position
 
     func testGivenPositionIs7x6_WhenCheckingPosInInt_ThenPosInIntIs46() {
@@ -30,7 +37,7 @@ final class ChessBoardTestCase: XCTestCase {
         XCTAssertEqual(position.rank, 6)
     }
 
-    // MARK: - Rotation of coordinate view
+    // MARK: - Rotation of view
 
     func testGivenThereIsAView_WhenRotateOf180_ThenRotationIs180() {
         let view = UIView()
@@ -38,5 +45,39 @@ final class ChessBoardTestCase: XCTestCase {
         view.rotation = 180
 
         XCTAssertEqual(view.rotation, 0) // value not getted
+    }
+
+    func testGivenThereIsAUIImage_WhenRotateOf180_ThenReturnNotNilWithSameName() {
+        let imageView = UIImageView(image: UIImage(named: "ic_whitePawn"))
+
+        imageView.image = ChessBoard.rotatePiece(image: imageView.image)
+        let imageName = imageView.image?.imageAsset?.value(forKey: UIImage.imageNameKey) as? String
+
+        XCTAssertNotNil(imageView.image)
+        XCTAssertEqual(imageName!, "ic_whitePawn")
+    }
+
+    // MARK: - Pieces
+
+    func testGivenGetPieceAt1x3_WhenCheckingResult_ThenIsNil() {
+        let piece = ChessBoard.piece(atPosition: Square(file: 1, rank: 3))
+
+        XCTAssertNil(piece)
+    }
+
+    func testGivenColorIsNilWhenGameInPause_WhenGettingPieceAt1x1_ThenIsNil() {
+        let piece = ChessBoard.piece(atPosition: Square(file: 1, rank: 1), ofColor: nil)
+
+        XCTAssertNil(piece)
+    }
+
+    func testGivenDeletePieceAt1x2_WhenGettingPieceAt1x2_ThenIsNil() {
+        let piece = ChessBoard.piece(atPosition: Square(file: 1, rank: 2))
+        XCTAssertNotNil(piece)
+        ChessBoard.remove(piece)
+
+        let oldPiece = ChessBoard.piece(atPosition: Square(file: 1, rank: 2))
+
+        XCTAssertNil(oldPiece)
     }
 }

@@ -112,32 +112,30 @@ extension ChessBoardViewController {
 extension ChessBoardViewController {
 
     func load(piece: Pieces, atSquare square: Int) {
-        let image: UIImageView
+        let imageView: UIImageView
         switch piece {
         case is Pawn:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Pawn"))
+            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Pawn"))
         case is Rook:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Rook"))
+            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Rook"))
         case is Knight:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Knight"))
+            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Knight"))
         case is Bishop:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Bishop"))
+            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Bishop"))
         case is Queen:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)Queen"))
+            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Queen"))
         case is King:
-            image = UIImageView(image: UIImage(named: "ic_\(piece.color)King"))
+            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)King"))
         default:
-            image = UIImageView()
+            imageView = UIImageView()
         }
         // change dimension
-        image.frame = chessBoardView.squaresView[0].bounds
+        imageView.frame = chessBoardView.squaresView[0].bounds
         // add piece to view
         if viewOfColor == .black {
-            let imageName = image.image?.imageAsset?.value(forKey: "assetName")
-            image.image = image.image?.rotate()
-            image.image?.imageAsset?.setValue(imageName, forKey: "assetName")
+            imageView.image = ChessBoard.rotatePiece(image: imageView.image)
         }
-        chessBoardView.squaresView[square].addSubview(image)
+        chessBoardView.squaresView[square].addSubview(imageView)
     }
 }
 
@@ -149,7 +147,7 @@ extension ChessBoardViewController {
         chessBoardView.viewOfColor = viewOfColor // for notification of move
 
         // load piece
-        for piece in ChessBoard.allPieces() {
+        for piece in ChessBoard.board {
             load(piece: piece, atSquare: ChessBoard.posToInt(file: piece.currentFile, rank: piece.currentRank))
         }
 
