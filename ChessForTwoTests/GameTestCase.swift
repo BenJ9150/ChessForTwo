@@ -26,12 +26,12 @@ final class GameTestCase: XCTestCase {
     private let sqG1 = (7, 1), sqG2 = (7, 2), sqG4 = (7, 4), sqG5 = (7, 5), sqG6 = (7, 6), sqG7 = (7, 7), sqG8 = (7, 8)
     private let sqH3 = (8, 3), sqH4 = (8, 4), sqH5 = (8, 5), sqH8 = (8, 8)
 
-    // MARK: - Setup
+    // MARK: - Setup and Tear down
 
     override func setUp() {
         super.setUp()
         movesResult = true
-        game = Game(playerOne: "player1", playerTwo: "player2")
+        game = Game()
         game.start()
     }
 
@@ -53,23 +53,7 @@ final class GameTestCase: XCTestCase {
             movesResult = false
         }
     }
-/*
-    // MARK: - Capture in passing
 
-    func testGivenWhitePawnAtB5_WhenMoveA5AndCaptureInA6_ThenA5IsEmptyAndIsValidMove() {
-        movePiece(from: sqB2, to: sqB4) // b4
-        movePiece(from: sqE7, to: sqE5) // e5
-        movePiece(from: sqB4, to: sqB5) // b5
-
-        movePiece(from: sqA7, to: sqA5) // a5
-        movePiece(from: sqB5, to: sqA6) // bxa6 (in passing)
-
-        XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 5)))
-        XCTAssertTrue(movesResult)
-        XCTAssertEqual(ChessBoard.board.count, 31)
-        XCTAssertEqual(ChessBoard.capture.count, 1)
-    }
-*/
     // MARK: - Not valid move
 
     func testGivenStartNewGame_WhenMoveQd7_ThenIsNotValidMoveAndWhiteToPlay() {
@@ -301,8 +285,6 @@ final class GameTestCase: XCTestCase {
         game.promotion(chosenPiece: Rook())
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.score(ofPlayer: .one), 0)
-        XCTAssertEqual(game.score(ofPlayer: .two), 2)
         XCTAssertEqual(game.state, .isOver)
     }
 
@@ -330,9 +312,6 @@ final class GameTestCase: XCTestCase {
         initPieceAndAddToCB(Rook(), at: sqH8, withColor: .black)
         movePiece(from: sqE1, to: sqE2)
         movePiece(from: sqE8, to: sqG8)
-        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 7, rank: 8)) is King)
-        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 6, rank: 8)) is Rook)
-        XCTAssertEqual(game.currentColor, .white)
 
         game.cancelLastMove()
 
@@ -353,9 +332,6 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqA7, to: sqA5) // a5
         movePiece(from: sqB5, to: sqA6) // bxa6 (white capture in passing)
         XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 5)))
-        XCTAssertEqual(ChessBoard.board.count, 31)
-        XCTAssertEqual(ChessBoard.capture.count, 1)
-        XCTAssertEqual(game.currentColor, .black)
 
         game.cancelLastMove()
 

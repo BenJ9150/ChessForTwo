@@ -29,6 +29,10 @@ class MainViewController: UIViewController {
         navigationController?.popToRootViewController(animated: true)
     }
 
+    @IBAction func cancelMoveButton() {
+        cancelMoveButtonTap()
+    }
+
     // MARK: - Private properties
 
     private var promotionPosition: Int?
@@ -336,5 +340,17 @@ extension MainViewController {
         // black king
         whiteChessBoardVC.updateStateOfKing(atPosition: game.blackKingState.position, state: game.blackKingState.state)
         blackChessBoardVC.updateStateOfKing(atPosition: game.blackKingState.position, state: game.blackKingState.state)
+    }
+}
+
+// MARK: - Cancel move
+
+extension MainViewController {
+
+    private func cancelMoveButtonTap() {
+        game.cancelLastMove()
+        whiteChessBoardVC.reloadChessBoard()
+        blackChessBoardVC.reloadChessBoard()
+        updateWhoIsPlaying()
     }
 }

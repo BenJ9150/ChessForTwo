@@ -54,8 +54,8 @@ final class Game {
 
     // MARK: - Init
 
-    init(playerOne: String, playerTwo: String) {
-        self.names = [Player.one: playerOne, Player.two: playerTwo]
+    init() {
+        self.names = [Player.one: "", Player.two: ""]
         self.gameState = .isOver
         self.whoPlayWithWhite = .one
         self.whoIsPlaying = nil
@@ -67,10 +67,6 @@ final class Game {
         self.lastMovedRookIfCastling = nil
         self.lastCapturedPiece = nil
         ChessBoard.initChessBoard()
-    }
-
-    convenience init() {
-        self.init(playerOne: "", playerTwo: "")
     }
 }
 
@@ -112,6 +108,8 @@ extension Game {
             ChessBoard.addToCapturedPieces(capturedPiece)
             // save for later if cancel
             lastCapturedPiece = capturedPiece
+        } else {
+            lastCapturedPiece = nil
         }
         return true
     }
@@ -134,9 +132,6 @@ extension Game {
     func cancelLastMove() {
         guard let movedPiece = lastMovedPiece else { return }
         movedPiece.cancelLastMove()
-        lastMovedPiece = nil // to cancel just one time
-        whoIsPlaying = whoIsPlaying == .white ? .black : .white
-        // cancel rook if castling and captured piece
         if let rook = lastMovedRookIfCastling {
             rook.cancelLastMove()
         }
@@ -144,6 +139,8 @@ extension Game {
             ChessBoard.add(capturedPiece)
             ChessBoard.removeFromCapturedPieces(capturedPiece)
         }
+        whoIsPlaying = whoIsPlaying == .white ? .black : .white
+        lastMovedPiece = nil // to cancel just one time
     }
 }
 
@@ -216,11 +213,14 @@ extension Game {
         // check if big castling
         if king.currentFile - king.oldFile == -2 {
             castling(king, startRookFile: 1, endRookFile: 4)
+            return
         }
         // check if little castling
         if king.currentFile - king.oldFile == 2 {
             castling(king, startRookFile: 8, endRookFile: 6)
+            return
         }
+        lastMovedRookIfCastling = nil
     }
 
     private func castling(_ king: Pieces, startRookFile: Int, endRookFile: Int) {
@@ -283,7 +283,7 @@ extension Game {
         }
         // verify if draw by repetition
         if ChessBoard.savePositionAndCheckIfdrawByRepetition() {
-            itsDraw()
+            gameIsDraw()
             return
         }
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
@@ -344,19 +344,13 @@ extension Game {
             ChessBoard.add(move.capture)
             return false
         }
-        gameWinByColor(opponentKing: opponentKing)
+        gameIsWin(opponentKing: opponentKing)
         return true
     }
 
-    private func gameWinByColor(opponentKing: Pieces) {
+    private func gameIsWin(opponentKing: Pieces) {
         if let playerColor = whoIsPlaying {
-            let winner: Player
-            switch playerColor {
-            case .white:
-                winner = whoPlayWithWhite
-            case .black:
-                winner = whoPlayWithWhite == .one ? .two : .one
-            }
+            let winner = playerColor == .white ? whoPlayWithWhite : whoPlayWithWhite == .one ? .two : .one
             scores[winner]! += 2
             gameState = .isOver
             whoIsPlaying = nil
@@ -393,12 +387,11 @@ extension Game {
         for square in opponentKing.getValidMoves() where !attackedByPlayer.contains(where: { $0.key == square }) {
             return false
         }
-        itsDraw()
+        gameIsDraw()
         return true
     }
 
-    private func itsDraw() {
-        // increment score
+    private func gameIsDraw() {
         scores[.one]! += 1
         scores[.two]! += 1
         gameState = .isOver

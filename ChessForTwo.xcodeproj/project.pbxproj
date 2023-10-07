@@ -38,6 +38,7 @@
 		439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F782AB0CB88003DF649 /* KingTestCase.swift */; };
 		43BC527E2ACC24F3007DEB0C /* PieceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */; };
 		43D125092AD03E7B009123BB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D125082AD03E7B009123BB /* StartViewController.swift */; };
+		43D63ABD2AD18FB4004F73F0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 43D63ABC2AD18FB4004F73F0 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,7 @@
 		439C2F782AB0CB88003DF649 /* KingTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KingTestCase.swift; sourceTree = "<group>"; };
 		43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceTestCase.swift; sourceTree = "<group>"; };
 		43D125082AD03E7B009123BB /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		43D63ABC2AD18FB4004F73F0 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 				438F66342AB055D10032D71F /* Assets.xcassets */,
 				438F66392AB055D10032D71F /* Info.plist */,
 				4325101B2AB6F53100EEF9FF /* Extensions.swift */,
+				43D63ABC2AD18FB4004F73F0 /* Localizable.xcstrings */,
 			);
 			path = SupportingFile;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				438F66382AB055D10032D71F /* LaunchScreen.storyboard in Resources */,
+				43D63ABD2AD18FB4004F73F0 /* Localizable.xcstrings in Resources */,
 				438F66352AB055D10032D71F /* Assets.xcassets in Resources */,
 				430F6C7A2AB591BF00A2176D /* ChessBoardView.xib in Resources */,
 				438F66332AB055D00032D71F /* Main.storyboard in Resources */,

@@ -8,6 +8,16 @@
 import Foundation
 import UIKit
 
+// MARK: - String
+
+extension String {
+
+    static let cancel = NSLocalizedString(String(localized: "cancel"), tableName: nil, comment: "")
+    static let resumeGame = NSLocalizedString(String(localized: "resumeGame"), tableName: nil, comment: "")
+    static let startNewGame = NSLocalizedString(String(localized: "startNewGame"), tableName: nil, comment: "")
+    static let startAlertTitle = NSLocalizedString(String(localized: "startAlertTitle"), tableName: nil, comment: "")
+}
+
 // MARK: - Notification.Name
 
 extension Notification.Name {

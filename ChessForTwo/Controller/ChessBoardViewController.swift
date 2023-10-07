@@ -137,6 +137,15 @@ extension ChessBoardViewController {
         }
         chessBoardView.squaresView[square].addSubview(imageView)
     }
+
+    func reloadChessBoard() {
+        for squareView in chessBoardView.squaresView {
+            for image in squareView.subviews {
+                image.removeFromSuperview()
+            }
+        }
+        initBoard()
+    }
 }
 
 // MARK: - Init board
