@@ -53,7 +53,7 @@ final class GameTestCase: XCTestCase {
             movesResult = false
         }
     }
-
+/*
     // MARK: - Capture in passing
 
     func testGivenWhitePawnAtB5_WhenMoveA5AndCaptureInA6_ThenA5IsEmptyAndIsValidMove() {
@@ -69,7 +69,7 @@ final class GameTestCase: XCTestCase {
         XCTAssertEqual(ChessBoard.board.count, 31)
         XCTAssertEqual(ChessBoard.capture.count, 1)
     }
-
+*/
     // MARK: - Not valid move
 
     func testGivenStartNewGame_WhenMoveQd7_ThenIsNotValidMoveAndWhiteToPlay() {
@@ -321,17 +321,54 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 4, rank: 1)) is Rook)
     }
 
-    func testGivenBlackLittleCastling_WhenCheckingBoard_ThenKingIsAtG8AndRookAtG7() {
+    // MARK: - Castling and cancel move
+
+    func testGivenBlackLittleCastling_WhenCancelLastWhiteMove_ThenBlackToPlayAndAllIsCancel() {
         ChessBoard.removeAllPieces()
         initPieceAndAddToCB(King(), at: sqE1, withColor: .white)
         initPieceAndAddToCB(King(), at: sqE8, withColor: .black)
         initPieceAndAddToCB(Rook(), at: sqH8, withColor: .black)
-
         movePiece(from: sqE1, to: sqE2)
         movePiece(from: sqE8, to: sqG8)
-
-        XCTAssertTrue(movesResult)
         XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 7, rank: 8)) is King)
         XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 6, rank: 8)) is Rook)
+        XCTAssertEqual(game.currentColor, .white)
+
+        game.cancelLastMove()
+
+        XCTAssertTrue(movesResult)
+        XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 6, rank: 8)))
+        XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 7, rank: 8)))
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 5, rank: 8), ofColor: .black) is King)
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 8, rank: 8), ofColor: .black) is Rook)
+        XCTAssertEqual(game.currentColor, .black)
+    }
+
+    // MARK: - Capture in passing and Cancel move
+
+    func testGivenCapturedInPassing_WhenCancelLastWhiteMove_ThenWhiteToPlayAndAllIsCancel() {
+        movePiece(from: sqB2, to: sqB4) // b4
+        movePiece(from: sqE7, to: sqE5) // e5
+        movePiece(from: sqB4, to: sqB5) // b5
+        movePiece(from: sqA7, to: sqA5) // a5
+        movePiece(from: sqB5, to: sqA6) // bxa6 (white capture in passing)
+        XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 5)))
+        XCTAssertEqual(ChessBoard.board.count, 31)
+        XCTAssertEqual(ChessBoard.capture.count, 1)
+        XCTAssertEqual(game.currentColor, .black)
+
+        game.cancelLastMove()
+
+        XCTAssertTrue(movesResult)
+        XCTAssertTrue(ChessBoard.isEmpty(atPosition: Square(file: 1, rank: 6)))
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 1, rank: 5), ofColor: .black) is Pawn)
+        XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 2, rank: 5), ofColor: .white) is Pawn)
+        XCTAssertEqual(ChessBoard.board.count, 32)
+        XCTAssertEqual(ChessBoard.capture.count, 0)
+        XCTAssertEqual(game.currentColor, .white)
+
+        game.cancelLastMove() // nothing to cancel
+
+        XCTAssertEqual(game.currentColor, .white)
     }
 }

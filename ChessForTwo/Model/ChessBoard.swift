@@ -152,6 +152,13 @@ extension ChessBoard {
         capture.append(capturedPiece)
     }
 
+    static func removeFromCapturedPieces(_ capturedPiece: Pieces) {
+        if let index = capture.firstIndex(where: { $0.square == capturedPiece.square
+            && $0.color == capturedPiece.color }), index < capture.count {
+            capture.remove(at: index)
+        }
+    }
+
     static func allPiecesOfColor(_ color: PieceColor) -> [Pieces] {
         var pieces: [Pieces] = []
         for piece in board where piece.color == color {

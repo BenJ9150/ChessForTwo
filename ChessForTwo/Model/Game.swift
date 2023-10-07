@@ -23,7 +23,6 @@ final class Game {
 
     var names: [Player: String]
     var whoPlayWithWhite: Player
-
     var currentColor: PieceColor? {
         return whoIsPlaying
     }
@@ -49,6 +48,9 @@ final class Game {
     private var pieceAwaitingPromotion: Pieces?
     private var whiteKing: (position: Int?, state: KingState)
     private var blackKing: (position: Int?, state: KingState)
+    private var lastMovedPiece: Pieces?
+    private var lastMovedRookIfCastling: Pieces?
+    private var lastCapturedPiece: Pieces?
 
     // MARK: - Init
 
@@ -61,6 +63,9 @@ final class Game {
         self.pieceAwaitingPromotion = nil
         self.whiteKing = (nil, .isFree)
         self.blackKing = (nil, .isFree)
+        self.lastMovedPiece = nil
+        self.lastMovedRookIfCastling = nil
+        self.lastCapturedPiece = nil
         ChessBoard.initChessBoard()
     }
 
@@ -98,15 +103,15 @@ extension Game {
         let startSquare = ChessBoard.intToSquare(start)
         let endSquare = ChessBoard.intToSquare(end)
         guard let movedPiece = ChessBoard.piece(atPosition: startSquare, ofColor: whoIsPlaying) else { return false }
-
         // check good move
         let move = moveAndCapture(movedPiece, square: endSquare, updateGame: true)
         if !move.valid { return false }
-
         // notify ViewController if capture
         if let capturedPiece = move.capture {
             notifyCapturedPiece(capturedPiece)
             ChessBoard.addToCapturedPieces(capturedPiece)
+            // save for later if cancel
+            lastCapturedPiece = capturedPiece
         }
         return true
     }
@@ -123,6 +128,21 @@ extension Game {
             unpause()
             let attackByOpp = ChessBoard.attackedSquaresByPieces(byColor: (oldPiece.color == .white ? .black : .white))
             updateGameAfterMove(playerColor: oldPiece.color, attackedByOpponent: attackByOpp)
+        }
+    }
+
+    func cancelLastMove() {
+        guard let movedPiece = lastMovedPiece else { return }
+        movedPiece.cancelLastMove()
+        lastMovedPiece = nil // to cancel just one time
+        whoIsPlaying = whoIsPlaying == .white ? .black : .white
+        // cancel rook if castling and captured piece
+        if let rook = lastMovedRookIfCastling {
+            rook.cancelLastMove()
+        }
+        if let capturedPiece = lastCapturedPiece {
+            ChessBoard.add(capturedPiece)
+            ChessBoard.removeFromCapturedPieces(capturedPiece)
         }
     }
 }
@@ -148,7 +168,9 @@ extension Game {
             }
             if updateGame { setKingState(king: king, state: .isFree) }
         }
-        // move is validate, check if promotion
+        // move is validate, save for later if cancel
+        lastMovedPiece = piece
+        // check if promotion
         if pauseIfWaitingPromotion(pawn: piece, atSquare: square) {
             return (true, capturedPieceResult)
         }
@@ -214,6 +236,8 @@ extension Game {
             let startingSq = ChessBoard.posToInt(file: rook.oldFile, rank: rook.oldRank)
             let endingSq = ChessBoard.posToInt(file: rook.currentFile, rank: rook.currentRank)
             NotificationCenter.default.post(name: .castling, object: (start: startingSq, end: endingSq))
+            // save for later if cancel
+            lastMovedRookIfCastling = rook
         }
     }
 }
@@ -262,7 +286,6 @@ extension Game {
             itsDraw()
             return
         }
-        // change who is playing
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
     }
 }
@@ -279,7 +302,6 @@ extension Game {
             return false
         }
         setKingState(king: opponentKing, state: .isCheck)
-
         if playerPiecesAttackOppKing.count == 1 {
             // one piece attack opponent king, verify if opponent can capture this piece to avoid checkmate
             let playerPiece = playerPiecesAttackOppKing[0]
@@ -322,7 +344,6 @@ extension Game {
             ChessBoard.add(move.capture)
             return false
         }
-        // checkmate!
         gameWinByColor(opponentKing: opponentKing)
         return true
     }
@@ -336,7 +357,6 @@ extension Game {
             case .black:
                 winner = whoPlayWithWhite == .one ? .two : .one
             }
-            // increment score
             scores[winner]! += 2
             gameState = .isOver
             whoIsPlaying = nil
