@@ -81,9 +81,91 @@ extension ChessBoard {
     }
 }
 
-// MARK: - draw by repetition
+// MARK: - Capture
 
 extension ChessBoard {
+
+    static func checkIfCapture(movedPiece: Pieces) -> Pieces? {
+        let opponentColor: PieceColor = movedPiece.color == .white ? .black : .white
+        if let capturedPiece = piece(atPosition: movedPiece.square, ofColor: opponentColor) {
+            remove(capturedPiece)
+            return capturedPiece
+        }
+        // check if capture in passing for pawn
+        if type(of: movedPiece) != type(of: Pawn()) || movedPiece.oldFile == movedPiece.currentFile {
+            return nil
+        }
+        // it's a pawn that has moved on diagonal in empty case: capture in passing
+        let posOfCapPiece = Square(file: movedPiece.currentFile, rank: movedPiece.oldRank)
+        let capPieceInPass = piece(atPosition: posOfCapPiece, ofColor: opponentColor)
+        remove(capPieceInPass)
+        return capPieceInPass
+    }
+
+    static func notifyCapturedPiece(_ capturedPiece: Pieces) {
+        // get position in Int for notif
+        let positionToInt = posToInt(file: capturedPiece.currentFile, rank: capturedPiece.currentRank)
+        NotificationCenter.default.post(name: .capturedPieceAtPosition, object: positionToInt)
+    }
+}
+
+// MARK: - Castling
+
+extension ChessBoard {
+
+    static func checkIfCastling(_ king: Pieces, square: Square) -> Pieces? {
+        if type(of: king) != type(of: King()) { return nil }
+        // check if big castling
+        if king.currentFile - king.oldFile == -2 {
+            return castling(king, startRookFile: 1, endRookFile: 4)
+        }
+        // check if little castling
+        if king.currentFile - king.oldFile == 2 {
+            return castling(king, startRookFile: 8, endRookFile: 6)
+        }
+        return nil
+    }
+
+    private static func castling(_ king: Pieces, startRookFile: Int, endRookFile: Int) -> Pieces? {
+        let rookSquare = Square(file: startRookFile, rank: king.currentRank)
+        guard let rook = piece(atPosition: rookSquare, ofColor: king.color) else { return nil }
+
+        // remove king of board to move rook
+        remove(king)
+        // move rook (safe, already test in King class)
+        _ = rook.setNewPosition(atFile: endRookFile, andRank: king.currentRank)
+        // add king after rook move
+        add(king)
+        // notify controller
+        let startingSq = posToInt(file: rook.oldFile, rank: rook.oldRank)
+        let endingSq = posToInt(file: rook.currentFile, rank: rook.currentRank)
+        NotificationCenter.default.post(name: .castling, object: (start: startingSq, end: endingSq))
+        // save for later if cancel
+        return rook
+    }
+}
+
+// MARK: - Draw
+
+extension ChessBoard {
+
+    static func stalemate(opponentKing: Pieces, attackedByPlayer: [Square: [Pieces]]) -> Bool {
+        // check if all pieces of opponent can't move (except the king)
+        let opponentPieces = ChessBoard.allPiecesOfColor(opponentKing.color)
+        var opponentPiecesMoves: [Square] = []
+        for piece in opponentPieces {
+            if piece is King { continue }
+            opponentPiecesMoves.append(contentsOf: piece.getValidMoves())
+        }
+        if opponentPiecesMoves.count > 0 { return false }
+        // check if opponent King is check
+        if attackedByPlayer.contains(where: { $0.key == opponentKing.square }) { return false }
+        // check if all opponent King moves are attacked, stalemate if true
+        for square in opponentKing.getValidMoves() where !attackedByPlayer.contains(where: { $0.key == square }) {
+            return false
+        }
+        return true
+    }
 
     static func savePositionAndCheckIfdrawByRepetition() -> Bool {
         // get current position

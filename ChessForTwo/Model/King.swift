@@ -34,31 +34,31 @@ extension King {
         var validMoves: [Square] = []
 
         // vertical
-        if let move = ValidMoves.validUp(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validUp(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ValidMoves.validDown(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validDown(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // horizontal
-        if let move = ValidMoves.validLeft(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validLeft(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ValidMoves.validRight(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validRight(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // first diagonal
-        if let move = ValidMoves.validUpRight(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validUpRight(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ValidMoves.validDownLeft(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validDownLeft(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
         // second diagonal
-        if let move = ValidMoves.validUpLeft(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validUpLeft(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
-        if let move = ValidMoves.validDownRight(file: currentFile, rank: currentRank, color: color).first {
+        if let move = ChessBoard.validDownRight(file: currentFile, rank: currentRank, color: color).first {
             validMoves.append(move)
         }
 
@@ -96,9 +96,9 @@ extension King {
         // check if left squares are empty
         let moves: [Square]
         if leftMoves {
-            moves = ValidMoves.validLeft(file: currentFile, rank: currentRank, color: color)
+            moves = ChessBoard.validLeft(file: currentFile, rank: currentRank, color: color)
         } else {
-            moves = ValidMoves.validRight(file: currentFile, rank: currentRank, color: color)
+            moves = ChessBoard.validRight(file: currentFile, rank: currentRank, color: color)
         }
         if moves.count != (leftMoves ? 3 : 2) { return nil }
 

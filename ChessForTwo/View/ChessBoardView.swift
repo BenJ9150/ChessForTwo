@@ -76,7 +76,6 @@ extension ChessBoardView {
 
         // get current point, start and square
         let currentPoint = touchLocation(touches)
-        guard let startingSq = move.start else { return }
         guard let currentSquare = getCurrentSquare(forPoint: currentPoint) else { return }
 
         // check if dragging

@@ -21,7 +21,7 @@ class MainViewController: UIViewController {
     @IBOutlet weak var whiteLosedPieces: UIStackView!
     @IBOutlet weak var blackCapturedPieces: UIStackView!
     @IBOutlet weak var blackLosedPieces: UIStackView!
-    @IBOutlet weak var containersEqualWidthsConstraint: NSLayoutConstraint!
+    @IBOutlet weak var containersWidthConstraint: NSLayoutConstraint!
 
     // MARK: - IBAction
 
@@ -38,9 +38,18 @@ class MainViewController: UIViewController {
     private var promotionPosition: Int?
     private var currentMove: (start: Int?, end: Int?)
     private var oldMove: (start: Int?, end: Int?)
-    private var containersEqualWidth: NSLayoutConstraint?
-    private var whiteContainersWidthUp: NSLayoutConstraint?
-    private var blackContainersWidthUp: NSLayoutConstraint?
+    private let minCaptureWidth: CGFloat = 8
+    private let maxContainerZoom: CGFloat = 48
+
+    private var game: Game {
+        get {
+            return StartViewController.currentGame
+        } set {
+            StartViewController.currentGame = newValue
+        }
+    }
+
+    // MARK: - Private lazy properties
 
     private lazy var whiteChessBoardVC: ChessBoardViewController = {
         return instantiateChessBoardVC(container: whiteContainer, withColor: .white)
@@ -50,13 +59,23 @@ class MainViewController: UIViewController {
         return instantiateChessBoardVC(container: blackContainer, withColor: .black)
     }()
 
-    private var game: Game {
-        get {
-            return StartViewController.currentGame
-        } set {
-            StartViewController.currentGame = newValue
+    private lazy var containersZoom: (up: CGFloat, down: CGFloat) = {
+        // check if enough place for captured pieces
+        if whiteCapturedPieces.bounds.width > minCaptureWidth {
+            // check max width difference between containers
+            let zoom: CGFloat
+            if (whiteCapturedPieces.bounds.width - minCaptureWidth)*2 < maxContainerZoom {
+                zoom = (whiteCapturedPieces.bounds.width - minCaptureWidth)*2
+            } else {
+                zoom = maxContainerZoom
+            }
+            let maxZoom = whiteContainer.bounds.width + zoom
+            let minZoom = whiteContainer.bounds.width - zoom
+            return (maxZoom / minZoom, minZoom / maxZoom)
+        } else {
+            return (1, 1)
         }
-    }
+    }()
 }
 
 // MARK: - View did load
@@ -67,10 +86,19 @@ extension MainViewController {
         super.viewDidLoad()
         // notifications
         addObserverForNotification()
+    }
+}
+
+// MARK: - View appear
+
+extension MainViewController {
+
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        // Update layout to have correct frames dimensions
+        view.layoutIfNeeded()
         // change containers constraints
-        changeContainersConstraint()
-        // update who is playing
-        updateWhoIsPlaying()
+        updateWhoIsPlayingAndContainersWidth()
     }
 }
 
@@ -80,6 +108,7 @@ extension MainViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // put game in pause
         if game.state == .isStarted {
             game.pause()
         }
@@ -129,44 +158,16 @@ extension MainViewController {
         return childVC
     }
 
-    private func changeContainersConstraint() {
-        containersEqualWidth = NSLayoutConstraint(item: blackContainer!, attribute: .width, relatedBy: .equal,
-                                                  toItem: whiteContainer!, attribute: .width,
-                                                  multiplier: 1, constant: 0)
-
-        whiteContainersWidthUp = NSLayoutConstraint(item: blackContainer!, attribute: .width, relatedBy: .equal,
-                                                    toItem: whiteContainer!, attribute: .width,
-                                                    multiplier: 0.9, constant: 0)
-
-        blackContainersWidthUp = NSLayoutConstraint(item: blackContainer!, attribute: .width, relatedBy: .equal,
-                                                    toItem: whiteContainer!, attribute: .width,
-                                                    multiplier: 1.1, constant: 0)
-
-        containersEqualWidthsConstraint.isActive = false
-        containersEqualWidth!.isActive = true
-        whiteContainersWidthUp!.isActive = false
-        blackContainersWidthUp!.isActive = false
-        view.addConstraints([containersEqualWidth!, whiteContainersWidthUp!, blackContainersWidthUp!])
-    }
-
     private func updateContainersConstraint() {
         switch game.currentColor {
         case .white:
-            containersEqualWidth?.isActive = false
-            whiteContainersWidthUp?.isActive = true
-            blackContainersWidthUp?.isActive = false
+            containersWidthConstraint = containersWidthConstraint.setMultiplier(containersZoom.up, andRefresh: view)
         case .black:
-            containersEqualWidth?.isActive = false
-            whiteContainersWidthUp?.isActive = false
-            blackContainersWidthUp?.isActive = true
-        default:
-            containersEqualWidth?.isActive = true
-            whiteContainersWidthUp?.isActive = false
-            blackContainersWidthUp?.isActive = false
+            containersWidthConstraint = containersWidthConstraint.setMultiplier(containersZoom.down, andRefresh: view)
+        default: // pause
+            containersWidthConstraint = containersWidthConstraint.setMultiplier(1, andRefresh: view)
         }
-
         // update frame of pieces
-        view.layoutIfNeeded()
         whiteChessBoardVC.updatePieceframes()
         blackChessBoardVC.updatePieceframes()
     }
@@ -176,7 +177,7 @@ extension MainViewController {
 
 extension MainViewController {
 
-    private func updateWhoIsPlaying() {
+    private func updateWhoIsPlayingAndContainersWidth() {
         whiteChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
         blackChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
         updateContainersConstraint()
@@ -217,7 +218,7 @@ extension MainViewController {
         showKingState()
 
         // update who is playing
-        updateWhoIsPlaying()
+        updateWhoIsPlayingAndContainersWidth()
     }
 
     private func getChessBoardVC(forColor chessBoardColor: PieceColor) -> ChessBoardViewController {
@@ -307,7 +308,7 @@ extension MainViewController {
         // hide piece choice for promotion and update who is playing
         let chessBoardVC = getChessBoardVC(forColor: playerColor == .white ? .black : .white)
         chessBoardVC.promotionChoose.isHidden = true
-        updateWhoIsPlaying()
+        updateWhoIsPlayingAndContainersWidth()
     }
 
     private func loadNewPiece(_ piece: Pieces, atPosition position: Int, onChessBoardColor color: PieceColor) {
@@ -351,6 +352,6 @@ extension MainViewController {
         game.cancelLastMove()
         whiteChessBoardVC.reloadChessBoard()
         blackChessBoardVC.reloadChessBoard()
-        updateWhoIsPlaying()
+        updateWhoIsPlayingAndContainersWidth()
     }
 }

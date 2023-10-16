@@ -8,6 +8,28 @@
 import Foundation
 import UIKit
 
+// MARK: - NSLayoutConstraint
+
+extension NSLayoutConstraint {
+
+    func setMultiplier(_ multiplier: CGFloat, andRefresh viewToRefresh: UIView) -> NSLayoutConstraint {
+        let newConstraint = NSLayoutConstraint(
+            item: firstItem as Any,
+            attribute: firstAttribute,
+            relatedBy: relation,
+            toItem: secondItem,
+            attribute: secondAttribute,
+            multiplier: multiplier,
+            constant: constant)
+
+        newConstraint.priority = priority
+        NSLayoutConstraint.deactivate([self])
+        NSLayoutConstraint.activate([newConstraint])
+        viewToRefresh.layoutIfNeeded()
+        return newConstraint
+    }
+}
+
 // MARK: - String
 
 extension String {

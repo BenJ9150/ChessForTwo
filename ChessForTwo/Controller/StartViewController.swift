@@ -36,8 +36,8 @@ class StartViewController: UIViewController {
         dismissKeyboardOutsideTapAction()
     }
 
-    @IBAction func startButton() {
-        startButtonTap()
+    @IBAction func startButton(_ sender: UIButton) {
+        startButtonTap(sender)
     }
 
     // MARK: - Deinit
@@ -67,7 +67,7 @@ extension StartViewController {
 
 extension StartViewController {
 
-    private func startButtonTap() {
+    private func startButtonTap(_ sender: UIButton) {
         // new game, start
         if game.state == .isOver && game.score(ofPlayer: .one) + game.score(ofPlayer: .two) == 0 {
             setPlayersName()
@@ -90,6 +90,9 @@ extension StartViewController {
         alert.addAction(resume)
         alert.addAction(newGame)
         alert.addAction(UIAlertAction(title: String.cancel, style: .cancel))
+
+        // popover anchor for iPad
+        alert.popoverPresentationController?.sourceItem = sender
         present(alert, animated: true)
     }
 

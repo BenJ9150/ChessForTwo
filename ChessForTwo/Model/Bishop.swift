@@ -21,11 +21,11 @@ final class Bishop: Piece {
         var validMoves: [Square] = []
 
         // first diagonal
-        validMoves.append(contentsOf: ValidMoves.validUpRight(file: currentFile, rank: currentRank, color: color))
-        validMoves.append(contentsOf: ValidMoves.validDownLeft(file: currentFile, rank: currentRank, color: color))
+        validMoves.append(contentsOf: ChessBoard.validUpRight(file: currentFile, rank: currentRank, color: color))
+        validMoves.append(contentsOf: ChessBoard.validDownLeft(file: currentFile, rank: currentRank, color: color))
         // second diagonal
-        validMoves.append(contentsOf: ValidMoves.validUpLeft(file: currentFile, rank: currentRank, color: color))
-        validMoves.append(contentsOf: ValidMoves.validDownRight(file: currentFile, rank: currentRank, color: color))
+        validMoves.append(contentsOf: ChessBoard.validUpLeft(file: currentFile, rank: currentRank, color: color))
+        validMoves.append(contentsOf: ChessBoard.validDownRight(file: currentFile, rank: currentRank, color: color))
 
         return validMoves
     }

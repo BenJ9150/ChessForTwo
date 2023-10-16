@@ -42,13 +42,16 @@ class ChessBoardViewController: UIViewController {
     }
 }
 
-// MARK: - View did appear
+// MARK: - View appear
 
 extension ChessBoardViewController {
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        initBoard() // in view did appear to have correct frames dimensions
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        // Update layout to have correct frames dimensions
+        view.layoutIfNeeded()
+        // init board and change promotion buttons for player 2
+        initBoard()
         updatePromotionButtons()
     }
 }

@@ -104,7 +104,7 @@ extension Game {
         if !move.valid { return false }
         // notify ViewController if capture
         if let capturedPiece = move.capture {
-            notifyCapturedPiece(capturedPiece)
+            ChessBoard.notifyCapturedPiece(capturedPiece)
             ChessBoard.addToCapturedPieces(capturedPiece)
             // save for later if cancel
             lastCapturedPiece = capturedPiece
@@ -152,7 +152,7 @@ extension Game {
         // move piece
         if !piece.setNewPosition(atFile: square.file, andRank: square.rank) { return (false, nil) }
         // check if capture
-        let capturedPieceResult = checkIfCapture(movedPiece: piece)
+        let capturedPieceResult = ChessBoard.checkIfCapture(movedPiece: piece)
         // king don't be check after the move
         let attackedByOpponent = ChessBoard.attackedSquaresByPieces(byColor: (piece.color == .white ? .black : .white))
         if let king = ChessBoard.board.first(where: { $0 is King && $0.color == piece.color }) {
@@ -172,73 +172,12 @@ extension Game {
             return (true, capturedPieceResult)
         }
         // check if castling
-        checkIfCastling(piece, square: square)
+        lastMovedRookIfCastling = ChessBoard.checkIfCastling(piece, square: square)
         // update game
         if updateGame {
             updateGameAfterMove(playerColor: piece.color, attackedByOpponent: attackedByOpponent)
         }
         return (true, capturedPieceResult)
-    }
-
-    private func checkIfCapture(movedPiece: Pieces) -> Pieces? {
-        let opponentColor: PieceColor = movedPiece.color == .white ? .black : .white
-        if let capturedPiece = ChessBoard.piece(atPosition: movedPiece.square, ofColor: opponentColor) {
-            ChessBoard.remove(capturedPiece)
-            return capturedPiece
-        }
-        // check if capture in passing for pawn
-        if type(of: movedPiece) != type(of: Pawn()) || movedPiece.oldFile == movedPiece.currentFile {
-            return nil
-        }
-        // it's a pawn that has moved on diagonal in empty case: capture in passing
-        let posOfCapPiece = Square(file: movedPiece.currentFile, rank: movedPiece.oldRank)
-        let capPieceInPass = ChessBoard.piece(atPosition: posOfCapPiece, ofColor: opponentColor)
-        ChessBoard.remove(capPieceInPass)
-        return capPieceInPass
-    }
-
-    private func notifyCapturedPiece(_ capturedPiece: Pieces) {
-        // get position in Int for notif
-        let positionToInt = ChessBoard.posToInt(file: capturedPiece.currentFile, rank: capturedPiece.currentRank)
-        NotificationCenter.default.post(name: .capturedPieceAtPosition, object: positionToInt)
-    }
-}
-
-// MARK: - Private methods for castling
-
-extension Game {
-
-    private func checkIfCastling(_ king: Pieces, square: Square) {
-        if type(of: king) != type(of: King()) { return }
-        // check if big castling
-        if king.currentFile - king.oldFile == -2 {
-            castling(king, startRookFile: 1, endRookFile: 4)
-            return
-        }
-        // check if little castling
-        if king.currentFile - king.oldFile == 2 {
-            castling(king, startRookFile: 8, endRookFile: 6)
-            return
-        }
-        lastMovedRookIfCastling = nil
-    }
-
-    private func castling(_ king: Pieces, startRookFile: Int, endRookFile: Int) {
-        let rookSquare = Square(file: startRookFile, rank: king.currentRank)
-        if let rook = ChessBoard.piece(atPosition: rookSquare, ofColor: king.color) {
-            // remove king of board to move rook
-            ChessBoard.remove(king)
-            // move rook (safe, already test in King class)
-            _ = rook.setNewPosition(atFile: endRookFile, andRank: king.currentRank)
-            // add king after rook move
-            ChessBoard.add(king)
-            // notify controller
-            let startingSq = ChessBoard.posToInt(file: rook.oldFile, rank: rook.oldRank)
-            let endingSq = ChessBoard.posToInt(file: rook.currentFile, rank: rook.currentRank)
-            NotificationCenter.default.post(name: .castling, object: (start: startingSq, end: endingSq))
-            // save for later if cancel
-            lastMovedRookIfCastling = rook
-        }
     }
 }
 
@@ -279,7 +218,10 @@ extension Game {
             if checkmate(opponentKing: opponentKing, attackedByPlayer: attackedByPlayer,
                          attackedByOpponent: attackedByOpponent) { return }
             // verify if stalemate
-            if stalemate(opponentKing: opponentKing, attackedByPlayer: attackedByPlayer) { return }
+            if ChessBoard.stalemate(opponentKing: opponentKing, attackedByPlayer: attackedByPlayer) {
+                gameIsDraw()
+                return
+            }
         }
         // verify if draw by repetition
         if ChessBoard.savePositionAndCheckIfdrawByRepetition() {
@@ -290,7 +232,7 @@ extension Game {
     }
 }
 
-// MARK: - Private methods for checkmate
+// MARK: - Private methods for checkmate or draw
 
 extension Game {
 
@@ -310,7 +252,7 @@ extension Game {
             }
             // verify if opponent can protect king to save checkmate
             let defendedSquares = ChessBoard.defendedSquares(byColor: (whoIsPlaying == .white ? .black : .white))
-            let emptySquares = ValidMoves.emptySquaresBetween(opponentKing, and: playerPiece)
+            let emptySquares = ChessBoard.emptySquaresBetween(opponentKing, and: playerPiece)
             for square in emptySquares where defendedSquares[square] != nil {
                 for piece in defendedSquares[square]! where type(of: piece) != type(of: King()) { return false }
             }
@@ -358,6 +300,13 @@ extension Game {
         }
     }
 
+    private func gameIsDraw() {
+        scores[.one]! += 1
+        scores[.two]! += 1
+        gameState = .isOver
+        whoIsPlaying = nil
+    }
+
     private func setKingState(king: Pieces, state: KingState) {
         switch king.color {
         case .white:
@@ -365,36 +314,5 @@ extension Game {
         case .black:
             blackKing = (ChessBoard.posToInt(file: king.currentFile, rank: king.currentRank), state)
         }
-    }
-}
-
-// MARK: - Private methods for stalemate
-
-extension Game {
-
-    private func stalemate(opponentKing: Pieces, attackedByPlayer: [Square: [Pieces]]) -> Bool {
-        // check if all pieces of opponent can't move (except the king)
-        let opponentPieces = ChessBoard.allPiecesOfColor((whoIsPlaying == .white ? .black : .white))
-        var opponentPiecesMoves: [Square] = []
-        for piece in opponentPieces {
-            if piece is King { continue }
-            opponentPiecesMoves.append(contentsOf: piece.getValidMoves())
-        }
-        if opponentPiecesMoves.count > 0 { return false }
-        // check if opponent King is check
-        if attackedByPlayer.contains(where: { $0.key == opponentKing.square }) { return false }
-        // check if all opponent King moves are attacked, stalemate if true
-        for square in opponentKing.getValidMoves() where !attackedByPlayer.contains(where: { $0.key == square }) {
-            return false
-        }
-        gameIsDraw()
-        return true
-    }
-
-    private func gameIsDraw() {
-        scores[.one]! += 1
-        scores[.two]! += 1
-        gameState = .isOver
-        whoIsPlaying = nil
     }
 }
