@@ -201,6 +201,7 @@ extension MainViewController {
 
         // check validity
         if !game.movePiece(fromInt: start, toInt: end) {
+            errorSound?.play()
             cancelMove(fromEnd: end, toStart: start, onBoard: player)
             showKingState()
             return
@@ -262,6 +263,7 @@ extension MainViewController {
 
     @objc private func capturedPieceAtPosition(_ notif: NSNotification) {
         guard let position = notif.object as? Int else { return }
+        captureSound?.play()
         removePiece(atPosition: position, onChessBoardColor: .white)
         removePiece(atPosition: position, onChessBoardColor: .black)
     }

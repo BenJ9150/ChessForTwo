@@ -6,6 +6,14 @@
 //
 
 import UIKit
+import AVFoundation
+
+// MARK: - Audio properties
+
+var whiteSound: AVAudioPlayer!
+var blackSound: AVAudioPlayer!
+var captureSound: AVAudioPlayer!
+var errorSound: AVAudioPlayer!
 
 class StartViewController: UIViewController {
 
@@ -53,7 +61,8 @@ extension StartViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.keyboardLayoutGuide.followsUndockedKeyboard = true
+        // init sound of pieces
+        initSounds()
         // keyboard will show notification
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowNotification(_:)),
                                                name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -180,9 +189,33 @@ extension StartViewController: UITextFieldDelegate {
         var nextSuperView = playerOneTextField.superview
         while nextSuperView != nil {
             textFieldBottom += nextSuperView!.frame.origin.y
-            print(nextSuperView!.frame.origin.y)
             nextSuperView = nextSuperView!.superview
         }
         return view.frame.height - view.safeAreaInsets.bottom - textFieldBottom - 48
+    }
+}
+
+// MARK: - Init sounds
+
+extension StartViewController {
+
+    private func initSounds() {
+        if whiteSound != nil { return }
+        DispatchQueue.global().async {
+            // get url
+            guard let whiteUrl = Bundle.main.url(forResource: "whitePieceSound", withExtension: "mp3") else { return }
+            guard let blackUrl = Bundle.main.url(forResource: "blackPieceSound", withExtension: "mp3") else { return }
+            guard let captureUrl = Bundle.main.url(forResource: "captureSound", withExtension: "mp3") else { return }
+            guard let errorUrl = Bundle.main.url(forResource: "errorSound", withExtension: "mp3") else { return }
+            // set av players
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+                try AVAudioSession.sharedInstance().setActive(true)
+                whiteSound = try AVAudioPlayer(contentsOf: whiteUrl, fileTypeHint: AVFileType.mp3.rawValue)
+                blackSound = try AVAudioPlayer(contentsOf: blackUrl, fileTypeHint: AVFileType.mp3.rawValue)
+                captureSound = try AVAudioPlayer(contentsOf: captureUrl, fileTypeHint: AVFileType.mp3.rawValue)
+                errorSound = try AVAudioPlayer(contentsOf: errorUrl, fileTypeHint: AVFileType.mp3.rawValue)
+            } catch {}
+        }
     }
 }

@@ -167,6 +167,7 @@ extension Game {
         }
         // move is validate, save for later if cancel
         lastMovedPiece = piece
+
         // check if promotion
         if pauseIfWaitingPromotion(pawn: piece, atSquare: square) {
             return (true, capturedPieceResult)

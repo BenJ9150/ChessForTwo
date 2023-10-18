@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ChessBoardView: UIView {
 
@@ -171,6 +172,8 @@ extension ChessBoardView {
             pieceImage.frame.origin.x = currentSquare.frame.origin.x - xOffset
             pieceImage.frame.origin.y = currentSquare.superview!.frame.origin.y - yOffset
             pieceImage.transform = .identity
+            // play sound
+            self.playPieceSound()
         } completion: { _ in
             self.endOfMove(piece: pieceImage, atSquare: currentSquare)
         }
@@ -196,6 +199,8 @@ extension ChessBoardView {
             // center piece on square and return to identity
             startingPiece.frame.origin.x = currentSquare.frame.origin.x
             startingPiece.frame.origin.y = currentSquare.superview!.frame.origin.y
+            // play sound
+            self.playPieceSound()
         } completion: { _ in
             self.endOfMove(piece: startingPiece, atSquare: currentSquare)
         }
@@ -344,5 +349,18 @@ extension ChessBoardView {
         currentHoveredSquare = nil
         lastHoveredSquare = nil
         startingView = nil
+    }
+}
+
+// MARK: - Sound
+
+extension ChessBoardView {
+
+    private func playPieceSound() {
+        if whoIsPlaying == .white {
+            whiteSound?.play()
+        } else {
+            blackSound?.play()
+        }
     }
 }
