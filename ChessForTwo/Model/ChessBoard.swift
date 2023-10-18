@@ -113,7 +113,7 @@ extension ChessBoard {
 
 extension ChessBoard {
 
-    static func checkIfCastling(_ king: Pieces, square: Square) -> Pieces? {
+    static func checkIfCastling(king: Pieces) -> Pieces? {
         if type(of: king) != type(of: King()) { return nil }
         // check if big castling
         if king.currentFile - king.oldFile == -2 {
@@ -127,12 +127,10 @@ extension ChessBoard {
     }
 
     private static func castling(_ king: Pieces, startRookFile: Int, endRookFile: Int) -> Pieces? {
-        let rookSquare = Square(file: startRookFile, rank: king.currentRank)
-        guard let rook = piece(atPosition: rookSquare, ofColor: king.color) else { return nil }
-
         // remove king of board to move rook
         remove(king)
         // move rook (safe, already test in King class)
+        let rook = piece(atPosition: Square(file: startRookFile, rank: king.currentRank), ofColor: king.color)!
         _ = rook.setNewPosition(atFile: endRookFile, andRank: king.currentRank)
         // add king after rook move
         add(king)
@@ -140,7 +138,6 @@ extension ChessBoard {
         let startingSq = posToInt(file: rook.oldFile, rank: rook.oldRank)
         let endingSq = posToInt(file: rook.currentFile, rank: rook.currentRank)
         NotificationCenter.default.post(name: .castling, object: (start: startingSq, end: endingSq))
-        // save for later if cancel
         return rook
     }
 }

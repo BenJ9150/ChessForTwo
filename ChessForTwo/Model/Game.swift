@@ -173,7 +173,7 @@ extension Game {
             return (true, capturedPieceResult)
         }
         // check if castling
-        lastMovedRookIfCastling = ChessBoard.checkIfCastling(piece, square: square)
+        lastMovedRookIfCastling = ChessBoard.checkIfCastling(king: piece)
         // update game
         if updateGame {
             updateGameAfterMove(playerColor: piece.color, attackedByOpponent: attackedByOpponent)

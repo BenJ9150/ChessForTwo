@@ -215,6 +215,11 @@ extension StartViewController {
                 blackSound = try AVAudioPlayer(contentsOf: blackUrl, fileTypeHint: AVFileType.mp3.rawValue)
                 captureSound = try AVAudioPlayer(contentsOf: captureUrl, fileTypeHint: AVFileType.mp3.rawValue)
                 errorSound = try AVAudioPlayer(contentsOf: errorUrl, fileTypeHint: AVFileType.mp3.rawValue)
+                // prepare to play
+                whiteSound.prepareToPlay()
+                blackSound.prepareToPlay()
+                captureSound.prepareToPlay()
+                errorSound.prepareToPlay()
             } catch {}
         }
     }
