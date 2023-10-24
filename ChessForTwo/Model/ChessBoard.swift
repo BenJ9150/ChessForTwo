@@ -24,30 +24,28 @@ struct ChessBoard {
 
     static var board: [Pieces] {
         get {
-            return chessboard
+            return safeBoard
         } set {
             boardSemaphore.wait()
-            chessboard = newValue
+            safeBoard = newValue
             boardSemaphore.signal()
         }
     }
 
-    static var capture: [Pieces] {
-        get {
-            return capturedPieces
-        } set {
-            captureSemaphore.wait()
-            capturedPieces = newValue
-            captureSemaphore.signal()
-        }
+    static var whitePiecesCaptured: [Pieces] {
+        return whiteCaptured
+    }
+
+    static var blackPiecesCaptured: [Pieces] {
+        return blackCaptured
     }
 
     // MARK: - Private properties
 
     private static let boardSemaphore = DispatchSemaphore(value: 1)
-    private static var chessboard: [Pieces] = []
-    private static let captureSemaphore = DispatchSemaphore(value: 1)
-    private static var capturedPieces: [Pieces] = []
+    private static var safeBoard: [Pieces] = []
+    private static var whiteCaptured: [Pieces] = []
+    private static var blackCaptured: [Pieces] = []
     private static let startingRank = [0, 8, 16, 24, 32, 40, 48, 56]
     private static var savedPositions: [String] = []
 }
@@ -59,7 +57,8 @@ extension ChessBoard {
     static func initChessBoard() {
         movesCount = 0
         board.removeAll()
-        capture.removeAll()
+        whiteCaptured.removeAll()
+        blackCaptured.removeAll()
         savedPositions.removeAll()
         initPiecesType(Pawn())
         initPiecesType(Rook())
@@ -85,27 +84,27 @@ extension ChessBoard {
 
 extension ChessBoard {
 
-    static func checkIfCapture(movedPiece: Pieces) -> Pieces? {
+    static func checkIfCapture(movedPiece: Pieces) -> (piece: Pieces?, inPassing: Bool) {
         let opponentColor: PieceColor = movedPiece.color == .white ? .black : .white
         if let capturedPiece = piece(atPosition: movedPiece.square, ofColor: opponentColor) {
             remove(capturedPiece)
-            return capturedPiece
+            return (capturedPiece, false)
         }
         // check if capture in passing for pawn
         if type(of: movedPiece) != type(of: Pawn()) || movedPiece.oldFile == movedPiece.currentFile {
-            return nil
+            return (nil, false)
         }
         // it's a pawn that has moved on diagonal in empty case: capture in passing
         let posOfCapPiece = Square(file: movedPiece.currentFile, rank: movedPiece.oldRank)
         let capPieceInPass = piece(atPosition: posOfCapPiece, ofColor: opponentColor)
         remove(capPieceInPass)
-        return capPieceInPass
+        return (capPieceInPass, true)
     }
 
-    static func notifyCapturedPiece(_ capturedPiece: Pieces) {
+    static func notifyCapturedPiece(_ capturedPiece: Pieces, inPassing: Bool) {
         // get position in Int for notif
         let positionToInt = posToInt(file: capturedPiece.currentFile, rank: capturedPiece.currentRank)
-        NotificationCenter.default.post(name: .capturedPieceAtPosition, object: positionToInt)
+        NotificationCenter.default.post(name: .capture, object: (positionToInt, inPassing))
     }
 }
 
@@ -228,13 +227,34 @@ extension ChessBoard {
     }
 
     static func addToCapturedPieces(_ capturedPiece: Pieces) {
-        capture.append(capturedPiece)
+        switch capturedPiece.color {
+        case .white:
+            if capturedPiece is Pawn {
+                whiteCaptured.insert(capturedPiece, at: 0)
+            } else {
+                whiteCaptured.append(capturedPiece)
+            }
+        case .black:
+            if capturedPiece is Pawn {
+                blackCaptured.insert(capturedPiece, at: 0)
+            } else {
+                blackCaptured.append(capturedPiece)
+            }
+        }
     }
 
     static func removeFromCapturedPieces(_ capturedPiece: Pieces) {
-        if let index = capture.firstIndex(where: { $0.square == capturedPiece.square
-            && $0.color == capturedPiece.color }), index < capture.count {
-            capture.remove(at: index)
+        switch capturedPiece.color {
+        case .white:
+            if let index = whiteCaptured.firstIndex(where: { $0.square == capturedPiece.square }),
+               index < whiteCaptured.count {
+                whiteCaptured.remove(at: index)
+            }
+        case .black:
+            if let index = blackCaptured.firstIndex(where: { $0.square == capturedPiece.square }),
+               index < blackCaptured.count {
+                blackCaptured.remove(at: index)
+            }
         }
     }
 

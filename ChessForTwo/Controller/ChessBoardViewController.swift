@@ -17,28 +17,29 @@ class ChessBoardViewController: UIViewController {
     // MARK: - IBOutlet
 
     @IBOutlet var chessBoardView: ChessBoardView!
-    @IBOutlet weak var promotionChoose: UIView!
+    @IBOutlet weak var promotionChoiceAndResultPanel: UIView!
     @IBOutlet weak var promotionQueen: UIButton!
     @IBOutlet weak var promotionRook: UIButton!
     @IBOutlet weak var promotionBishop: UIButton!
     @IBOutlet weak var promotionKnight: UIButton!
+    @IBOutlet weak var resultLabel: UILabel!
 
     // MARK: - IBAction
 
     @IBAction func promotionQueenTap() {
-        NotificationCenter.default.post(name: .promotionHasChosen, object: Queen(viewOfColor))
+        NotificationCenter.default.post(name: .promotionDone, object: Queen(viewOfColor))
     }
 
     @IBAction func promotionRookTap() {
-        NotificationCenter.default.post(name: .promotionHasChosen, object: Rook(viewOfColor))
+        NotificationCenter.default.post(name: .promotionDone, object: Rook(viewOfColor))
     }
 
     @IBAction func promotionBishopTap() {
-        NotificationCenter.default.post(name: .promotionHasChosen, object: Bishop(viewOfColor))
+        NotificationCenter.default.post(name: .promotionDone, object: Bishop(viewOfColor))
     }
 
     @IBAction func promotionKnightTap() {
-        NotificationCenter.default.post(name: .promotionHasChosen, object: Knight(viewOfColor))
+        NotificationCenter.default.post(name: .promotionDone, object: Knight(viewOfColor))
     }
 }
 
@@ -52,7 +53,7 @@ extension ChessBoardViewController {
         view.layoutIfNeeded()
         // init board and change promotion buttons for player 2
         initBoard()
-        updatePromotionButtons()
+        updatePromotionOrResultPanel()
     }
 }
 
@@ -110,28 +111,42 @@ extension ChessBoardViewController {
     }
 }
 
+// MARK: - Public methods for promotion or result
+
+extension ChessBoardViewController {
+
+    func showPromotionChoice() {
+        resultLabel.isHidden = true
+        promotionChoiceAndResultPanel.isHidden = false
+        // show pieces
+        promotionQueen.isHidden = false
+        promotionRook.isHidden = false
+        promotionBishop.isHidden = false
+        promotionKnight.isHidden = false
+    }
+
+    func hidePromotionChoiceOrResultPanel() {
+        promotionChoiceAndResultPanel.isHidden = true
+    }
+
+    func showResult(result: String, score: String) {
+        resultLabel.isHidden = false
+        resultLabel.text = result + "\n" + score
+        promotionChoiceAndResultPanel.isHidden = false
+        // hide pieces
+        promotionQueen.isHidden = true
+        promotionRook.isHidden = true
+        promotionBishop.isHidden = true
+        promotionKnight.isHidden = true
+    }
+}
+
 // MARK: - Public methods: load piece
 
 extension ChessBoardViewController {
 
     func load(piece: Pieces, atSquare square: Int) {
-        let imageView: UIImageView
-        switch piece {
-        case is Pawn:
-            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Pawn"))
-        case is Rook:
-            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Rook"))
-        case is Knight:
-            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Knight"))
-        case is Bishop:
-            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Bishop"))
-        case is Queen:
-            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)Queen"))
-        case is King:
-            imageView = UIImageView(image: UIImage(named: "ic_\(piece.color)King"))
-        default:
-            imageView = UIImageView()
-        }
+        guard let imageView = UIImageView.getPieceImageView(piece: piece) else { return }
         // change dimension
         imageView.frame = chessBoardView.squaresView[0].bounds
         // add piece to view
@@ -157,6 +172,7 @@ extension ChessBoardViewController {
 
     private func initBoard() {
         chessBoardView.viewOfColor = viewOfColor // for notification of move
+        hidePromotionChoiceOrResultPanel()
 
         // load piece
         for piece in ChessBoard.board {
@@ -173,7 +189,7 @@ extension ChessBoardViewController {
         }
     }
 
-    private func updatePromotionButtons() {
+    private func updatePromotionOrResultPanel() {
         guard let color = viewOfColor else { return }
         switch color {
         case .white:
@@ -181,11 +197,13 @@ extension ChessBoardViewController {
             promotionRook.setBackgroundImage(UIImage(named: "ic_whiteRook"), for: .normal)
             promotionBishop.setBackgroundImage(UIImage(named: "ic_whiteBishop"), for: .normal)
             promotionKnight.setBackgroundImage(UIImage(named: "ic_whiteKnight"), for: .normal)
+            resultLabel.rotation = 0
         case .black:
             promotionQueen.setBackgroundImage(UIImage(named: "ic_blackQueen")?.rotate(), for: .normal)
             promotionRook.setBackgroundImage(UIImage(named: "ic_blackRook")?.rotate(), for: .normal)
             promotionBishop.setBackgroundImage(UIImage(named: "ic_blackBishop")?.rotate(), for: .normal)
             promotionKnight.setBackgroundImage(UIImage(named: "ic_blackKnight")?.rotate(), for: .normal)
+            resultLabel.rotation = 180
         }
     }
 }

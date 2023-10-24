@@ -12,6 +12,17 @@
         }
       }
     },
+    "drawByRepetition" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Threefold repetition"
+          }
+        }
+      }
+    },
     "resumeGame" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -19,6 +30,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resume game"
+          }
+        }
+      }
+    },
+    "stalemate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stalemate"
           }
         }
       }
@@ -41,6 +63,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start new game"
+          }
+        }
+      }
+    },
+    "youLose" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You lose"
+          }
+        }
+      }
+    },
+    "youWin" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You win!"
           }
         }
       }

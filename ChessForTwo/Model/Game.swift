@@ -11,7 +11,7 @@ enum Player {
     case one, two
 }
 enum GameState {
-    case isOver, isStarted, inPause
+    case isStarted, inPause, checkmate, stalemate, drawByRepetition
 }
 enum KingState {
     case isFree, isCheck, isCheckmate
@@ -21,12 +21,12 @@ final class Game {
 
     // MARK: - Public properties
 
-    var names: [Player: String]
-    var whoPlayWithWhite: Player
+    var names = [Player.one: "", Player.two: ""]
+    var whoPlayWithWhite: Player = .one
     var currentColor: PieceColor? {
         return whoIsPlaying
     }
-    var state: GameState {
+    var state: GameState? {
         return gameState
     }
     var currentColorBeforePause: PieceColor? {
@@ -41,13 +41,14 @@ final class Game {
 
     // MARK: - Private properties
 
-    private var scores = [Player.one: 0, Player.two: 0]
+    private var gameState: GameState?
     private var whoIsPlaying: PieceColor?
+    private var scores = [Player.one: 0, Player.two: 0]
+
     private var whoIsPlayingBeforePause: PieceColor?
-    private var gameState: GameState
     private var pieceAwaitingPromotion: Pieces?
-    private var whiteKing: (position: Int?, state: KingState)
-    private var blackKing: (position: Int?, state: KingState)
+    private var whiteKing: (position: Int?, state: KingState) = (nil, .isFree)
+    private var blackKing: (position: Int?, state: KingState) = (nil, .isFree)
     private var lastMovedPiece: Pieces?
     private var lastMovedRookIfCastling: Pieces?
     private var lastCapturedPiece: Pieces?
@@ -55,17 +56,6 @@ final class Game {
     // MARK: - Init
 
     init() {
-        self.names = [Player.one: "", Player.two: ""]
-        self.gameState = .isOver
-        self.whoPlayWithWhite = .one
-        self.whoIsPlaying = nil
-        self.whoIsPlayingBeforePause = nil
-        self.pieceAwaitingPromotion = nil
-        self.whiteKing = (nil, .isFree)
-        self.blackKing = (nil, .isFree)
-        self.lastMovedPiece = nil
-        self.lastMovedRookIfCastling = nil
-        self.lastCapturedPiece = nil
         ChessBoard.initChessBoard()
     }
 }
@@ -77,6 +67,21 @@ extension Game {
     func start() {
         gameState = .isStarted
         whoIsPlaying = .white
+        scores = [Player.one: 0, Player.two: 0]
+    }
+
+    func newRound() {
+        gameState = .isStarted
+        whoIsPlaying = .white
+        whoPlayWithWhite = whoPlayWithWhite == .one ? .two : .one
+        whoIsPlayingBeforePause = nil
+        pieceAwaitingPromotion = nil
+        whiteKing = (nil, .isFree)
+        blackKing = (nil, .isFree)
+        lastMovedPiece = nil
+        lastMovedRookIfCastling = nil
+        lastCapturedPiece = nil
+        ChessBoard.initChessBoard()
     }
 
     func pause() {
@@ -90,8 +95,10 @@ extension Game {
         whoIsPlaying = whoIsPlayingBeforePause
     }
 
-    func score(ofPlayer player: Player) -> Int {
-        return scores[player]!
+    func scores(forColor color: PieceColor) -> String {
+        let firstPlayer = color == .white ? whoPlayWithWhite : whoPlayWithWhite == .one ? .two : .one
+        let secondPlayer: Player = firstPlayer == .one ? .two : .one
+        return "\(scores[firstPlayer]!) - \(scores[secondPlayer]!)"
     }
 
     func movePiece(fromInt start: Int, toInt end: Int) -> Bool {
@@ -103,8 +110,8 @@ extension Game {
         let move = moveAndCapture(movedPiece, square: endSquare, updateGame: true)
         if !move.valid { return false }
         // notify ViewController if capture
-        if let capturedPiece = move.capture {
-            ChessBoard.notifyCapturedPiece(capturedPiece)
+        if let capturedPiece = move.capture.piece {
+            ChessBoard.notifyCapturedPiece(capturedPiece, inPassing: move.capture.inPassing)
             ChessBoard.addToCapturedPieces(capturedPiece)
             // save for later if cancel
             lastCapturedPiece = capturedPiece
@@ -148,9 +155,10 @@ extension Game {
 
 extension Game {
 
-    private func moveAndCapture(_ piece: Pieces, square: Square, updateGame: Bool) -> (valid: Bool, capture: Pieces?) {
+    private func moveAndCapture(_ piece: Pieces, square: Square, updateGame: Bool) ->
+    (valid: Bool, capture: (piece: Pieces?, inPassing: Bool)) {
         // move piece
-        if !piece.setNewPosition(atFile: square.file, andRank: square.rank) { return (false, nil) }
+        if !piece.setNewPosition(atFile: square.file, andRank: square.rank) { return (false, (nil, false)) }
         // check if capture
         let capturedPieceResult = ChessBoard.checkIfCapture(movedPiece: piece)
         // king don't be check after the move
@@ -160,8 +168,8 @@ extension Game {
             if attackedByOpponent.contains(where: { $0.key == king.square }) {
                 piece.cancelLastMove()
                 // put the captured piece back on the board
-                ChessBoard.add(capturedPieceResult)
-                return (false, nil)
+                ChessBoard.add(capturedPieceResult.piece)
+                return (false, (nil, false))
             }
             if updateGame { setKingState(king: king, state: .isFree) }
         }
@@ -220,13 +228,13 @@ extension Game {
                          attackedByOpponent: attackedByOpponent) { return }
             // verify if stalemate
             if ChessBoard.stalemate(opponentKing: opponentKing, attackedByPlayer: attackedByPlayer) {
-                gameIsDraw()
+                gameIsDraw(.stalemate)
                 return
             }
         }
         // verify if draw by repetition
         if ChessBoard.savePositionAndCheckIfdrawByRepetition() {
-            gameIsDraw()
+            gameIsDraw(.drawByRepetition)
             return
         }
         whoIsPlaying = whoIsPlaying == .white ? .black : .white
@@ -271,7 +279,7 @@ extension Game {
             // delete simulation
             movedPiece.cancelLastMove()
             // put the captured piece back on the board
-            ChessBoard.add(move.capture)
+            ChessBoard.add(move.capture.piece)
             return true
         }
         return false
@@ -284,7 +292,7 @@ extension Game {
             // valid move, no checkmate, delete simulation
             opponentKing.cancelLastMove()
             // put the captured piece back on the board
-            ChessBoard.add(move.capture)
+            ChessBoard.add(move.capture.piece)
             return false
         }
         gameIsWin(opponentKing: opponentKing)
@@ -295,16 +303,16 @@ extension Game {
         if let playerColor = whoIsPlaying {
             let winner = playerColor == .white ? whoPlayWithWhite : whoPlayWithWhite == .one ? .two : .one
             scores[winner]! += 2
-            gameState = .isOver
+            gameState = .checkmate
             whoIsPlaying = nil
             setKingState(king: opponentKing, state: .isCheckmate)
         }
     }
 
-    private func gameIsDraw() {
+    private func gameIsDraw(_ cause: GameState) {
         scores[.one]! += 1
         scores[.two]! += 1
-        gameState = .isOver
+        gameState = cause
         whoIsPlaying = nil
     }
 

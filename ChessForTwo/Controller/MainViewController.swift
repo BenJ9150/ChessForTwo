@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MainViewController.swift
 //  ChessForTwo
 //
 //  Created by Benjamin LEFRANCOIS on 12/09/2023.
@@ -9,36 +9,43 @@ import UIKit
 
 class MainViewController: UIViewController {
 
-    // MARK: - Public properties
-
-    static let storyBoardId = "MainViewController"
-
     // MARK: - IBOutlet
 
     @IBOutlet weak var whiteContainer: UIView!
     @IBOutlet weak var blackContainer: UIView!
-    @IBOutlet weak var whiteCapturedPieces: UIStackView!
-    @IBOutlet weak var whiteLosedPieces: UIStackView!
-    @IBOutlet weak var blackCapturedPieces: UIStackView!
-    @IBOutlet weak var blackLosedPieces: UIStackView!
     @IBOutlet weak var containersWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var cancelMoveButton: UIButton!
+    @IBOutlet weak var newRoundButton: UIButton!
+    @IBOutlet weak var safeView: UIView!
+    @IBOutlet weak var whiteBackground: UIView!
+    @IBOutlet weak var blackBackground: UIView!
+    @IBOutlet weak var buttonsView: UIView!
+    @IBOutlet weak var playerOneName: UILabel!
+    @IBOutlet weak var playerTwoName: UILabel!
+    @IBOutlet weak var whiteLosedPiecesTV: UITableView!
+    @IBOutlet weak var whiteCapturedPiecesTV: UITableView!
+    @IBOutlet weak var blackLosedPiecesTV: UITableView!
+    @IBOutlet weak var blackCapturedPiecesTV: UITableView!
 
     // MARK: - IBAction
 
-    @IBAction func backButton() {
+    @IBAction func backButtonTap() {
         navigationController?.popToRootViewController(animated: true)
     }
-
-    @IBAction func cancelMoveButton() {
-        cancelMoveButtonTap()
+    @IBAction func cancelMoveTap() {
+        cancelMoveTapAction()
+    }
+    @IBAction func newRoundTap() {
+        newRoundTapAction()
     }
 
-    // MARK: - Private properties
+    // MARK: - Properties
 
+    static let storyBoardId = "MainViewController"
     private var promotionPosition: Int?
     private var currentMove: (start: Int?, end: Int?)
     private var oldMove: (start: Int?, end: Int?)
-    private let minCaptureWidth: CGFloat = 8
+    private let minCaptureWidth: CGFloat = 16
     private let maxContainerZoom: CGFloat = 48
 
     private var game: Game {
@@ -48,8 +55,6 @@ class MainViewController: UIViewController {
             StartViewController.currentGame = newValue
         }
     }
-
-    // MARK: - Private lazy properties
 
     private lazy var whiteChessBoardVC: ChessBoardViewController = {
         return instantiateChessBoardVC(container: whiteContainer, withColor: .white)
@@ -61,11 +66,11 @@ class MainViewController: UIViewController {
 
     private lazy var containersZoom: (up: CGFloat, down: CGFloat) = {
         // check if enough place for captured pieces
-        if whiteCapturedPieces.bounds.width > minCaptureWidth {
+        if whiteLosedPiecesTV.superview!.bounds.width > minCaptureWidth {
             // check max width difference between containers
             let zoom: CGFloat
-            if (whiteCapturedPieces.bounds.width - minCaptureWidth)*2 < maxContainerZoom {
-                zoom = (whiteCapturedPieces.bounds.width - minCaptureWidth)*2
+            if (whiteLosedPiecesTV.superview!.bounds.width - minCaptureWidth)*2 < maxContainerZoom {
+                zoom = (whiteLosedPiecesTV.superview!.bounds.width - minCaptureWidth)*2
             } else {
                 zoom = maxContainerZoom
             }
@@ -85,11 +90,16 @@ extension MainViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // notifications
-        addObserverForNotification()
+        NotificationCenter.default.addObserver(self, selector: #selector(moveDone(_:)), name: .moveDone, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(promotion(_:)), name: .promotion, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(castling(_:)), name: .castling, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(capture(_:)), name: .capture, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(promotionDone(_:)),
+                                               name: .promotionDone, object: nil)
     }
 }
 
-// MARK: - View appear
+// MARK: - View appear and disappear
 
 extension MainViewController {
 
@@ -97,14 +107,11 @@ extension MainViewController {
         super.viewIsAppearing(animated)
         // Update layout to have correct frames dimensions
         view.layoutIfNeeded()
-        // change containers constraints
-        updateWhoIsPlayingAndContainersWidth()
+        playerOneName.text = game.names[.one]
+        playerTwoName.text = game.names[.two]
+        updateViewOrientation()
+        updateWhoIsPlayingAndUI()
     }
-}
-
-// MARK: - View will disappear
-
-extension MainViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -112,31 +119,6 @@ extension MainViewController {
         if game.state == .isStarted {
             game.pause()
         }
-    }
-}
-
-// MARK: - Notification
-
-extension MainViewController {
-
-    private func addObserverForNotification() {
-        // notification player move done
-        NotificationCenter.default.addObserver(self, selector: #selector(moveDone(_:)),
-                                               name: .moveDone, object: nil)
-        // notification captured piece
-        NotificationCenter.default.addObserver(self, selector: #selector(capturedPieceAtPosition(_:)),
-                                               name: .capturedPieceAtPosition, object: nil)
-        // notification waiting promotion
-        NotificationCenter.default.addObserver(self, selector: #selector(promotion(_:)),
-                                               name: .promotion, object: nil)
-        // notification promotion has chosen
-        NotificationCenter.default.addObserver(self, selector: #selector(promotionHasChosen(_:)),
-                                               name: .promotionHasChosen, object: nil)
-        // notification for castling
-        NotificationCenter.default.addObserver(self, selector: #selector(castling(_:)),
-                                               name: .castling, object: nil)
-        // TODO: notification partie gagnée
-        // TODO: notification partie nul
     }
 }
 
@@ -171,59 +153,49 @@ extension MainViewController {
         whiteChessBoardVC.updatePieceframes()
         blackChessBoardVC.updatePieceframes()
     }
-}
 
-// MARK: - Game
-
-extension MainViewController {
-
-    private func updateWhoIsPlayingAndContainersWidth() {
-        whiteChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
-        blackChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
-        updateContainersConstraint()
+    private func getChessBoardVC(forColor chessBoardColor: PieceColor) -> ChessBoardViewController {
+        return chessBoardColor == .white ? whiteChessBoardVC : blackChessBoardVC
     }
 }
 
-// MARK: - Player moved
+// MARK: - Player actions
 
 extension MainViewController {
 
+    private func cancelMoveTapAction() {
+        game.cancelLastMove()
+        reloadChessBoard()
+    }
+
+    private func newRoundTapAction() {
+        game.newRound()
+        updateViewOrientation()
+        reloadChessBoard()
+    }
+
     @objc private func moveDone(_ notif: NSNotification) {
         // get notification object
-        guard let move = notif.object as? (start: Int?, end: Int?) else { return }
-        currentMove = move
-
-        // get start and end movement
-        guard let start = move.start, let end = move.end else { return }
-
-        // who is playing
-        guard let player = game.currentColor else { return}
-
+        guard let move = notif.object as? (start: Int?, end: Int?), let start = move.start, let end = move.end,
+              let player = game.currentColor else {
+            // move is nil or player nil, something wrong, reinit
+            reloadChessBoard()
+            return
+        }
         // check validity
+        currentMove = move
         if !game.movePiece(fromInt: start, toInt: end) {
             errorSound?.play()
             cancelMove(fromEnd: end, toStart: start, onBoard: player)
             showKingState()
             return
         }
-        // change view of current player
+        // hide old move and move piece on opponent chessboard
         hideOldMove(onBoard: player)
-
-        // change view of second player
         movePiece(startingSq: start, endingSq: end, onBoard: (player == .white ? .black : .white), showMove: true)
-
         // save movement for later UI update (to do after UI boards update)
         oldMove = move
-
-        // show king state
-        showKingState()
-
-        // update who is playing
-        updateWhoIsPlayingAndContainersWidth()
-    }
-
-    private func getChessBoardVC(forColor chessBoardColor: PieceColor) -> ChessBoardViewController {
-        return chessBoardColor == .white ? whiteChessBoardVC : blackChessBoardVC
+        updateWhoIsPlayingAndUI()
     }
 
     private func cancelMove(fromEnd end: Int, toStart start: Int, onBoard color: PieceColor) {
@@ -237,7 +209,6 @@ extension MainViewController {
 
     private func hideOldMove(onBoard color: PieceColor) {
         let chessBoardVC = getChessBoardVC(forColor: color)
-        // hide last move
         chessBoardVC.hideMove(start: oldMove.start, end: oldMove.end == currentMove.end ? nil : oldMove.end)
     }
 
@@ -247,12 +218,9 @@ extension MainViewController {
         guard let image = chessBoardVC.getLastAddedPiece(atPosition: startingSq) else { return }
         image.removeFromSuperview()
         chessBoardVC.addPiece(image, atPosition: endingSq)
-
         if !showMove { return }
-
-        // show move
+        // show move and hide last move
         chessBoardVC.showMove(start: startingSq, end: endingSq)
-        // hide last move
         hideOldMove(onBoard: color)
     }
 }
@@ -261,11 +229,13 @@ extension MainViewController {
 
 extension MainViewController {
 
-    @objc private func capturedPieceAtPosition(_ notif: NSNotification) {
-        guard let position = notif.object as? Int else { return }
-        captureSound?.play()
-        removePiece(atPosition: position, onChessBoardColor: .white)
-        removePiece(atPosition: position, onChessBoardColor: .black)
+    @objc private func capture(_ notif: NSNotification) {
+        guard let result = notif.object as? (position: Int, captureInPassing: Bool) else { return }
+        if result.captureInPassing {
+            captureSound?.play()
+        }
+        removePiece(atPosition: result.position, onChessBoardColor: .white)
+        removePiece(atPosition: result.position, onChessBoardColor: .black)
     }
 
     private func removePiece(atPosition position: Int, onChessBoardColor color: PieceColor) {
@@ -283,34 +253,24 @@ extension MainViewController {
         promotionPosition = object.position
         // display piece choice for promotion
         let chessBoardVC = getChessBoardVC(forColor: object.color)
-        chessBoardVC.promotionChoose.isHidden = false
+        chessBoardVC.showPromotionChoice()
     }
 
-    @objc private func promotionHasChosen(_ notif: NSNotification) {
-        guard let pieces = notif.object as? Pieces else { return }
-        promotionChoice(pieces)
-    }
-
-    private func promotionChoice(_ piece: Pieces) {
+    @objc private func promotionDone(_ notif: NSNotification) {
+        guard let piece = notif.object as? Pieces else { return }
         guard let position = promotionPosition else { return }
         game.promotion(chosenPiece: piece)
-
         // get player color (game is restarted)
         guard let playerColor = game.currentColor else { return }
-
         // remove old and load new
         removePiece(atPosition: position, onChessBoardColor: .white)
         removePiece(atPosition: position, onChessBoardColor: .black)
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .white)
         loadNewPiece(piece, atPosition: position, onChessBoardColor: .black)
-
-        // show king state
-        showKingState()
-
         // hide piece choice for promotion and update who is playing
         let chessBoardVC = getChessBoardVC(forColor: playerColor == .white ? .black : .white)
-        chessBoardVC.promotionChoose.isHidden = true
-        updateWhoIsPlayingAndContainersWidth()
+        chessBoardVC.hidePromotionChoiceOrResultPanel()
+        updateWhoIsPlayingAndUI()
     }
 
     private func loadNewPiece(_ piece: Pieces, atPosition position: Int, onChessBoardColor color: PieceColor) {
@@ -325,6 +285,11 @@ extension MainViewController {
 
     @objc private func castling(_ notif: NSNotification) {
         guard let rookMove = notif.object as? (start: Int, end: Int) else { return }
+        if game.currentColor == .black { // TODO: Add sound for castling
+            whiteSound?.play()
+        } else {
+            blackSound?.play()
+        }
         movePiece(startingSq: rookMove.start, endingSq: rookMove.end, onBoard: .white, showMove: false)
         movePiece(startingSq: rookMove.start, endingSq: rookMove.end, onBoard: .black, showMove: false)
         // show king state
@@ -332,9 +297,43 @@ extension MainViewController {
     }
 }
 
-// MARK: - check or checkmate
+// MARK: - Game UI
 
 extension MainViewController {
+
+    private func reloadChessBoard() {
+        whiteChessBoardVC.reloadChessBoard()
+        blackChessBoardVC.reloadChessBoard()
+        updateWhoIsPlayingAndUI()
+    }
+
+    private func updateViewOrientation() {
+        // player one always at bottom of screen
+        switch game.whoPlayWithWhite {
+        case .one:
+            whiteBackground.backgroundColor = UIColor.blackSquare
+            blackBackground.backgroundColor = UIColor.whiteSquare
+            safeView.transform = .identity
+            buttonsView.transform = .identity
+        case .two:
+            whiteBackground.backgroundColor = UIColor.whiteSquare
+            blackBackground.backgroundColor = UIColor.blackSquare
+            safeView.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+            buttonsView.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        }
+    }
+
+    private func updateWhoIsPlayingAndUI() {
+        showKingState()
+        whiteChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
+        blackChessBoardVC.chessBoardView.whoIsPlaying = game.currentColor
+        updateContainersConstraint()
+        updateGameUI()
+        whiteLosedPiecesTV.reloadData()
+        blackCapturedPiecesTV.reloadData()
+        whiteCapturedPiecesTV.reloadData()
+        blackLosedPiecesTV.reloadData()
+    }
 
     private func showKingState() {
         // white king
@@ -344,16 +343,52 @@ extension MainViewController {
         whiteChessBoardVC.updateStateOfKing(atPosition: game.blackKingState.position, state: game.blackKingState.state)
         blackChessBoardVC.updateStateOfKing(atPosition: game.blackKingState.position, state: game.blackKingState.state)
     }
-}
 
-// MARK: - Cancel move
+    private func updateGameUI() {
+        // get state of game
+        guard let gameState = game.state else { return }
+        switch gameState {
+        case .isStarted:
+            gameIsStarted()
+        case .inPause:
+            gameIsStarted() // TODO: à implémenter avec les futurs minuteurs
+        case .checkmate:
+            displayCheckmate()
+        case .stalemate:
+            displayDraw(cause: String.stalemate)
+        case .drawByRepetition:
+            displayDraw(cause: String.drawByRepetition)
+        }
+    }
 
-extension MainViewController {
+    private func gameIsStarted() {
+        whiteChessBoardVC.hidePromotionChoiceOrResultPanel()
+        blackChessBoardVC.hidePromotionChoiceOrResultPanel()
+        cancelMoveButton.isHidden = false
+        newRoundButton.isHidden = true
+    }
 
-    private func cancelMoveButtonTap() {
-        game.cancelLastMove()
-        whiteChessBoardVC.reloadChessBoard()
-        blackChessBoardVC.reloadChessBoard()
-        updateWhoIsPlayingAndContainersWidth()
+    private func displayCheckmate() {
+        // check king state
+        if game.whiteKingState.state == .isCheckmate {
+            // black has won, get score
+            whiteChessBoardVC.showResult(result: String.youLose, score: game.scores(forColor: .white))
+            blackChessBoardVC.showResult(result: String.youWin, score: game.scores(forColor: .black))
+        } else if game.blackKingState.state == .isCheckmate {
+            // white has won
+            whiteChessBoardVC.showResult(result: String.youWin, score: game.scores(forColor: .white))
+            blackChessBoardVC.showResult(result: String.youLose, score: game.scores(forColor: .black))
+        } else {
+            return
+        }
+        cancelMoveButton.isHidden = true
+        newRoundButton.isHidden = false
+    }
+
+    private func displayDraw(cause: String) {
+        cancelMoveButton.isHidden = true
+        newRoundButton.isHidden = false
+        whiteChessBoardVC.showResult(result: cause, score: game.scores(forColor: .white))
+        blackChessBoardVC.showResult(result: cause, score: game.scores(forColor: .black))
     }
 }

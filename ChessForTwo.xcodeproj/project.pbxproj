@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		430B63D52AE428A300E8DCDE /* ExtensionsTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430B63D42AE428A300E8DCDE /* ExtensionsTestCase.swift */; };
 		430F6C792AB591BF00A2176D /* ChessBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */; };
 		430F6C7A2AB591BF00A2176D /* ChessBoardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 430F6C782AB591BF00A2176D /* ChessBoardView.xib */; };
 		430F6C7C2AB5997300A2176D /* ChessBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F6C7B2AB5997300A2176D /* ChessBoardView.swift */; };
@@ -16,6 +17,7 @@
 		433AE0692AB1B47800E523BD /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433AE0682AB1B47800E523BD /* Game.swift */; };
 		433AE06B2AB1B50100E523BD /* GameTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433AE06A2AB1B50100E523BD /* GameTestCase.swift */; };
 		433AE06D2AB1DE6C00E523BD /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433AE06C2AB1DE6C00E523BD /* Piece.swift */; };
+		4340E7E12AE7B906009C3400 /* MainViewControllerTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E7E02AE7B906009C3400 /* MainViewControllerTableView.swift */; };
 		435DBCA52ADEDE5100079BB6 /* captureSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 435DBCA22ADEDE5000079BB6 /* captureSound.mp3 */; };
 		435DBCA62ADEDE5100079BB6 /* whitePieceSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 435DBCA32ADEDE5000079BB6 /* whitePieceSound.mp3 */; };
 		435DBCA72ADEDE5100079BB6 /* blackPieceSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 435DBCA42ADEDE5100079BB6 /* blackPieceSound.mp3 */; };
@@ -55,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		430B63D42AE428A300E8DCDE /* ExtensionsTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsTestCase.swift; sourceTree = "<group>"; };
 		430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBoardViewController.swift; sourceTree = "<group>"; };
 		430F6C782AB591BF00A2176D /* ChessBoardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChessBoardView.xib; sourceTree = "<group>"; };
 		430F6C7B2AB5997300A2176D /* ChessBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessBoardView.swift; sourceTree = "<group>"; };
@@ -64,6 +67,7 @@
 		433AE0682AB1B47800E523BD /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		433AE06A2AB1B50100E523BD /* GameTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTestCase.swift; sourceTree = "<group>"; };
 		433AE06C2AB1DE6C00E523BD /* Piece.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
+		4340E7E02AE7B906009C3400 /* MainViewControllerTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControllerTableView.swift; sourceTree = "<group>"; };
 		435DBCA22ADEDE5000079BB6 /* captureSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = captureSound.mp3; sourceTree = "<group>"; };
 		435DBCA32ADEDE5000079BB6 /* whitePieceSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = whitePieceSound.mp3; sourceTree = "<group>"; };
 		435DBCA42ADEDE5100079BB6 /* blackPieceSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = blackPieceSound.mp3; sourceTree = "<group>"; };
@@ -174,6 +178,7 @@
 			children = (
 				43D125082AD03E7B009123BB /* StartViewController.swift */,
 				438F662F2AB055D00032D71F /* MainViewController.swift */,
+				4340E7E02AE7B906009C3400 /* MainViewControllerTableView.swift */,
 				430F6C772AB591BF00A2176D /* ChessBoardViewController.swift */,
 			);
 			path = Controller;
@@ -219,6 +224,7 @@
 				439C2F722AB0CB33003DF649 /* BishopTestCase.swift */,
 				439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */,
 				439C2F782AB0CB88003DF649 /* KingTestCase.swift */,
+				430B63D42AE428A300E8DCDE /* ExtensionsTestCase.swift */,
 			);
 			path = ChessForTwoTests;
 			sourceTree = "<group>";
@@ -356,6 +362,7 @@
 				438F66302AB055D00032D71F /* MainViewController.swift in Sources */,
 				438F664A2AB057960032D71F /* Rook.swift in Sources */,
 				438F664E2AB057AD0032D71F /* King.swift in Sources */,
+				4340E7E12AE7B906009C3400 /* MainViewControllerTableView.swift in Sources */,
 				438F662C2AB055D00032D71F /* AppDelegate.swift in Sources */,
 				430F6C7C2AB5997300A2176D /* ChessBoardView.swift in Sources */,
 				43233A9A2ACB1CC700F824F7 /* ChessBoardExtensions.swift in Sources */,
@@ -382,6 +389,7 @@
 				439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */,
 				433AE06B2AB1B50100E523BD /* GameTestCase.swift in Sources */,
 				439C2F712AB0C7EB003DF649 /* KnightTestCase.swift in Sources */,
+				430B63D52AE428A300E8DCDE /* ExtensionsTestCase.swift in Sources */,
 				43297C962AB6293A00720C60 /* ChessBoardTestCase.swift in Sources */,
 				439C2F732AB0CB33003DF649 /* BishopTestCase.swift in Sources */,
 				43BC527E2ACC24F3007DEB0C /* PieceTestCase.swift in Sources */,

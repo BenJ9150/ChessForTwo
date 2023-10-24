@@ -62,7 +62,7 @@ final class GameTestCase: XCTestCase {
         XCTAssertFalse(movesResult)
         XCTAssertEqual(game.currentColor, .white)
         XCTAssertEqual(ChessBoard.board.count, 32)
-        XCTAssertEqual(ChessBoard.capture.count, 0)
+        XCTAssertEqual(ChessBoard.whitePiecesCaptured.count + ChessBoard.blackPiecesCaptured.count, 0)
     }
 
     func testGivenStartNewGame_WhenMoveD5_ThenIsNotValidMove() {
@@ -88,7 +88,7 @@ final class GameTestCase: XCTestCase {
 
         XCTAssertFalse(movesResult)
         XCTAssertEqual(ChessBoard.board.count, 4)
-        XCTAssertEqual(ChessBoard.capture.count, 0)
+        XCTAssertEqual(ChessBoard.whitePiecesCaptured.count + ChessBoard.blackPiecesCaptured.count, 0)
     }
 
     // MARK: - Check
@@ -124,7 +124,8 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.state, .isStarted)
         XCTAssertEqual(ChessBoard.board.count, 29)
-        XCTAssertEqual(ChessBoard.capture.count, 3)
+        XCTAssertEqual(ChessBoard.whitePiecesCaptured.count, 2)
+        XCTAssertEqual(ChessBoard.blackPiecesCaptured.count, 1)
     }
 
     func testGivenBlackKingIsCheck_WhenMoving_ThenIsNotCheckmate() {
@@ -138,8 +139,6 @@ final class GameTestCase: XCTestCase {
 
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.state, .isStarted)
-        XCTAssertEqual(ChessBoard.board.count, 2)
-        XCTAssertEqual(ChessBoard.capture.count, 1)
     }
 
     // MARK: - Checkmate
@@ -154,9 +153,8 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(movesResult)
         XCTAssertEqual(game.whiteKingState.state, .isCheckmate)
         XCTAssertEqual(game.blackKingState.state, .isFree)
-        XCTAssertEqual(game.score(ofPlayer: .two), 2)
-        XCTAssertEqual(game.score(ofPlayer: .one), 0)
-        XCTAssertEqual(game.state, .isOver)
+        XCTAssertEqual(game.scores(forColor: .black), "2 - 0")
+        XCTAssertEqual(game.state, .checkmate)
         XCTAssertNil(game.currentColor)
     }
 
@@ -171,11 +169,11 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqC2, to: sqA2) // Ra2#
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.score(ofPlayer: .two), 0)
-        XCTAssertEqual(game.score(ofPlayer: .one), 2)
+        XCTAssertEqual(game.scores(forColor: .white), "0 - 2")
+        XCTAssertEqual(game.scores(forColor: .black), "2 - 0")
     }
 
-    func testGivenBlackKingCantMove_WhenIsCheck_ThenGameIsOver() {
+    func testGivenBlackKingCantMove_WhenIsCheck_ThenGameIsCheckmate() {
         movePiece(from: sqB1, to: sqC3) // Nc3
         movePiece(from: sqC7, to: sqC6) // c6
         movePiece(from: sqE2, to: sqE4) // e4
@@ -188,7 +186,7 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqE4, to: sqD6) // Nd6#
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.state, .isOver)
+        XCTAssertEqual(game.state, .checkmate)
     }
 
     // MARK: - Draw per repetition
@@ -207,9 +205,8 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqG5, to: sqD8) // Qd8 3 repeat
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.score(ofPlayer: .one), 1)
-        XCTAssertEqual(game.score(ofPlayer: .two), 1)
-        XCTAssertEqual(game.state, .isOver)
+        XCTAssertEqual(game.scores(forColor: .white), "1 - 1")
+        XCTAssertEqual(game.state, .drawByRepetition)
         XCTAssertNil(game.currentColor)
     }
 
@@ -225,9 +222,7 @@ final class GameTestCase: XCTestCase {
         movePiece(from: sqB2, to: sqB6)
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.score(ofPlayer: .one), 1)
-        XCTAssertEqual(game.score(ofPlayer: .two), 1)
-        XCTAssertEqual(game.state, .isOver)
+        XCTAssertEqual(game.state, .stalemate)
         XCTAssertNil(game.currentColor)
     }
 
@@ -268,9 +263,7 @@ final class GameTestCase: XCTestCase {
         game.promotion(chosenPiece: Rook(nil))
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.score(ofPlayer: .one), 2)
-        XCTAssertEqual(game.score(ofPlayer: .two), 0)
-        XCTAssertEqual(game.state, .isOver)
+        XCTAssertEqual(game.scores(forColor: .white), "2 - 0")
     }
 
     func testGivenWhiteKingAlmostMate_WhenRookPromotion_ThenBlackWin() {
@@ -285,7 +278,7 @@ final class GameTestCase: XCTestCase {
         game.promotion(chosenPiece: Rook())
 
         XCTAssertTrue(movesResult)
-        XCTAssertEqual(game.state, .isOver)
+        XCTAssertEqual(game.scores(forColor: .black), "2 - 0")
     }
 
     // MARK: - Castling
@@ -340,11 +333,21 @@ final class GameTestCase: XCTestCase {
         XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 1, rank: 5), ofColor: .black) is Pawn)
         XCTAssertTrue(ChessBoard.piece(atPosition: Square(file: 2, rank: 5), ofColor: .white) is Pawn)
         XCTAssertEqual(ChessBoard.board.count, 32)
-        XCTAssertEqual(ChessBoard.capture.count, 0)
+        XCTAssertEqual(ChessBoard.whitePiecesCaptured.count + ChessBoard.blackPiecesCaptured.count, 0)
         XCTAssertEqual(game.currentColor, .white)
 
         game.cancelLastMove() // nothing to cancel
 
         XCTAssertEqual(game.currentColor, .white)
+    }
+
+    // MARK: New round
+
+    func testGivenStartNewRound_WhenCheckingWhoPlayWithWhite_ThenIsPlayerDifferent() {
+        game.newRound()
+        XCTAssertEqual(game.whoPlayWithWhite, .two)
+
+        game.newRound()
+        XCTAssertEqual(game.whoPlayWithWhite, .one)
     }
 }

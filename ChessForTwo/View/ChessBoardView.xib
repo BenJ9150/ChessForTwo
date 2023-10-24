@@ -12,10 +12,11 @@
             <connections>
                 <outlet property="chessBoardView" destination="i5M-Pr-FkT" id="rdb-lp-1dU"/>
                 <outlet property="promotionBishop" destination="0i8-BM-Elf" id="W9m-Di-STm"/>
-                <outlet property="promotionChoose" destination="DD2-wN-K4I" id="vSZ-sf-p5C"/>
+                <outlet property="promotionChoiceAndResultPanel" destination="DD2-wN-K4I" id="vSZ-sf-p5C"/>
                 <outlet property="promotionKnight" destination="alS-Ws-tka" id="s62-d4-PwM"/>
                 <outlet property="promotionQueen" destination="M86-lV-0hX" id="MNd-6u-sVx"/>
                 <outlet property="promotionRook" destination="hOz-wU-c9T" id="URd-2s-jsc"/>
+                <outlet property="resultLabel" destination="CfG-mR-MWM" id="dVL-9v-qVe"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -1835,20 +1836,25 @@
                                         </stackView>
                                     </subviews>
                                 </stackView>
+                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Result" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="12" translatesAutoresizingMaskIntoConstraints="NO" id="CfG-mR-MWM">
+                                    <rect key="frame" x="8" y="8" width="180.33333333333334" height="180.33333333333334"/>
+                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="30"/>
+                                    <color key="textColor" name="color_button"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" name="color_selectedSquare"/>
                             <constraints>
                                 <constraint firstItem="jPb-mw-mp0" firstAttribute="leading" secondItem="ngo-cT-3mu" secondAttribute="leading" constant="16" id="B2K-MB-ih5"/>
+                                <constraint firstAttribute="bottom" secondItem="CfG-mR-MWM" secondAttribute="bottom" constant="8" id="VoT-Nj-8LE"/>
                                 <constraint firstAttribute="trailing" secondItem="jPb-mw-mp0" secondAttribute="trailing" constant="16" id="XFg-sl-6yy"/>
                                 <constraint firstItem="jPb-mw-mp0" firstAttribute="top" secondItem="ngo-cT-3mu" secondAttribute="top" constant="16" id="aIN-t5-B9b"/>
+                                <constraint firstAttribute="trailing" secondItem="CfG-mR-MWM" secondAttribute="trailing" constant="8" id="acB-bb-tWo"/>
+                                <constraint firstItem="CfG-mR-MWM" firstAttribute="top" secondItem="ngo-cT-3mu" secondAttribute="top" constant="8" id="duf-ob-8d4"/>
                                 <constraint firstAttribute="bottom" secondItem="jPb-mw-mp0" secondAttribute="bottom" constant="16" id="kc0-BO-Ja6"/>
                                 <constraint firstAttribute="width" secondItem="ngo-cT-3mu" secondAttribute="height" multiplier="1:1" id="tIo-Oy-EeF"/>
+                                <constraint firstItem="CfG-mR-MWM" firstAttribute="leading" secondItem="ngo-cT-3mu" secondAttribute="leading" constant="8" id="vG7-cy-lC6"/>
                             </constraints>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
-                                    <integer key="value" value="8"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
                         </view>
                     </subviews>
                     <constraints>
@@ -1956,12 +1962,15 @@
         </view>
     </objects>
     <resources>
-        <image name="ic_whiteBishop" width="72" height="72"/>
-        <image name="ic_whiteKnight" width="72" height="72"/>
-        <image name="ic_whiteQueen" width="72" height="72"/>
-        <image name="ic_whiteRook" width="72" height="72"/>
+        <image name="ic_whiteBishop" width="106" height="106"/>
+        <image name="ic_whiteKnight" width="106" height="106"/>
+        <image name="ic_whiteQueen" width="106" height="106"/>
+        <image name="ic_whiteRook" width="106" height="106"/>
         <namedColor name="color_blackSquare">
             <color red="0.44299998879432678" green="0.60000002384185791" blue="0.70999997854232788" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="color_button">
+            <color red="0.1289999932050705" green="0.1289999932050705" blue="0.11400000005960464" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="color_selectedSquare">
             <color red="0.33300000429153442" green="0.6940000057220459" blue="0.69800001382827759" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

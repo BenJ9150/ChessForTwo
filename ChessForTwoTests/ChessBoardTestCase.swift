@@ -37,16 +37,6 @@ final class ChessBoardTestCase: XCTestCase {
         XCTAssertEqual(position.rank, 6)
     }
 
-    // MARK: - Rotation of view
-
-    func testGivenThereIsAView_WhenRotateOf180_ThenRotationIs180() {
-        let view = UIView()
-
-        view.rotation = 180
-
-        XCTAssertEqual(view.rotation, 0) // value not getted
-    }
-
     func testGivenThereIsAUIImage_WhenRotateOf180_ThenReturnNotNilWithSameName() {
         let imageView = UIImageView(image: UIImage(named: "ic_whitePawn"))
 
@@ -139,5 +129,26 @@ final class ChessBoardTestCase: XCTestCase {
         let emptySquares = ChessBoard.emptySquaresBetween(pawn, and: piece)
 
         XCTAssertEqual(emptySquares.count, 0)
+    }
+
+    // MARK: captured piece
+
+    func testGivenTwoCapturedPieces_WhenRemoveAll_ThenThereIsNoCapturedPiece() {
+        let whitePawn = Pawn(initialFile: 1, initialRank: 2, color: .white)
+        let blackPawn = Pawn(initialFile: 1, initialRank: 7, color: .black)
+        let whiteRook = Rook(initialFile: 1, initialRank: 1, color: .white)
+        let blackRook = Rook(initialFile: 1, initialRank: 8, color: .black)
+        ChessBoard.addToCapturedPieces(whitePawn)
+        ChessBoard.addToCapturedPieces(blackPawn)
+        ChessBoard.addToCapturedPieces(whiteRook)
+        ChessBoard.addToCapturedPieces(blackRook)
+
+        ChessBoard.removeFromCapturedPieces(whitePawn)
+        ChessBoard.removeFromCapturedPieces(blackPawn)
+        ChessBoard.removeFromCapturedPieces(whiteRook)
+        ChessBoard.removeFromCapturedPieces(blackRook)
+
+        XCTAssertEqual(ChessBoard.whitePiecesCaptured.count, 0)
+        XCTAssertEqual(ChessBoard.blackPiecesCaptured.count, 0)
     }
 }

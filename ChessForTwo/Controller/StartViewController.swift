@@ -78,7 +78,7 @@ extension StartViewController {
 
     private func startButtonTap(_ sender: UIButton) {
         // new game, start
-        if game.state == .isOver && game.score(ofPlayer: .one) + game.score(ofPlayer: .two) == 0 {
+        if game.state == nil {
             setPlayersName()
             game.start()
             pushMainVC()
@@ -107,23 +107,21 @@ extension StartViewController {
 
     private func setPlayersName() {
         // get player one name
-        if let playerName = playerOneTextField.text {
+        if let playerName = playerOneTextField.text, playerName != "" {
             game.names[.one] = playerName
         } else {
             game.names[.one] = playerOneTitle.text
         }
         // get player two name
-        if let playerName = playerTwoTextField.text {
-            game.names[.one] = playerName
+        if let playerName = playerTwoTextField.text, playerName != "" {
+            game.names[.two] = playerName
         } else {
-            game.names[.one] = playerTwoTitle.text
+            game.names[.two] = playerTwoTitle.text
         }
     }
 
     private func resumeGame() {
-        if game.state == .isOver {
-            game.start() // TODO: commencer une nouvelle manche à la place
-        } else {
+        if game.state == .inPause {
             game.unpause()
         }
         pushMainVC()
