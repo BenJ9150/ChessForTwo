@@ -69,6 +69,13 @@ extension StartViewController {
         // keyboard will hide notification
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideNotification(_:)),
                                                name: UIResponder.keyboardWillHideNotification, object: nil)
+        // TODO: test API REST
+        ChessComApi.shared.getDailyPuzzle { dailyPuzzle in
+            print(dailyPuzzle.title)
+            print(dailyPuzzle.url)
+            print(dailyPuzzle.fen)
+            print(dailyPuzzle.image)
+        }
     }
 }
 

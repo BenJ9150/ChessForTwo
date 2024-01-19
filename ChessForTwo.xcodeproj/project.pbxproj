@@ -41,6 +41,7 @@
 		439C2F752AB0CB5B003DF649 /* RookTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F742AB0CB5B003DF649 /* RookTestCase.swift */; };
 		439C2F772AB0CB7B003DF649 /* QueenTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */; };
 		439C2F792AB0CB88003DF649 /* KingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2F782AB0CB88003DF649 /* KingTestCase.swift */; };
+		43AC62AC2AFE6E0000464200 /* ChessComApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AC62AB2AFE6E0000464200 /* ChessComApi.swift */; };
 		43BC527E2ACC24F3007DEB0C /* PieceTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */; };
 		43D125092AD03E7B009123BB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D125082AD03E7B009123BB /* StartViewController.swift */; };
 		43D63ABD2AD18FB4004F73F0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 43D63ABC2AD18FB4004F73F0 /* Localizable.xcstrings */; };
@@ -95,6 +96,7 @@
 		439C2F742AB0CB5B003DF649 /* RookTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RookTestCase.swift; sourceTree = "<group>"; };
 		439C2F762AB0CB7B003DF649 /* QueenTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueenTestCase.swift; sourceTree = "<group>"; };
 		439C2F782AB0CB88003DF649 /* KingTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KingTestCase.swift; sourceTree = "<group>"; };
+		43AC62AB2AFE6E0000464200 /* ChessComApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessComApi.swift; sourceTree = "<group>"; };
 		43BC527D2ACC24F3007DEB0C /* PieceTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceTestCase.swift; sourceTree = "<group>"; };
 		43D125082AD03E7B009123BB /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		43D63ABC2AD18FB4004F73F0 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				438F66472AB0578B0032D71F /* Bishop.swift */,
 				438F664B2AB057A10032D71F /* Queen.swift */,
 				438F664D2AB057AD0032D71F /* King.swift */,
+				43AC62AB2AFE6E0000464200 /* ChessComApi.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -363,6 +366,7 @@
 				438F664A2AB057960032D71F /* Rook.swift in Sources */,
 				438F664E2AB057AD0032D71F /* King.swift in Sources */,
 				4340E7E12AE7B906009C3400 /* MainViewControllerTableView.swift in Sources */,
+				43AC62AC2AFE6E0000464200 /* ChessComApi.swift in Sources */,
 				438F662C2AB055D00032D71F /* AppDelegate.swift in Sources */,
 				430F6C7C2AB5997300A2176D /* ChessBoardView.swift in Sources */,
 				43233A9A2ACB1CC700F824F7 /* ChessBoardExtensions.swift in Sources */,
